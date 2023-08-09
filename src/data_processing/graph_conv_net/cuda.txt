@@ -461,3 +461,9 @@ Removed:
   nvidia-gpu-firmware-20230625-151.fc37.noarch                                            
 
 Complete!
+
+
+
+
+# remove all cuda packages
+sudo dnf remove "cuda*" "*cublas*" "*cufft*" "*cufile*" "*curand*" "*cusolver*" "*cusparse*" "*gds-tools*" "*npp*" "*nvjpeg*" "nsight*" "*nvvm*" && sudo dnf module remove --all nvidia-driver && sudo dnf module reset nvidia-driver && sudo dnf remove "*nvidia*"
