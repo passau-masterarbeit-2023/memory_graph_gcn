@@ -16,7 +16,6 @@ class ProgramParams(BaseProgramParams):
 
     # data
     ANNOTATED_GRAPH_DOT_GV_DIR_PATH: str
-    NO_ANNOTATION_GRAPH_DOT_GV_DIR_PATH: str
 
     def __init__(
             self, 
@@ -57,8 +56,5 @@ class ProgramParams(BaseProgramParams):
         if self.cli_args.args.annotated_graph_dot_gv_dir_path is not None:
             self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH = self.cli_args.args.annotated_graph_dot_gv_dir_path
             assert isinstance(self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH, str)
-        
-        if self.cli_args.args.no_annotated_graph_dot_gv_dir_path is not None:
-            self.NO_ANNOTATION_GRAPH_DOT_GV_DIR_PATH = self.cli_args.args.no_annotated_graph_dot_gv_dir_path
-            assert isinstance(self.NO_ANNOTATION_GRAPH_DOT_GV_DIR_PATH, str)
+
     

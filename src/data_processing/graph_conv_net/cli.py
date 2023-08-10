@@ -25,9 +25,7 @@ class CLIArguments:
             -w max ml workers (threads for ML threads pool, -1 for illimited)
             -d debug
             -fad path to annotated DOT graph directory
-            -fnd path to non-annotated DOT graph directory
             -fa load file containing annotated DOT graph
-            -fn load file containing non-annotated DOT graph
         """
         parser = argparse.ArgumentParser(description='Program [ARGUMENTS]')
         parser.add_argument(
@@ -50,25 +48,11 @@ class CLIArguments:
             help="path to annotated DOT graph directory"
         )
         parser.add_argument(
-            '-fnd',
-            '--no_annotated_graph_dot_gv_dir_path',
-            type=str,
-            default=None,
-            help="path to non-annotated DOT graph directory"
-        )
-        parser.add_argument(
             '-fa',
             '--annotated_graph_dot_gv_file_path',
             type=str,
             default=None,
             help="load file containing annotated DOT graph"
-        )
-        parser.add_argument(
-            '-fn',
-            '--no_annotated_graph_dot_gv_file_path',
-            type=str,
-            default=None,
-            help="load file containing non-annotated DOT graph"
         )
 
         # save parsed arguments
