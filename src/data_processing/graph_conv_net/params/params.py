@@ -1,4 +1,4 @@
-from pathlib import Path
+import os
 from commons.params.base_program_params import BaseProgramParams
 from commons.params.app_params import AppName
 
@@ -16,6 +16,7 @@ class ProgramParams(BaseProgramParams):
 
     # data
     ANNOTATED_GRAPH_DOT_GV_DIR_PATH: str
+    PICKLE_DATASET_DIR_PATH: str
 
     def __init__(
             self, 
@@ -25,8 +26,12 @@ class ProgramParams(BaseProgramParams):
     ):
         # determine dotenv path
         # NOTE: the .env file is in the same path as this current file
-        dotenv_path = Path(__file__).parent.joinpath('.env')
-        assert(dotenv_path.exists() and dotenv_path.is_file(), "ERROR: .env file not found: {0}".format(dotenv_path))
+        dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+        assert(
+            os.path.exists(dotenv_path) and os.path.isfile(dotenv_path),
+            "ERROR: .env file not found: {0} in folder: {1}".format(dotenv_path, os.path.dirname(__file__))
+        )
+
 
         super().__init__(AppName.GCN_ML, load_program_argv, debug, dotenv_path=dotenv_path)
 
@@ -56,5 +61,4 @@ class ProgramParams(BaseProgramParams):
         if self.cli_args.args.annotated_graph_dot_gv_dir_path is not None:
             self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH = self.cli_args.args.annotated_graph_dot_gv_dir_path
             assert isinstance(self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH, str)
-
-    
+        
