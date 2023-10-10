@@ -1,6 +1,6 @@
-# GCN subproject
+# GCN processing of memory graphs
 
-Goal: ML for KeyNode detection > We want to learn a model using a Graph Convolution Network on our annotated graphs.
+Goal: ML for Key detection > We want to learn a model using a Graph Convolution Network on our annotated memory graphs.
 
 ## Logs
 

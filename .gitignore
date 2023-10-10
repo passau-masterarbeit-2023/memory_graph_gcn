@@ -1,0 +1,13 @@
+# python
+__pycache__/
+.pytest_cache/
+
+# logs
+*.log
+*.log.*
+
+.env
+
+# direnv
+.direnv
+doc/server/server.env
