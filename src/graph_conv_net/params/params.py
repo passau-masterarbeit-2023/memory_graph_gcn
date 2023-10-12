@@ -1,6 +1,8 @@
 import os
-from commons.params.base_program_params import BaseProgramParams
-from commons.params.app_params import AppName
+from graph_conv_net.pipelines.pipelines import PipelineNames
+from graph_conv_net.results.result_writer import ResultsWriter
+from research_base.results.base_result_writer import BaseResultWriter
+from research_base.params.base_program_params import BaseProgramParams
 
 from ..cli import CLIArguments
 
@@ -9,6 +11,7 @@ class ProgramParams(BaseProgramParams):
     Wrapper class for program parameters.
     """
     cli_args: CLIArguments
+    app_name : str = "GCN_ML"
     
     ### env vars
     # NOTE: all CAPITAL_PARAM_VALUES values NEED to be overwritten by the .env file
@@ -25,15 +28,35 @@ class ProgramParams(BaseProgramParams):
             **kwargs
     ):
         # determine dotenv path
-        # NOTE: the .env file is in the same path as this current file
-        dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-        assert(
-            os.path.exists(dotenv_path) and os.path.isfile(dotenv_path),
-            "ERROR: .env file not found: {0} in folder: {1}".format(dotenv_path, os.path.dirname(__file__))
+        # NOTE: the .env file is in the same path as this current file, else, in the parent folder
+        # Initialize dotenv_path to None
+        dotenv_path = None
+
+        # Start from the current directory
+        current_dir = os.path.dirname(__file__)
+
+        # Loop to walk upwards in the directory tree
+        parent_dir_level = 0
+        while current_dir != '/' and parent_dir_level < 3:
+            potential_dotenv_path = os.path.join(current_dir, '.env')
+            if os.path.exists(potential_dotenv_path):
+                dotenv_path = potential_dotenv_path
+                break
+            # Move up to the parent directory
+            current_dir = os.path.dirname(current_dir)
+            parent_dir_level += 1
+
+        if dotenv_path is None:
+            raise Exception("ERROR: .env file not found.")
+
+        super().__init__(
+            app_name = self.app_name,
+            pipeline_names_enum = PipelineNames,
+            result_writer = ResultsWriter,
+            load_program_argv = load_program_argv,
+            debug = debug, 
+            dotenv_path = dotenv_path
         )
-
-
-        super().__init__(AppName.GCN_ML, load_program_argv, debug, dotenv_path=dotenv_path)
 
         # to be done last
         self._log_program_params()

@@ -72,7 +72,7 @@ def dev_load_training_graphs(
     Load all annotated graphs from given path.
     """
     # get all files in the folder
-    annotated_graph_dot_gv_file_paths = glob.glob(annotated_graph_dot_gv_dir_path + "/*dot.gv")
+    annotated_graph_dot_gv_file_paths = glob.glob(annotated_graph_dot_gv_dir_path + "/*.gv")
 
     # for now, as a test, filter only "Training" graphs
     annotated_graph_dot_gv_file_paths = [annotated_graph_dot_gv_file_path for annotated_graph_dot_gv_file_path in annotated_graph_dot_gv_file_paths if "Training" in annotated_graph_dot_gv_file_path]
