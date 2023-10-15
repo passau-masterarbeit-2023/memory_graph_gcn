@@ -2,9 +2,9 @@ import networkx as nx
 import glob
 import os
 import pickle
-import time
 from torch_geometric.utils import from_networkx, convert
-import torch
+import glob
+import os
 from multiprocessing import Pool
 
 from graph_conv_net.params.params import ProgramParams
@@ -40,6 +40,7 @@ def load_annotated_graph(
     if it already exists.
     Perform graph cleaning.
     Convert the graph to a PyTorch Geometric data object.
+    Returns None if there was an error loading the graph.
     """    
     # load annotated graph
     file_name = os.path.basename(annotated_graph_dot_gv_file_path)
@@ -51,7 +52,15 @@ def load_annotated_graph(
         with open(nx_graph_pickle_path, 'rb') as file:
             nx_graph = pickle.load(file)
     else:
-        nx_graph = nx.Graph(nx.nx_pydot.read_dot(annotated_graph_dot_gv_file_path))
+        # load the graph from the .gv file
+        try:
+            nx_graph = nx.Graph(nx.nx_pydot.read_dot(annotated_graph_dot_gv_file_path))
+        except Exception as e:
+            print(f"Error reading {annotated_graph_dot_gv_file_path}: {e}")
+            os.remove(annotated_graph_dot_gv_file_path)
+            print(f" 󰆴 -> Removed {annotated_graph_dot_gv_file_path}")
+            return None
+        
         # Save the NetworkX graph to a file using pickle
         with open(nx_graph_pickle_path, 'wb') as file:
             pickle.dump(nx_graph, file)
@@ -64,6 +73,15 @@ def load_annotated_graph(
 
     return data
 
+def find_gv_files(directory_path):
+    # Create a pattern to match .gv files in all subdirectories
+    pattern = os.path.join(directory_path, '**', '*.gv')
+    
+    # Use glob.glob with the recursive pattern
+    gv_files = glob.glob(pattern, recursive=True)
+    
+    return gv_files
+
 def dev_load_training_graphs(
     params: ProgramParams ,
     annotated_graph_dot_gv_dir_path: str
@@ -72,17 +90,27 @@ def dev_load_training_graphs(
     Load all annotated graphs from given path.
     """
     # get all files in the folder
-    annotated_graph_dot_gv_file_paths = glob.glob(annotated_graph_dot_gv_dir_path + "/*.gv")
+    annotated_graph_dot_gv_file_paths = find_gv_files(
+        annotated_graph_dot_gv_dir_path
+    )
+    print("Found " + str(len(annotated_graph_dot_gv_file_paths)) + " graphs inside " + annotated_graph_dot_gv_dir_path)
+    for i in range(0, (len(annotated_graph_dot_gv_file_paths) // 100)):
+        print("path:", annotated_graph_dot_gv_file_paths[i])
 
     # for now, as a test, filter only "Training" graphs
-    annotated_graph_dot_gv_file_paths = [annotated_graph_dot_gv_file_path for annotated_graph_dot_gv_file_path in annotated_graph_dot_gv_file_paths if "Training" in annotated_graph_dot_gv_file_path]
+    annotated_graph_dot_gv_file_paths = [
+        annotated_graph_dot_gv_file_path for annotated_graph_dot_gv_file_path 
+        in annotated_graph_dot_gv_file_paths if "Training" in annotated_graph_dot_gv_file_path
+    ]
+
     # for now, only load 32 graphs
     annotated_graph_dot_gv_file_paths = annotated_graph_dot_gv_file_paths[:32]
     print("Loading " + str(len(annotated_graph_dot_gv_file_paths)) + " graphs...")
 
     # Parallelize the loading of the graphs into data objects
-    # Parallelize the loading of the graphs into data objects
     with Pool() as pool:
-        datas = pool.starmap(load_annotated_graph, [(params, path) for path in annotated_graph_dot_gv_file_paths])
+        datas = pool.starmap(load_annotated_graph, [
+            (params, path) for path in annotated_graph_dot_gv_file_paths]
+        )
     
     return datas

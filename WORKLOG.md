@@ -4,6 +4,10 @@ Goal: ML for Key detection > We want to learn a model using a Graph Convolution 
 
 ## Logs
 
+### Sun 15 Oct 2023
+
+Fixed data loading.
+
 ### Wed 11 Oct 2023
 
 Re-starting again the work effort on GNC.

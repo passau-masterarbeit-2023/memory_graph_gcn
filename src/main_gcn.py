@@ -14,7 +14,7 @@ from graph_conv_net.ml.first_model import GNN
 def main(params: ProgramParams):
     
     # load data
-    print("Loading data...")
+    print(" |> Loading data...")
     print("Annotated graph from: {0}".format(params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH))
 
     start = time.time()

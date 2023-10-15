@@ -40,6 +40,8 @@
         pythonPackages.datetime
         pythonPackages.graphviz
         pythonPackages.pygraphviz
+        pythonPackages.pydot # needed with networkx
+        pythonPackages.networkx
       ];
 
       postVenvCreation = ''

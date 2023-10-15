@@ -17,7 +17,7 @@ class ProgramParams(BaseProgramParams):
     # NOTE: all CAPITAL_PARAM_VALUES values NEED to be overwritten by the .env file
     # NOTE: lowercase values are from the CLI
 
-    # data
+    # ENV vars. WARN: Don't forget to add them to the .env file
     ANNOTATED_GRAPH_DOT_GV_DIR_PATH: str
     PICKLE_DATASET_DIR_PATH: str
 
