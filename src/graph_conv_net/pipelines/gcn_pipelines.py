@@ -135,3 +135,4 @@ def first_gcn_pipeline(
         params.results_manager.get_result_writer_for(CURRENT_PIPELINE_NAME),
         params,
     )
+    return metrics
