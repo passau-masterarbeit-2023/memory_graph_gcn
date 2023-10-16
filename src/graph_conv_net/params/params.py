@@ -1,8 +1,10 @@
 import os
+
+#from research_base.params.base_program_params import BaseProgramParams
+from .base_program_params import BaseProgramParams
+
 from graph_conv_net.pipelines.pipelines import PipelineNames
-from graph_conv_net.results.result_writer import ResultsWriter
-from research_base.results.base_result_writer import BaseResultWriter
-from research_base.params.base_program_params import BaseProgramParams
+from graph_conv_net.results.result_writer import ResultWriter
 
 from ..cli import CLIArguments
 
@@ -20,6 +22,7 @@ class ProgramParams(BaseProgramParams):
     # ENV vars. WARN: Don't forget to add them to the .env file
     ANNOTATED_GRAPH_DOT_GV_DIR_PATH: str
     PICKLE_DATASET_DIR_PATH: str
+    RESULT_SAVE_FILE_FORMAT: str
 
     def __init__(
             self, 
@@ -52,7 +55,7 @@ class ProgramParams(BaseProgramParams):
         super().__init__(
             app_name = self.app_name,
             pipeline_names_enum = PipelineNames,
-            result_writer = ResultsWriter,
+            result_writer = ResultWriter,
             load_program_argv = load_program_argv,
             debug = debug, 
             dotenv_path = dotenv_path
