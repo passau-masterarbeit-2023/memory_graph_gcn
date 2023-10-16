@@ -4,7 +4,7 @@ from enum import Enum
 import os
 import json
 import platform
-from graph_conv_net.utils.utils import DATETIME_FORMAT
+from graph_conv_net.utils.utils import DATETIME_FORMAT, datetime_to_human_readable_str
 import psutil
 from typing import Optional
 
@@ -66,12 +66,8 @@ class BaseResultWriter(object):
             start_time_str, DATETIME_FORMAT
         )
         duration = end_time - start_time
-        duration_in_seconds = duration.total_seconds()
-        duration_hour_min_sec = "{} total sec ({:02d}h {:02d}m {:02d}s)".format(
-            duration_in_seconds,
-            int(duration_in_seconds // 3600),
-            int((duration_in_seconds % 3600) // 60),
-            int(duration_in_seconds % 60),
+        duration_hour_min_sec = datetime_to_human_readable_str(
+            duration
         )
         self.set_result("duration", duration_hour_min_sec)
 

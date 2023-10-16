@@ -1,6 +1,8 @@
+from dataclasses import dataclass
 import time
 import torch_geometric.data
 from torch_geometric.utils import from_networkx, convert
+from graph_conv_net.results.base_result_writer import BaseResultWriter
 import torch
 import numpy as np
 import torch.nn.functional as F
@@ -8,18 +10,24 @@ import torch.nn.functional as F
 from graph_conv_net.data_loading.data_loading import dev_load_training_graphs
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.ml.first_model import GNN
-from graph_conv_net.embedding.node_to_vec import generate_node2vec_graph_embedding
+from graph_conv_net.embedding.node_to_vec import FirstGCNPipelineHyperparams, add_hyperparams_to_result_writer, generate_node2vec_graph_embedding
 from graph_conv_net.ml.evaluation import evaluate_metrics
 from graph_conv_net.pipelines.pipelines import PipelineNames
 
 def first_gcn_pipeline(
     params: ProgramParams,
+    hyperparams: FirstGCNPipelineHyperparams,
 ):
     """
     A first pipeline to test the GCN model.
     """
     CURRENT_PIPELINE_NAME = PipelineNames.FirstGCNPipeline
     
+    add_hyperparams_to_result_writer(
+        params.results_manager.get_result_writer_for(CURRENT_PIPELINE_NAME),
+        hyperparams,
+    )
+
     # load data
     print(" |> Loading data...")
     print("Annotated graph from: {0}".format(params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH))
@@ -49,7 +57,8 @@ def first_gcn_pipeline(
         # Generate Node2Vec embeddings
         embeddings = generate_node2vec_graph_embedding(
             params,
-            labelled_graph
+            labelled_graph,
+            hyperparams
         )
         print("embeddings len: {0}".format(len(embeddings)))
         print("embeddings[0]: {0}".format(embeddings[0]))
