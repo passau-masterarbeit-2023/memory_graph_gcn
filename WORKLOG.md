@@ -4,6 +4,10 @@ Goal: ML for Key detection > We want to learn a model using a Graph Convolution 
 
 ## Logs
 
+### Mon 16 Oct 2023
+
+IDEA: Gensim's Word2Vec: After generating random walks, you can treat them as "sentences" and the nodes as "words" to generate embeddings using Gensim's Word2Vec model.
+
 ### Sun 15 Oct 2023
 
 Fixed data loading.

@@ -9,19 +9,30 @@ from multiprocessing import Pool
 
 from graph_conv_net.params.params import ProgramParams
 
-def graph_cleaning(nx_graph: nx.Graph):
+def graph_labelling(nx_graph: nx.Graph):
     """
-    Clean the graph from all attributes.
+    Convert the graph attributes to labels for ML.
     """
-    def set_label(node):
-        nx_graph.nodes[node]['label'] = 1 if 'KN_KEY' in node else 0
+    # add node labels
+    nb_positive_labels = 0
+    for node, data in nx_graph.nodes(data=True):
+        # remove color attribute
+        if 'color' in data:
+            del data['color']
+        if 'style' in data:
+            del data['style']
+        
+        # add class label
+        if 'label' in data:
+            label = 0
+            if "KEY" in data['label']:
+                label = 1
+                nb_positive_labels += 1
+            nx.set_node_attributes(nx_graph, {node: label}, 'label')
 
-    # remove all attributes from nodes
-    for node in nx_graph.nodes():
-        nx_graph.nodes[node].clear()
+    # assert that at least one node has a label 1
+    assert nb_positive_labels > 0, "ERROR: No node has the label 1."
     
-        set_label(node)
-
     return nx_graph
 
 def convert_graph_to_ml_data(nx_graph: nx.Graph):
@@ -61,17 +72,22 @@ def load_annotated_graph(
             print(f" 󰆴 -> Removed {annotated_graph_dot_gv_file_path}")
             return None
         
+        # add node labels
+        nx_graph = graph_labelling(nx_graph)
+
+        # add edge weights
+        for u, v, data in nx_graph.edges(data=True):
+            weight = 1
+            if 'weight' in data:
+                weight = int(data['weight'])
+            
+            nx.set_edge_attributes(nx_graph, {(u, v): weight}, 'weight')
+        
         # Save the NetworkX graph to a file using pickle
         with open(nx_graph_pickle_path, 'wb') as file:
             pickle.dump(nx_graph, file)
-    
-    # cleaning
-    nx_graph = graph_cleaning(nx_graph)
 
-    # convert to PyTorch Geometric data object
-    data = convert_graph_to_ml_data(nx_graph)
-
-    return data
+    return nx_graph
 
 def find_gv_files(directory_path):
     # Create a pattern to match .gv files in all subdirectories

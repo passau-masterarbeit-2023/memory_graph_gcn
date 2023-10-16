@@ -1,10 +1,10 @@
 import time
+import torch_geometric.data
 from torch_geometric.utils import from_networkx, convert
+from graph_conv_net.embedding.node_to_vec import generate_node2vec_graph_embedding
+from graph_conv_net.ml.evaluation import evaluate_metrics
 import torch
-import networkx as nx
-
-import os
-import pickle
+import numpy as np
 
 from graph_conv_net.data_loading.data_loading import dev_load_training_graphs, load_annotated_graph
 from graph_conv_net.params.params import ProgramParams
@@ -18,102 +18,111 @@ def main(params: ProgramParams):
     print("Annotated graph from: {0}".format(params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH))
 
     start = time.time()
-    datas = dev_load_training_graphs(
+    labelled_graphs = dev_load_training_graphs(
         params,
         params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH
     )
     end = time.time()
     print("Loading data took: {0} seconds".format(end - start))
-    print("type(datas): {0}".format(type(datas)))
-    print("len(datas): {0}".format(len(datas)))
-
-    # TODO: start working from here...
-
-    # # Convert to PyTorch Geometric data object
-    # print("Converting to PyTorch Geometric data object...")
-    # start = time.time()
+    print("type(datas): {0}".format(type(labelled_graphs)))
+    print("type of a data element: {0}".format(type(labelled_graphs[0])))
+    print("len(datas): {0}".format(len(labelled_graphs)))
     
-    # data = from_networkx(nx_graph)
+    # filter out None values
+    labelled_graphs = [graph for graph in labelled_graphs if graph is not None]
 
-    # end = time.time()
-    # print("Converting to PyTorch Geometric data object took: {0} seconds".format(end - start))
-    # print("type(data): {0}".format(type(data)))
+    # print a graph to see what it looks like
+    t_graph = labelled_graphs[0]
+    print("t_graph.nodes.data(): {0}".format(t_graph.nodes.data()))
 
-    # # training model
-    # print("Preparing node features, edge connectivity and labels...")
-    # start = time.time()
-    # # Prepare node features (identity matrix as placeholder) (you may need to adjust features, edges, etc.)
-    # data.x = torch.eye(nx_graph.number_of_nodes(), dtype=torch.float)  
-    # # Prepare edge connectivity (from adjacency matrix or edge list)
-    # #A = nx.to_scipy_sparse_array(nx_graph)  # Adjacency matrix
-    # data.edge_index = convert.from_networkx(nx_graph).edge_index
-    # data.y = torch.tensor([nx_graph.nodes[node]['label'] for node in nx_graph.nodes()], dtype=torch.float).unsqueeze(1)
-    # end = time.time()
-    # print("Preparing node features, edge connectivity and labels took: {0} seconds".format(end - start))
+    # convert graphs to PyTorch Geometric data objects
+    data_from_graphs = []
+    for labelled_graph in labelled_graphs:
+        # TODO: move out
+        # Make sure all edge weights are numerical
+        # for u, v, data in labelled_graph.edges(data=True):
+        #     data['weight'] = float(data.get('weight', 1.0))
 
-    # # Model, optimizer, and loss
-    # model = GNN(data)
-    # optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-    # loss_func = torch.nn.BCELoss()
+        # Generate Node2Vec embeddings
+        embeddings = generate_node2vec_graph_embedding(
+            params,
+            labelled_graph
+        )
+        
+        # Convert the graph to a PyTorch Geometric data object
+        data: torch_geometric.data.Data = from_networkx(labelled_graph)
 
-    # # Training loop
-    # print("Training loop...")
-    # start = time.time()
-    # for epoch in range(1000):
-    #     optimizer.zero_grad()
-    #     out = model(data)
-    #     loss = loss_func(out[data.train_mask], data.y[data.train_mask])
-    #     loss.backward()
-    #     optimizer.step()
+        # Replace node features with Node2Vec embeddings
+        data.x = torch.tensor(embeddings, dtype=torch.float)
 
-    #     # Print progress
-    #     if epoch % 100 == 0:
-    #         print(f'Epoch: {epoch}, Loss: {loss.item()}')
-    # end = time.time()
-    # print("Training loop took: {0} seconds".format(end - start))
+        # Prepare node features (identity matrix as placeholder) (you may need to adjust features, edges, etc.)
+        #data.x = torch.eye(labelled_graph.number_of_nodes(), dtype=torch.float)  
+        
+        # Prepare edge connectivity (from adjacency matrix or edge list)
+        data.edge_index = convert.from_networkx(labelled_graph).edge_index
+        data.y = torch.tensor([labelled_graph.nodes[node]['label'] for node in labelled_graph.nodes()], dtype=torch.float).unsqueeze(1)
+        data_from_graphs.append(data)
+    
+    # split data into train, validation and test sets
+    train_data = data_from_graphs[:int(len(data_from_graphs) * 0.8)]
+    test_data = data_from_graphs[int(len(data_from_graphs) * 0.8):]
+    assert len(train_data) > 0
+    assert len(test_data) > 0
 
-    # #### Evaluation
-    # # load annotated graph, and evaluate the model on it.
-    # print("### Evaluating model ###")
+    # CONTINUE HERE. NEED TO TRAIN THE MODEL ON THE TRAINING SET, THEN EVALUATE IT ON THE TEST SET.
+    # Define and initialize your GCN model
+    num_features = train_data[0].num_node_features
+    num_classes = 2 # label 0 or 1
+    print("num_features: {0}".format(num_features))
+    print("num_classes: {0}".format(num_classes))
+    model = GNN(num_features, num_classes)  # Replace with your model class and appropriate input/output sizes
+    
+    # Define loss function and optimizer
+    criterion = torch.nn.CrossEntropyLoss()
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+    
+    # Training loop
+    model.train()
 
-    # # load annotated graph
-    # start = time.time()
-    # eval_nx_graph = load_annotated_graph(params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH + "/Training_27572-1644383600-heap.raw_dot.gv")
-    # end = time.time()
-    # print("Loading annotated graph took: {0} seconds".format(end - start))
+    epochs = 5 # Replace with a sensible number of epochs
+    for _ in range(epochs):
+        for data in train_data:
+            optimizer.zero_grad()
+            output = model(data)
+            loss = criterion(output, data.y.view(-1).long())
+            loss.backward()
+            optimizer.step()
+    
+    # Evaluation of trained model
+    model.eval()
+    
+    # Lists to store true labels and predictions for all test graphs
+    all_true_labels = []
+    all_pred_labels = []
 
-    # # Set labels for the evaluation graph
-    # print("Setting labels for the evaluation graph...")
-    # start = time.time()
-    # for node in eval_nx_graph.nodes():
-    #     eval_nx_graph.nodes[node]['label'] = 1 if 'KN_KEY' in node else 0
-    # end = time.time()
-    # print("Setting labels for the evaluation graph took: {0} seconds".format(end - start))
+    with torch.no_grad():
+        for data in test_data:
+            output = model(data)
+            predicted = output.argmax(dim=1)
+            
+            all_true_labels.extend(data.y.view(-1).long().tolist())
+            all_pred_labels.extend(predicted.tolist())
 
-    # # Convert to PyTorch Geometric data object
-    # print("Converting to PyTorch Geometric data object...")
-    # start = time.time()
-    # eval_data = from_networkx(eval_nx_graph)
-    # eval_data.x = torch.eye(eval_nx_graph.number_of_nodes(), dtype=torch.float)
-    # A_eval = nx.to_scipy_sparse_matrix(eval_nx_graph)
-    # eval_data.edge_index = convert.from_scipy_sparse_matrix(A_eval)
-    # eval_data.y = torch.tensor([eval_nx_graph.nodes[node]['label'] for node in eval_nx_graph.nodes()], dtype=torch.float).unsqueeze(1)
-    # end = time.time()
-    # print("Converting to PyTorch Geometric data object took: {0} seconds".format(end - start))
+    # Convert lists to numpy arrays for evaluation
+    all_true_labels = np.array(all_true_labels)
+    all_pred_labels = np.array(all_pred_labels)
 
-    # # Evaluate the model (assuming binary classification)
-    # print("Evaluating the model...")
-    # start = time.time()
-    # model.eval()
-    # with torch.no_grad():
-    #     eval_out = model(eval_data)
-    #     predictions = (eval_out > 0.5).float()
-    #     correct = (predictions == eval_data.y).sum().item()
-    #     total = eval_data.y.size(0)
-    #     accuracy = correct / total
-    #     print(f'Evaluation Accuracy: {accuracy * 100:.2f}%')
-    # end = time.time()
-    # print("Evaluating the model took: {0} seconds".format(end - start))
+    # Compute the metrics
+    metrics = evaluate_metrics(
+        all_true_labels, all_pred_labels
+    )
+
+    # Display the metrics
+    for metric, value in metrics.items():
+        print(f"{metric.capitalize()}: {value:.4f}")
+
+
+
 
 
 if __name__ == "__main__":
