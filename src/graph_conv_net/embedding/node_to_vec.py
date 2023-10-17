@@ -10,6 +10,8 @@ class FirstGCNPipelineHyperparams(object):
     """
     This class contains the hyperparameters for the first GCN pipeline.
     """
+    index: int
+
     node2vec_dimensions: int
     node2vec_walk_length: int
     node2vec_num_walks: int

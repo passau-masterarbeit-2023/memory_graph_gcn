@@ -6,10 +6,12 @@ __pycache__/
 # python in Nix
 .venv/
 
-# logs
+# logs and results
 *.log
 *.log.*
+PipelineNames.FirstGCNPipeline*.csv
 
+# environment variables
 .env
 
 # direnv
