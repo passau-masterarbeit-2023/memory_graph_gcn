@@ -5,14 +5,18 @@ import torch_geometric.data
 from graph_conv_net.data_loading.data_loading import dev_load_training_graphs
 from graph_conv_net.embedding.node_to_vec import generate_node2vec_graph_embedding
 from graph_conv_net.ml.evaluation import evaluate_metrics
+from graph_conv_net.results.base_result_writer import BaseResultWriter
 from graph_conv_net.utils.utils import datetime_to_human_readable_str
 from torch_geometric.utils import from_networkx, convert
 from graph_conv_net.pipelines.pipelines import PipelineNames, RandomForestPipeline, add_hyperparams_to_result_writer
 from graph_conv_net.params.params import ProgramParams
+import torch
+import numpy as np
 
 def random_forest_pipeline(
     params: ProgramParams,
     hyperparams: RandomForestPipeline,
+    results_writer: BaseResultWriter,
 ):
     """
     A pipeline to test the Random Forest model.
@@ -20,12 +24,12 @@ def random_forest_pipeline(
     CURRENT_PIPELINE_NAME = PipelineNames.RandomForestPipeline
     
     add_hyperparams_to_result_writer(
-        params.results_manager.get_result_writer_for(CURRENT_PIPELINE_NAME),
+        results_writer,
         hyperparams,
     )
 
     # load data
-    print("Loading data...")
+    print(" 🔘 Loading data...")
     print("Annotated graph from: {0}".format(params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH))
 
     start = datetime.now()
@@ -39,9 +43,9 @@ def random_forest_pipeline(
     duration = end - start
     duration_human_readable = datetime_to_human_readable_str(duration)
     print("Loading data took: {0}".format(duration_human_readable))
-    print("type(datas): {0}".format(type(labelled_graphs)))
-    print("type of a data element: {0}".format(type(labelled_graphs[0])))
-    print("len(datas): {0}".format(len(labelled_graphs)))
+    print("type(labelled_graphs): {0}".format(type(labelled_graphs)))
+    print("type of a labelled_graphs element: {0}".format(type(labelled_graphs[0])))
+    print("len(labelled_graphs): {0}".format(len(labelled_graphs)))
     
     # filter out None values
     labelled_graphs = [graph for graph in labelled_graphs if graph is not None]
@@ -53,6 +57,8 @@ def random_forest_pipeline(
     # convert graphs to PyTorch Geometric data objects
     data_from_graphs: list[torch_geometric.data.Data] = []
     for labelled_graph in labelled_graphs:
+
+        start_embedding = datetime.now()
         
         # Generate Node2Vec embeddings
         embeddings = generate_node2vec_graph_embedding(
@@ -67,14 +73,20 @@ def random_forest_pipeline(
         data: torch_geometric.data.Data = from_networkx(labelled_graph)
 
         # Replace node features with Node2Vec embeddings
-        data.x = torch.tensor(embeddings, dtype=torch.float) # type: ignore
+        data.x = torch.tensor(np.array(embeddings), dtype=torch.float) # type: ignore
 
         # Prepare edge connectivity (from adjacency matrix or edge list)
         data.edge_index = convert.from_networkx(labelled_graph).edge_index # type: ignore
         data.y = torch.tensor([labelled_graph.nodes[node]['label'] for node in labelled_graph.nodes()], dtype=torch.float).unsqueeze(1) # type: ignore
         data_from_graphs.append(data)
+
+        end_embedding = datetime.now()
+        duration_embedding = end_embedding - start_embedding
+        duration_embedding_human_readable = datetime_to_human_readable_str(duration_embedding)
+        print("Generating embeddings took: {0}".format(duration_embedding_human_readable))
     
     # split data into train and test sets
+    print(" 🔘 Splitting data into train and test sets...")
     PERCENTAGE_OF_DATA_FOR_TRAINING = 0.7
     train_data = data_from_graphs[:int(len(data_from_graphs) * PERCENTAGE_OF_DATA_FOR_TRAINING)]
     test_data = data_from_graphs[int(len(data_from_graphs) * PERCENTAGE_OF_DATA_FOR_TRAINING):]
@@ -102,16 +114,18 @@ def random_forest_pipeline(
     )
 
     # Training
+    print(" 🔘 Training...")
     clf.fit(X_train, y_train)
 
     # Prediction
     y_pred = clf.predict(X_test)
 
     # Evaluation metrics
+    print(" 🔘 Evaluating...")
     metrics = evaluate_metrics(
         y_test, 
         y_pred,
-        params.results_manager.get_result_writer_for(CURRENT_PIPELINE_NAME),
+        results_writer,
         params,
     )
     return metrics

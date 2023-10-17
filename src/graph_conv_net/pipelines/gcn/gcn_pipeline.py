@@ -17,6 +17,7 @@ from graph_conv_net.pipelines.pipelines import FirstGCNPipelineHyperparams, Pipe
 def first_gcn_pipeline(
     params: ProgramParams,
     hyperparams: FirstGCNPipelineHyperparams,
+    results_writer: BaseResultWriter,
 ):
     """
     A first pipeline to test the GCN model.
@@ -24,7 +25,7 @@ def first_gcn_pipeline(
     CURRENT_PIPELINE_NAME = PipelineNames.FirstGCNPipeline
     
     add_hyperparams_to_result_writer(
-        params.results_manager.get_result_writer_for(CURRENT_PIPELINE_NAME),
+        results_writer,
         hyperparams,
     )
 
@@ -132,7 +133,7 @@ def first_gcn_pipeline(
     metrics = evaluate_metrics(
         all_true_labels, 
         all_pred_labels,
-        params.results_manager.get_result_writer_for(CURRENT_PIPELINE_NAME),
+        results_writer,
         params,
     )
     return metrics

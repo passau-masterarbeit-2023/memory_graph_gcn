@@ -29,7 +29,7 @@ def __get_predicted_classes_from_report(clf_report: dict) -> list:
 def evaluate_metrics(
         y_true: np.ndarray, 
         y_pred: np.ndarray,
-        result_saver: BaseResultWriter,
+        result_writer: BaseResultWriter,
         params: ProgramParams,
     ):
     """
@@ -90,8 +90,8 @@ def evaluate_metrics(
 
     # save results
     for metric_name, metric_value in metrics.items():
-        result_saver.set_result(metric_name, str(metric_value))
-    result_saver.save_results_to_file(
+        result_writer.set_result(metric_name, str(metric_value))
+    result_writer.save_results_to_file(
         str2enum(params.RESULT_SAVE_FILE_FORMAT, SaveFileFormat)
     )
         

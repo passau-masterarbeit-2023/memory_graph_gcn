@@ -2,19 +2,33 @@ from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.gcn.gcn_pipeline import first_gcn_pipeline
-from graph_conv_net.pipelines.pipelines import FirstGCNPipelineHyperparams, Node2VecHyperparams, PipelineNames, RandomForestPipeline
+from graph_conv_net.pipelines.pipelines import BaseHyperparams, FirstGCNPipelineHyperparams, Node2VecHyperparams, PipelineNames, RandomForestPipeline
 from graph_conv_net.pipelines.random_forest.random_forest_pipeline import random_forest_pipeline
+from graph_conv_net.results.result_writer import ResultWriter
 from graph_conv_net.utils.utils import datetime_to_human_readable_str
 
-def run_pipeline(i: int, hyperparams):
-    new_params = ProgramParams()
-    new_params.RESULTS_LOGGER.info(f"Running pipeline [{i}]...")
-    new_params.RESULTS_LOGGER.info(f"Current Hyperparams: {hyperparams}")
+def run_pipeline(
+        i: int, 
+        params: ProgramParams,
+        hyperparams: FirstGCNPipelineHyperparams | RandomForestPipeline
+    ):
+    params.RESULTS_LOGGER.info(f"Running pipeline [index:{i}] {hyperparams.pipeline_name}...")
+    params.RESULTS_LOGGER.info(f"Current Hyperparams: {hyperparams}")
+
+    result_writer = ResultWriter(
+        hyperparams.pipeline_name.value
+    )
     
     if hyperparams.pipeline_name == PipelineNames.FirstGCNPipeline:
-        _ = first_gcn_pipeline(new_params, hyperparams)
+        assert isinstance(hyperparams, FirstGCNPipelineHyperparams), (
+            "ERROR: hyperparams is not of type FirstGCNPipelineHyperparams, but of type {0}".format(type(hyperparams))
+        )
+        _ = first_gcn_pipeline(params,  hyperparams, result_writer)
     elif hyperparams.pipeline_name == PipelineNames.RandomForestPipeline:
-        _ = random_forest_pipeline(new_params, hyperparams)
+        assert isinstance(hyperparams, RandomForestPipeline), (
+            "ERROR: hyperparams is not of type RandomForestPipeline, but of type {0}".format(type(hyperparams))
+        )
+        _ = random_forest_pipeline(params, hyperparams, result_writer)
     else:
         raise ValueError("ERROR: Unknown pipeline name: {0}".format(hyperparams.pipeline_name))
 
@@ -31,7 +45,7 @@ def main(params: ProgramParams):
     node2vec_q_range = [0.5, 1.0, 1.5]
     node2vec_window_range = [5, 10]
     node2vec_batch_words_range = [16]
-    node2vec_workers_range = [5]
+    node2vec_workers_range = [6]
 
     hyperparam_index = 0
     for node2vec_dimensions in node2vec_dimensions_range:
@@ -70,12 +84,8 @@ def main(params: ProgramParams):
                                             training_epochs=1,
                                         )
 
-                                        hyperparams_list.append(
-                                            randforest_hyperparams
-                                        )
-                                        hyperparams_list.append(
-                                            gcn_hyperparams
-                                        )
+                                        hyperparams_list.append(randforest_hyperparams)
+                                        #hyperparams_list.append(gcn_hyperparams)
                                         hyperparam_index += 1
 
     # log the hyperparams
@@ -83,15 +93,25 @@ def main(params: ProgramParams):
     for i in range(len(hyperparams_list)):
         params.COMMON_LOGGER.info("Hyperparams [{0}]: {1}".format(i, hyperparams_list[i]))
 
-    # Set the batch size
-    BATCH = 16
+    # # Set the batch size
+    # BATCH = 1
+    # print(">>> BATCH: {0}".format(BATCH))
 
-    # Main code
+    # # Main code
+    # print("🚀 Running pipeline...")
+    # with ProcessPoolExecutor(max_workers=BATCH) as executor:
+    #     for i in range(0, len(hyperparams_list), BATCH):
+    #         batch_hyperparams = hyperparams_list[i:i+BATCH]
+    #         executor.map(
+    #             run_pipeline, 
+    #             range(i, i + len(batch_hyperparams)), 
+    #             [params] * len(batch_hyperparams), 
+    #             batch_hyperparams
+    #         )
+
     print("🚀 Running pipeline...")
-    with ProcessPoolExecutor(max_workers=BATCH) as executor:
-        for i in range(0, len(hyperparams_list), BATCH):
-            batch_hyperparams = hyperparams_list[i:i+BATCH]
-            executor.map(run_pipeline, range(i, i + len(batch_hyperparams)), batch_hyperparams)
+    first_pipeline = hyperparams_list[0]
+    run_pipeline(0, params, first_pipeline)
     
     end_time = datetime.now()
     duration = end_time - start_time

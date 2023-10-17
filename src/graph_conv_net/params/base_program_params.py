@@ -1,9 +1,4 @@
 from abc import ABC, abstractmethod
-from enum import Enum
-from typing import Generic, Type, TypeVar
-
-from ..results.base_result_manager import BaseResultsManager
-from ..results.base_result_writer import BaseResultWriter
 
 from ..utils.utils import DATETIME_FORMAT, check_and_create_directory, datetime2str
 
@@ -14,19 +9,13 @@ import logging
 from logging.handlers import RotatingFileHandler
 from datetime import datetime
 
-ResultWriter = TypeVar('ResultWriter', bound=BaseResultWriter)  # CustomResultWriter should be a subtype of BaseResultWriter
-PipelineNamesEnum = TypeVar('PipelineNamesEnum', bound=Enum)  # PipelineNamesEnum should be a subtype of Enum
-
-class BaseProgramParams(ABC, Generic[PipelineNamesEnum, ResultWriter]):
+class BaseProgramParams(ABC):
     """
     Program parameters.
     This is a base class that contains the common parameters for all programs,
     like loggers, automatic path checking, etc.
     """
     app_name: str
-
-
-    results_manager: BaseResultsManager[PipelineNamesEnum, ResultWriter]
 
     ### env vars
     # NOTE: all None values NEED to be overwritten by the .env file
@@ -48,8 +37,6 @@ class BaseProgramParams(ABC, Generic[PipelineNamesEnum, ResultWriter]):
     def __init__(
             self, 
             app_name: str,
-            pipeline_names_enum: Type[PipelineNamesEnum],
-            result_writer: Type[ResultWriter],
             load_program_argv : bool = True, 
             debug : bool = False,
             dotenv_path: str | None = None,
@@ -68,7 +55,6 @@ class BaseProgramParams(ABC, Generic[PipelineNamesEnum, ResultWriter]):
         only if load_program_argv is True.
 
         :param app_name: the name of the application
-        :param pipeline_names_enum: the enum containing the names of the pipelines
         :param result_writer: the result writer class
         :param load_program_argv: whether to load program arguments from argv
         :param debug: whether to run in debug mode
@@ -90,8 +76,6 @@ class BaseProgramParams(ABC, Generic[PipelineNamesEnum, ResultWriter]):
 
         self.__construct_log()
 
-        self.__init_results_manager(pipeline_names_enum, result_writer)
-
 # ---------------------- initialise the values ----------------------
 
     def __init_default_values(self):
@@ -105,38 +89,6 @@ class BaseProgramParams(ABC, Generic[PipelineNamesEnum, ResultWriter]):
 
         self.data_origins_testing = None
 
-
-# ---------------------- results manager ----------------------
-    def __init_results_manager(self, pipeline_names_enum: Type[PipelineNamesEnum], result_writer: Type[ResultWriter]):
-        """
-        Init the results manager.
-        """
-        self.results_manager = BaseResultsManager[pipeline_names_enum, result_writer](
-            pipeline_names_enum, result_writer
-        )
-
-        self.set_result_forall(
-            "random_seed",
-            str(self.RANDOM_SEED)
-        )
-
-    def save_results_to_csv(self, pipeline_name: PipelineNamesEnum):
-        """
-        Save results to CSV files.
-        """
-        self.results_manager.save_results_for(pipeline_name)
-    
-    def set_result_for(self, pipeline_name: PipelineNamesEnum, column_name: str, value: str):
-        """
-        Set a result for a given pipeline.
-        """
-        self.results_manager.set_result_for(pipeline_name, column_name, value)
-
-    def set_result_forall(self, column_name: str, value: str):
-        """
-        Set a result for all pipelines.
-        """
-        self.results_manager.set_result_forall(column_name, value)
 # ---------------------- environnement loading ----------------------
 
     def __get_all_class_attribute_annotations(self):
