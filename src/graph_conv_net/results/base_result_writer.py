@@ -88,7 +88,11 @@ class BaseResultWriter(object):
         """
         Write the results to the CSV file.
         """
-        csv_file_path = self.save_dir_path + "/all_results.csv"
+        pipeline_name = self.results["pipeline_name"]
+        if self.results.get("pipeline_name") is None:
+            pipeline_name = "unnamed-pipeline"
+        assert pipeline_name is not None
+        csv_file_path = self.save_dir_path + "/" + pipeline_name + "all_results.csv"
         file_exists = os.path.isfile(csv_file_path)
         with open(csv_file_path, 'a', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=self.results.keys())

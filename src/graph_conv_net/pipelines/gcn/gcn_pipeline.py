@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import time
 import torch_geometric.data
 from torch_geometric.utils import from_networkx, convert
+from graph_conv_net.embedding.node_to_vec import generate_node2vec_graph_embedding
 from graph_conv_net.results.base_result_writer import BaseResultWriter
 import torch
 import numpy as np
@@ -10,9 +11,8 @@ import torch.nn.functional as F
 from graph_conv_net.data_loading.data_loading import dev_load_training_graphs
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.ml.first_model import GNN
-from graph_conv_net.embedding.node_to_vec import FirstGCNPipelineHyperparams, add_hyperparams_to_result_writer, generate_node2vec_graph_embedding
 from graph_conv_net.ml.evaluation import evaluate_metrics
-from graph_conv_net.pipelines.pipelines import PipelineNames
+from graph_conv_net.pipelines.pipelines import FirstGCNPipelineHyperparams, PipelineNames, add_hyperparams_to_result_writer
 
 def first_gcn_pipeline(
     params: ProgramParams,
@@ -29,7 +29,7 @@ def first_gcn_pipeline(
     )
 
     # load data
-    print(" |> Loading data...")
+    print("Loading data...")
     print("Annotated graph from: {0}".format(params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH))
 
     start = time.time()
@@ -97,7 +97,7 @@ def first_gcn_pipeline(
 
     # Training loop
     model.train()
-    epochs = 5  # Replace with a sensible number of epochs
+    epochs = hyperparams.training_epochs  # Replace with a sensible number of epochs
 
     for _ in range(epochs):
         for data in train_data:
