@@ -14,7 +14,7 @@ class ResultWriter(BaseResultWriter):
 
     # NOTE: The result writer passed to the program params class should only have
     # the :pipeline_name: parameter in its init args.
-    def __init__(self, pipeline_name: str):
+    def __init__(self):
 
         result_dir_path = os.environ.get("RESULTS_LOGGER_DIR_PATH")
         if result_dir_path is None:
@@ -24,5 +24,4 @@ class ResultWriter(BaseResultWriter):
 
         super().__init__(
             result_dir_path,
-            pipeline_name,
         )

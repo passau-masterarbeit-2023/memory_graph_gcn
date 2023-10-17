@@ -66,19 +66,20 @@ def random_forest_pipeline(
         start_embedding = datetime.now()
 
         # Generate Node2Vec embeddings
-        embeddings = generate_node2vec_graph_embedding(
+        embeddings: list[np.ndarray[tuple[int], np.dtype[np.float32]]] = generate_node2vec_graph_embedding(
             params,
             labelled_graph,
-            hyperparams
+            hyperparams,
         )
         print(f"embeddings len: {len(embeddings)} [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]".format())
         #print("embeddings[0]: {0}".format(embeddings[0]))
         
-        # Replace node features with Node2Vec embeddings
-        samples = np.array(embeddings) 
+        # Node2Vec embeddings to numpy array
+        samples = np.vstack(embeddings) # (2D array of float32)
 
-        # Prepare edge connectivity (from adjacency matrix or edge list)
-        labels = np.ndarray([labelled_graph.nodes[node]['label'] for node in labelled_graph.nodes])
+        # labels from graph nodes 
+        labels_in_list = [labelled_graph.nodes[node]['label'] for node in labelled_graph.nodes]
+        labels = np.array(labels_in_list, dtype=np.int32) # (1D array of int32)
         all_samples_and_labels.append(
             SamplesAndLabels(samples, labels)
         )
@@ -106,16 +107,41 @@ def random_forest_pipeline(
 
     # Create arrays for training and testing
     max_length = max([samples_and_labels.samples.shape[0] for samples_and_labels in all_samples_and_labels])
+    max_label_length = max([len(samples_and_labels.labels) for samples_and_labels in all_samples_and_labels])
+    print("max_length for samples: {0}".format(max_length))
+    print("max_label_length for labels: {0}".format(max_label_length))
+    assert max_length == max_label_length, (
+        "Label and sample max lengths should be equal, but sample max length is {0} and label max length is {1}".format(max_length, max_label_length)
+    )
 
     def pad_array(arr, max_length):
         pad_len = max_length - arr.shape[0]
         return np.pad(arr, [(0, pad_len), (0, 0)], mode='constant')
 
-    X_train = np.array([pad_array(samples_and_labels.samples, max_length) for samples_and_labels in train_data])
-    y_train = np.concatenate([samples_and_labels.labels for samples_and_labels in train_data])
+    def pad_labels(arr, max_label_length):
+        pad_len = max_label_length - len(arr)
+        return np.pad(arr, (0, pad_len), mode='constant', constant_values=0)
 
-    X_test = np.array([pad_array(samples_and_labels.samples, max_length) for samples_and_labels in test_data])
-    y_test = np.concatenate([samples_and_labels.labels for samples_and_labels in test_data])
+    # data for training
+    padded_arrays = [pad_array(samples_and_labels.samples, max_length) for samples_and_labels in train_data]
+    print("len(padded_arrays): {0}".format(len(padded_arrays)))
+    print("padded_arrays[0] type: {0}".format(type(padded_arrays[0])))
+    print("padded_arrays[0].shape: {0}".format(padded_arrays[0].shape))
+    X_train = np.vstack(padded_arrays)
+
+    y_trained_in_list = [pad_labels(samples_and_labels.labels, max_label_length) for samples_and_labels in train_data]
+    print("len(y_trained_in_list): {0}".format(len(y_trained_in_list)))
+    print("y_trained_in_list[0] type: {0}".format(type(y_trained_in_list[0])))
+    print("y_trained_in_list[0].shape: {0}".format(y_trained_in_list[0].shape))
+    y_train = np.concatenate(y_trained_in_list)
+
+    X_test = np.vstack([pad_array(samples_and_labels.samples, max_length) for samples_and_labels in test_data])
+    y_test = np.concatenate([pad_labels(samples_and_labels.labels, max_label_length) for samples_and_labels in test_data])
+
+    print("X_train.shape: {0}".format(X_train.shape))
+    print("y_train.shape: {0}".format(y_train.shape))
+    print("X_test.shape: {0}".format(X_test.shape))
+    print("y_test.shape: {0}".format(y_test.shape))
 
     # Initialize Random Forest model
     clf = RandomForestClassifier(

@@ -21,9 +21,13 @@ def add_hyperparams_to_result_writer(
     Add the hyperparams to the result writer.
     """
     for field in hyperparams.__dataclass_fields__.keys():
+        value = getattr(hyperparams, field)
+        if type(value) is PipelineNames:
+            value = value.value
+        
         result_writer.set_result(
             field, 
-            getattr(hyperparams, field)
+            value,
         )
 
 @dataclass(init=True, repr=True, eq=True, unsafe_hash=True, frozen=True)

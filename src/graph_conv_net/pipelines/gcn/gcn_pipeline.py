@@ -22,8 +22,7 @@ def first_gcn_pipeline(
     """
     A first pipeline to test the GCN model.
     """
-    CURRENT_PIPELINE_NAME = PipelineNames.FirstGCNPipeline
-    
+
     add_hyperparams_to_result_writer(
         results_writer,
         hyperparams,

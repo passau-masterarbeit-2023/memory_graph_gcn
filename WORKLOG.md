@@ -4,6 +4,19 @@ Goal: ML for Key detection > We want to learn a model using a Graph Convolution 
 
 ## Logs
 
+### Tue 17 Oct 2023
+
+```
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (788,)
+X_train.shape: (35808, 128)
+y_train.shape: (13032,)
+X_test.shape: (11936, 128)
+y_test.shape: (3674,)
+```
+
+This shows that the padding operation actually adds a lot of empty data, 35808 final rows for only 13032 original ones after having embedded 12 graphs (so a little more that 1000 nodes per graph).
+
 ### Mon 16 Oct 2023
 
 IDEA: Gensim's Word2Vec: After generating random walks, you can treat them as "sentences" and the nodes as "words" to generate embeddings using Gensim's Word2Vec model. > UPDATE: Actually, the implementation of Node2Vec relies on Gensim Word2Vec.

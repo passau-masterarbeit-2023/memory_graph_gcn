@@ -15,9 +15,7 @@ def run_pipeline(
     params.RESULTS_LOGGER.info(f"Running pipeline [index:{i}] {hyperparams.pipeline_name}...")
     params.RESULTS_LOGGER.info(f"Current Hyperparams: {hyperparams}")
 
-    result_writer = ResultWriter(
-        hyperparams.pipeline_name.value
-    )
+    result_writer = ResultWriter()
     
     if hyperparams.pipeline_name == PipelineNames.FirstGCNPipeline:
         assert isinstance(hyperparams, FirstGCNPipelineHyperparams), (
@@ -97,25 +95,23 @@ def main(params: ProgramParams):
 
     params.nb_pipeline_runs = len(hyperparams_list)
 
-    # # Set the batch size
-    # BATCH = 1
-    # print(">>> BATCH: {0}".format(BATCH))
-
-    # # Main code
-    # print("🚀 Running pipeline...")
-    # with ProcessPoolExecutor(max_workers=BATCH) as executor:
-    #     for i in range(0, len(hyperparams_list), BATCH):
-    #         batch_hyperparams = hyperparams_list[i:i+BATCH]
-    #         executor.map(
-    #             run_pipeline, 
-    #             range(i, i + len(batch_hyperparams)), 
-    #             [params] * len(batch_hyperparams), 
-    #             batch_hyperparams
-    #         )
-
     print("🚀 Running pipeline...")
-    first_pipeline = hyperparams_list[0]
-    run_pipeline(0, params, first_pipeline)
+
+    # Set the batch size
+    BATCH = 4
+    print(">>> BATCH: {0}".format(BATCH))
+
+    # Main code
+    print("🚀 Running pipeline...")
+    with ProcessPoolExecutor(max_workers=BATCH) as executor:
+        for i in range(0, len(hyperparams_list), BATCH):
+            batch_hyperparams = hyperparams_list[i:i+BATCH]
+            executor.map(
+                run_pipeline, 
+                range(i, i + len(batch_hyperparams)), 
+                [params] * len(batch_hyperparams), 
+                batch_hyperparams
+            )
     
     end_time = datetime.now()
     duration = end_time - start_time

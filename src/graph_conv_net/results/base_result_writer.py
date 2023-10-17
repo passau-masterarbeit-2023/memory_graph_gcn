@@ -25,8 +25,7 @@ class BaseResultWriter(object):
 
     def __init__(
             self, 
-            save_dir_path: str, 
-            pipeline_name: str = "unnamed-pipeline"
+            save_dir_path: str,
         ):
         self.save_dir_path = save_dir_path
         self.results = {}
@@ -35,7 +34,6 @@ class BaseResultWriter(object):
         self.__already_written_results = False
 
         # initialization
-        self.set_result("pipeline_name", pipeline_name)
         self.set_result("start_time", datetime.now().strftime(DATETIME_FORMAT))
 
     def set_result(self, field: str, value: Optional[str]) -> None:
@@ -92,7 +90,8 @@ class BaseResultWriter(object):
         if self.results.get("pipeline_name") is None:
             pipeline_name = "unnamed-pipeline"
         assert pipeline_name is not None
-        csv_file_path = self.save_dir_path + "/" + pipeline_name + "all_results.csv"
+
+        csv_file_path = f"{self.save_dir_path}/{str(pipeline_name)}_all_results.csv"
         file_exists = os.path.isfile(csv_file_path)
         with open(csv_file_path, 'a', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=self.results.keys())
@@ -110,7 +109,8 @@ class BaseResultWriter(object):
         if self.results.get("pipeline_name") is None:
             pipeline_name = "unnamed-pipeline"
         assert pipeline_name is not None
-        json_new_file_path = self.save_dir_path + "/" + pipeline_name + "_" + current_time + ".csv"
+        
+        json_new_file_path = f"{self.save_dir_path}/{str(pipeline_name)}_{current_time}.json"
         json.dump(self.results, open(json_new_file_path, 'w'), indent=4)
 
     def print_results(self) -> None:
