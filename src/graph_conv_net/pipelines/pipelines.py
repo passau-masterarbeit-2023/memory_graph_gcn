@@ -11,6 +11,7 @@ class PipelineNames(Enum):
 class BaseHyperparams(object):
     index: int
     pipeline_name: PipelineNames
+    nb_input_graphs: int
 
 def add_hyperparams_to_result_writer(
     result_writer: BaseResultWriter,

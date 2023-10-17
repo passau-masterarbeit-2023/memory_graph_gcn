@@ -15,6 +15,8 @@ class ProgramParams(BaseProgramParams):
     """
     cli_args: CLIArguments
     app_name : str = "GCN_ML"
+
+    nb_pipeline_runs: int = 1
     
     ### env vars
     # NOTE: all CAPITAL_PARAM_VALUES values NEED to be overwritten by the .env file

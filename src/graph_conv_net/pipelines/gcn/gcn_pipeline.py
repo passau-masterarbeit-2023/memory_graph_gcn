@@ -36,6 +36,7 @@ def first_gcn_pipeline(
     start = time.time()
     labelled_graphs = dev_load_training_graphs(
         params,
+        hyperparams,
         params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH
     )
     end = time.time()

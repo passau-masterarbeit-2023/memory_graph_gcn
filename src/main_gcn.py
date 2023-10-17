@@ -59,6 +59,7 @@ def main(params: ProgramParams):
                                         randforest_hyperparams = RandomForestPipeline(
                                             pipeline_name=PipelineNames.RandomForestPipeline,
                                             index=hyperparam_index,
+                                            nb_input_graphs=16,
                                             node2vec_dimensions=node2vec_dimensions,
                                             node2vec_walk_length=node2vec_walk_length,
                                             node2vec_num_walks=node2vec_num_walks,
@@ -73,6 +74,7 @@ def main(params: ProgramParams):
                                         gcn_hyperparams = FirstGCNPipelineHyperparams(
                                             pipeline_name=PipelineNames.FirstGCNPipeline,
                                             index=hyperparam_index,
+                                            nb_input_graphs=16,
                                             node2vec_dimensions=node2vec_dimensions,
                                             node2vec_walk_length=node2vec_walk_length,
                                             node2vec_num_walks=node2vec_num_walks,
@@ -92,6 +94,8 @@ def main(params: ProgramParams):
     params.COMMON_LOGGER.info("📝 Logging hyperparams...")
     for i in range(len(hyperparams_list)):
         params.COMMON_LOGGER.info("Hyperparams [{0}]: {1}".format(i, hyperparams_list[i]))
+
+    params.nb_pipeline_runs = len(hyperparams_list)
 
     # # Set the batch size
     # BATCH = 1

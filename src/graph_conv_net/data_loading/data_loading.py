@@ -2,12 +2,13 @@ import networkx as nx
 import glob
 import os
 import pickle
-from torch_geometric.utils import from_networkx, convert
+from torch_geometric.utils import from_networkx
 import glob
 import os
 from multiprocessing import Pool
 
 from graph_conv_net.params.params import ProgramParams
+from graph_conv_net.pipelines.pipelines import BaseHyperparams
 
 def graph_labelling(nx_graph: nx.Graph):
     """
@@ -99,7 +100,8 @@ def find_gv_files(directory_path):
     return gv_files
 
 def dev_load_training_graphs(
-    params: ProgramParams ,
+    params: ProgramParams,
+    hyperparams: BaseHyperparams,
     annotated_graph_dot_gv_dir_path: str
 ):
     """
@@ -119,8 +121,9 @@ def dev_load_training_graphs(
         in annotated_graph_dot_gv_file_paths if "Training" in annotated_graph_dot_gv_file_path
     ]
 
-    # for now, only load 32 graphs
-    annotated_graph_dot_gv_file_paths = annotated_graph_dot_gv_file_paths[:32]
+    # for now, only load a certain number of graphs
+    if hyperparams.nb_input_graphs is not None:
+        annotated_graph_dot_gv_file_paths = annotated_graph_dot_gv_file_paths[:hyperparams.nb_input_graphs]
     print("Loading " + str(len(annotated_graph_dot_gv_file_paths)) + " graphs...")
 
     # Parallelize the loading of the graphs into data objects
