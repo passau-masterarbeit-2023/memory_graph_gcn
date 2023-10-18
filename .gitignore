@@ -12,6 +12,7 @@ __pycache__/
 PipelineNames.FirstGCNPipeline*.csv
 PipelineNames.RandomForestPipeline*.json
 random-forest-pipeline*.json
+first-gcn-pipeline*.json
 
 # environment variables
 .env

@@ -4,6 +4,16 @@ Goal: ML for Key detection > We want to learn a model using a Graph Convolution 
 
 ## Logs
 
+### Wed 18 Oct 2023
+
+```
+🏁 Program finished in 108429.44865 total sec (30h 07m 09s) -> Premiers calculs sur GCN 3 couches avec un grand nombre de paramètres différents, 5 epoachs, 32 graphs en Input.
+```
+
+
+
+Les calculs sur 16 graphs seulement n'ont rien donnés, ni pour le Random Forest, ni pour le GCN. C'est la preuve que le nombre d'exemples est important. Plus important que l'imbalance ratio en tout cas pour le GCN, puisqu'on passe d'un ration de 151.86666666666667 pour 16 graphs en entrés, à 226.6 pour 32... mais que le deuxième ça donne des résultats bien supérieurs.
+
 ### Tue 17 Oct 2023
 
 ```

@@ -37,13 +37,18 @@ def main(params: ProgramParams):
     hyperparams_list: list[RandomForestPipeline | FirstGCNPipelineHyperparams] = []
 
     node2vec_dimensions_range = [128]
-    node2vec_walk_length_range = [32, 64]
-    node2vec_num_walks_range = [50]
+    node2vec_walk_length_range = [16]
+    node2vec_num_walks_range = [50, 100]
     node2vec_p_range = [0.5, 1.0, 1.5]
     node2vec_q_range = [0.5, 1.0, 1.5]
-    node2vec_window_range = [5, 10]
-    node2vec_batch_words_range = [16]
+    node2vec_window_range = [10]
+    node2vec_batch_words_range = [8]
     node2vec_workers_range = [6]
+
+    TRAINING_EPOCHS = 5
+    NB_INPUT_GRAPHS = 32
+    NB_RANDOM_FOREST_TREES = 100
+    NB_RANDOM_FOREST_JOBS = 5
 
     hyperparam_index = 0
     for node2vec_dimensions in node2vec_dimensions_range:
@@ -57,7 +62,7 @@ def main(params: ProgramParams):
                                         randforest_hyperparams = RandomForestPipeline(
                                             pipeline_name=PipelineNames.RandomForestPipeline,
                                             index=hyperparam_index,
-                                            nb_input_graphs=16,
+                                            nb_input_graphs=NB_INPUT_GRAPHS,
                                             node2vec_dimensions=node2vec_dimensions,
                                             node2vec_walk_length=node2vec_walk_length,
                                             node2vec_num_walks=node2vec_num_walks,
@@ -66,13 +71,13 @@ def main(params: ProgramParams):
                                             node2vec_window=node2vec_window,
                                             node2vec_batch_words=node2vec_batch_words,
                                             node2vec_workers=node2vec_workers,
-                                            random_forest_n_estimators=100,
-                                            random_forest_n_jobs=5,
+                                            random_forest_n_estimators=NB_RANDOM_FOREST_TREES,
+                                            random_forest_n_jobs=NB_RANDOM_FOREST_JOBS,
                                         )
                                         gcn_hyperparams = FirstGCNPipelineHyperparams(
                                             pipeline_name=PipelineNames.FirstGCNPipeline,
                                             index=hyperparam_index,
-                                            nb_input_graphs=16,
+                                            nb_input_graphs=NB_INPUT_GRAPHS,
                                             node2vec_dimensions=node2vec_dimensions,
                                             node2vec_walk_length=node2vec_walk_length,
                                             node2vec_num_walks=node2vec_num_walks,
@@ -81,11 +86,11 @@ def main(params: ProgramParams):
                                             node2vec_window=node2vec_window,
                                             node2vec_batch_words=node2vec_batch_words,
                                             node2vec_workers=node2vec_workers,
-                                            training_epochs=1,
+                                            training_epochs=TRAINING_EPOCHS,
                                         )
 
-                                        hyperparams_list.append(randforest_hyperparams)
-                                        #hyperparams_list.append(gcn_hyperparams)
+                                        #hyperparams_list.append(randforest_hyperparams)
+                                        hyperparams_list.append(gcn_hyperparams)
                                         hyperparam_index += 1
 
     # log the hyperparams
@@ -98,7 +103,7 @@ def main(params: ProgramParams):
     print("🚀 Running pipeline...")
 
     # Set the batch size
-    BATCH = 4
+    BATCH = 6
     print(">>> BATCH: {0}".format(BATCH))
 
     # Main code
