@@ -1,12 +1,12 @@
 from dataclasses import dataclass
 from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
-from graph_conv_net.data_loading.data_loading import dev_load_training_graphs
 from graph_conv_net.embedding.node_to_vec import generate_node2vec_graph_embedding
 from graph_conv_net.ml.evaluation import evaluate_metrics
+from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph
 from graph_conv_net.results.base_result_writer import BaseResultWriter
 from graph_conv_net.utils.utils import datetime_to_human_readable_str
-from graph_conv_net.pipelines.pipelines import PipelineNames, RandomForestPipeline, add_hyperparams_to_result_writer
+from graph_conv_net.pipelines.pipelines import RandomForestPipeline, add_hyperparams_to_result_writer
 from graph_conv_net.params.params import ProgramParams
 import numpy as np
 
@@ -23,7 +23,6 @@ def random_forest_pipeline(
     """
     A pipeline to test the Random Forest model.
     """
-    CURRENT_PIPELINE_NAME = PipelineNames.RandomForestPipeline
     
     add_hyperparams_to_result_writer(
         results_writer,
@@ -32,32 +31,12 @@ def random_forest_pipeline(
 
     # load data
     print(" 🔘 Loading data...")
-    print("Annotated graph from: {0}".format(params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH))
-
-    start = datetime.now()
-    
-    labelled_graphs = dev_load_training_graphs(
+    labelled_graphs = common_load_labelled_graph(
         params,
         hyperparams,
-        params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH
     )
     
-    end = datetime.now()
-    duration = end - start
-    duration_human_readable = datetime_to_human_readable_str(duration)
-    print("Loading data took: {0}".format(duration_human_readable))
-    print("type(labelled_graphs): {0}".format(type(labelled_graphs)))
-    print("type of a labelled_graphs element: {0}".format(type(labelled_graphs[0])))
-    print("len(labelled_graphs): {0}".format(len(labelled_graphs)))
-    
-    # filter out None values
-    labelled_graphs = [graph for graph in labelled_graphs if graph is not None]
-
-    # print a graph to see what it looks like
-    #t_graph = labelled_graphs[0]
-    #print("t_graph.nodes.data(): {0}".format(t_graph.nodes.data()))
-
-    # convert graphs to PyTorch Geometric data objects
+    # perform embedding of graph nodes
     start_total_embedding = datetime.now()
 
     all_samples_and_labels: list[SamplesAndLabels] = []
@@ -70,9 +49,9 @@ def random_forest_pipeline(
             params,
             labelled_graph,
             hyperparams,
+            add_node_semantic_embedding=params.ADD_SEMANTIC_EMBEDDING,
         )
-        print(f"embeddings len: {len(embeddings)} [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]".format())
-        #print("embeddings[0]: {0}".format(embeddings[0]))
+        print(f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}] embeddings len: {len(embeddings)}, features: {embeddings[0].shape}")
         
         # Node2Vec embeddings to numpy array
         samples = np.vstack(embeddings) # (2D array of float32)

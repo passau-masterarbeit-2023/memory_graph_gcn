@@ -10,13 +10,15 @@ Goal: ML for Key detection > We want to learn a model using a Graph Convolution 
 
 ```
 🏁 Program finished in 108429.44865 total sec (30h 07m 09s) -> Premiers calculs sur GCN 3 couches avec un grand nombre de paramètres différents, 5 epoachs, 32 graphs en Input.
+🏁 Program finished in 5259.934904 total sec (01h 27m 39s) -> Nouveaux calculs d'Hyperparamètres sur FirstGCN, avec 32 Graphs en Input.
+🏁 Program finished in 5041.974527 total sec (01h 24m 01s) -> testing new computations on Random Forest Pipeline.
 ```
 
 Les calculs sur 16 graphs seulement n'ont rien donnés, ni pour le Random Forest, ni pour le GCN. C'est la preuve que le nombre d'exemples est important. Plus important que l'imbalance ratio en tout cas pour le GCN, puisqu'on passe d'un ration de 151.86666666666667 pour 16 graphs en entrés, à 226.6 pour 32... mais que le deuxième ça donne des résultats bien supérieurs.
 
 ##### New graph generation with additional embedding
 
-Add a new pipeline in the Rust `mem2graph` code, such that:
+* [X] Add a new pipeline in the Rust `mem2graph` code, such that:
 
 ```plaintext
 digraph {
@@ -41,6 +43,8 @@ A->C
 C->B
 }
 ```
+
+* [ ] Integrate additional embedding into Python pipelines.
 
 ### Tue 17 Oct 2023
 

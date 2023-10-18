@@ -37,8 +37,7 @@ class BaseProgramParams(ABC):
     def __init__(
             self, 
             app_name: str,
-            load_program_argv : bool = True, 
-            debug : bool = False,
+            load_program_argv : bool = True,
             dotenv_path: str | None = None,
             **kwargs
     ):
@@ -57,23 +56,21 @@ class BaseProgramParams(ABC):
         :param app_name: the name of the application
         :param result_writer: the result writer class
         :param load_program_argv: whether to load program arguments from argv
-        :param debug: whether to run in debug mode
         :param dotenv_path: the path to the .env file
         """
         self.app_name = app_name
 
         self.__init_default_values()
-        
+        self.__load_env(dotenv_path)
 
         if load_program_argv:
             self.__parse_program_argv()
         else:
-            self.DEBUG = debug
             self.SAVE_RESULT_LOGS = False
+        
+        print(" 🚧 DEBUG: {0}".format(self.DEBUG))
 
-        self.__load_env(dotenv_path)
         self.__check_all_paths()
-
         self.__construct_log()
 
 # ---------------------- initialise the values ----------------------

@@ -1,18 +1,18 @@
-from dataclasses import dataclass
-import time
+from datetime import datetime
 import torch_geometric.data
 from torch_geometric.utils import from_networkx, convert
 from graph_conv_net.embedding.node_to_vec import generate_node2vec_graph_embedding
+from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph
 from graph_conv_net.results.base_result_writer import BaseResultWriter
+from graph_conv_net.utils.utils import datetime_to_human_readable_str
 import torch
 import numpy as np
 import torch.nn.functional as F
 
-from graph_conv_net.data_loading.data_loading import dev_load_training_graphs
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.ml.first_model import GNN
 from graph_conv_net.ml.evaluation import evaluate_metrics
-from graph_conv_net.pipelines.pipelines import FirstGCNPipelineHyperparams, PipelineNames, add_hyperparams_to_result_writer
+from graph_conv_net.pipelines.pipelines import FirstGCNPipelineHyperparams, add_hyperparams_to_result_writer
 
 def first_gcn_pipeline(
     params: ProgramParams,
@@ -27,31 +27,23 @@ def first_gcn_pipeline(
         results_writer,
         hyperparams,
     )
+    print(" ? additional semantic embedding {0}".format(params.ADD_SEMANTIC_EMBEDDING))
+    results_writer.set_result(
+        "additional_semantic_embedding",
+        str(params.ADD_SEMANTIC_EMBEDDING),
+    )
 
     # load data
-    print("Loading data...")
-    print("Annotated graph from: {0}".format(params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH))
-
-    start = time.time()
-    labelled_graphs = dev_load_training_graphs(
+    print(" 🔘 Loading data...")
+    labelled_graphs = common_load_labelled_graph(
         params,
         hyperparams,
-        params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH
     )
-    end = time.time()
-    print("Loading data took: {0} seconds".format(end - start))
-    print("type(datas): {0}".format(type(labelled_graphs)))
-    print("type of a data element: {0}".format(type(labelled_graphs[0])))
-    print("len(datas): {0}".format(len(labelled_graphs)))
     
-    # filter out None values
-    labelled_graphs = [graph for graph in labelled_graphs if graph is not None]
-
-    # print a graph to see what it looks like
-    #t_graph = labelled_graphs[0]
-    #print("t_graph.nodes.data(): {0}".format(t_graph.nodes.data()))
-
     # convert graphs to PyTorch Geometric data objects
+    start_total_embedding = datetime.now()
+    
+    print(" 🔘 Generating embeddings...")
     data_from_graphs = []
     for labelled_graph in labelled_graphs:
         
@@ -59,10 +51,10 @@ def first_gcn_pipeline(
         embeddings = generate_node2vec_graph_embedding(
             params,
             labelled_graph,
-            hyperparams
+            hyperparams,
+            add_node_semantic_embedding=params.ADD_SEMANTIC_EMBEDDING,
         )
-        print("embeddings len: {0}".format(len(embeddings)))
-        print("embeddings[0]: {0}".format(embeddings[0]))
+        print(f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}] embeddings len: {len(embeddings)}, features: {embeddings[0].shape}")
         
         # Convert the graph to a PyTorch Geometric data object
         data: torch_geometric.data.Data = from_networkx(labelled_graph)
@@ -75,7 +67,13 @@ def first_gcn_pipeline(
         data.y = torch.tensor([labelled_graph.nodes[node]['label'] for node in labelled_graph.nodes()], dtype=torch.float).unsqueeze(1) # type: ignore
         data_from_graphs.append(data)
     
+    end_total_embedding = datetime.now()
+    duration_total_embedding = end_total_embedding - start_total_embedding
+    duration_total_embedding_human_readable = datetime_to_human_readable_str(duration_total_embedding)
+    print("Generating ALL embeddings took: {0}".format(duration_total_embedding_human_readable))
+
     # split data into train and test sets
+    print(" 🔘 Splitting data into train and test sets...")
     PERCENTAGE_OF_DATA_FOR_TRAINING = 0.7
     train_data = data_from_graphs[:int(len(data_from_graphs) * PERCENTAGE_OF_DATA_FOR_TRAINING)]
     test_data = data_from_graphs[int(len(data_from_graphs) * PERCENTAGE_OF_DATA_FOR_TRAINING):]
@@ -97,6 +95,7 @@ def first_gcn_pipeline(
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
 
     # Training loop
+    print(" 🔘 Training...")
     model.train()
     epochs = hyperparams.training_epochs  # Replace with a sensible number of epochs
 
@@ -111,6 +110,7 @@ def first_gcn_pipeline(
             optimizer.step()
     
     # Evaluation of trained model
+    print(" 🔘 Evaluating...")
     model.eval()
     
     # Lists to store true labels and predictions for all test graphs

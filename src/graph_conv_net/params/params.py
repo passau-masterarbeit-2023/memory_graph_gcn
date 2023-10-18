@@ -26,11 +26,11 @@ class ProgramParams(BaseProgramParams):
     ANNOTATED_GRAPH_DOT_GV_DIR_PATH: str
     PICKLE_DATASET_DIR_PATH: str
     RESULT_SAVE_FILE_FORMAT: str
+    ADD_SEMANTIC_EMBEDDING: bool
 
     def __init__(
             self, 
-            load_program_argv : bool = True, 
-            debug : bool = False,
+            load_program_argv : bool = True,
             **kwargs
     ):
         # determine dotenv path
@@ -59,8 +59,7 @@ class ProgramParams(BaseProgramParams):
             app_name = self.app_name,
             pipeline_names_enum = PipelineNames,
             result_writer = ResultWriter,
-            load_program_argv = load_program_argv,
-            debug = debug, 
+            load_program_argv = load_program_argv, 
             dotenv_path = dotenv_path
         )
 
@@ -87,7 +86,12 @@ class ProgramParams(BaseProgramParams):
             self.MAX_ML_WORKERS = int(self.cli_args.args.max_ml_workers)
             assert isinstance(self.MAX_ML_WORKERS, int)
         
-        if self.cli_args.args.annotated_graph_dot_gv_dir_path is not None:
-            self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH = self.cli_args.args.annotated_graph_dot_gv_dir_path
+        if self.cli_args.args.dir_annotated_graph_dot_gv_path is not None:
+            self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH = self.cli_args.args.dir_annotated_graph_dot_gv_path
             assert isinstance(self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH, str)
         
+        if self.cli_args.args.embedding is not None:
+            self.ADD_SEMANTIC_EMBEDDING = self.cli_args.args.embedding
+            assert isinstance(self.ADD_SEMANTIC_EMBEDDING, bool)
+        else:
+            self.ADD_SEMANTIC_EMBEDDING = False
