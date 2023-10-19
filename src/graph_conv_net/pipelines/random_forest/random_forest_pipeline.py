@@ -1,14 +1,15 @@
 from dataclasses import dataclass
 from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
+from graph_conv_net.pipelines.hyperparams import RandomForestPipeline, add_hyperparams_to_result_writer
+import numpy as np
+
 from graph_conv_net.embedding.node_to_vec import generate_node_embedding
 from graph_conv_net.ml.evaluation import evaluate_metrics
 from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph
 from graph_conv_net.results.base_result_writer import BaseResultWriter
 from graph_conv_net.utils.utils import datetime_to_human_readable_str
-from graph_conv_net.pipelines.pipelines import RandomForestPipeline, add_hyperparams_to_result_writer
 from graph_conv_net.params.params import ProgramParams
-import numpy as np
 
 @dataclass(init=True, repr=True, eq=True, unsafe_hash=True, frozen=True)
 class SamplesAndLabels:
@@ -25,8 +26,9 @@ def random_forest_pipeline(
     """
     
     add_hyperparams_to_result_writer(
-        results_writer,
+        params,
         hyperparams,
+        results_writer,
     )
 
     # load data

@@ -3,7 +3,8 @@ import os
 import sys
 import argparse
 
-from graph_conv_net.pipelines.pipelines import NodeEmbeddingType, PipelineNames
+from graph_conv_net.embedding.node_to_vec_enums import NodeEmbeddingType
+from graph_conv_net.pipelines.pipelines import PipelineNames
 
 # wrapped program flags
 class CLIArguments:

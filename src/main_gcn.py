@@ -1,8 +1,10 @@
 from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime
+
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.gcn.first_gcn_pipeline import first_gcn_pipeline
-from graph_conv_net.pipelines.pipelines import FirstGCNPipelineHyperparams, PipelineNames, RandomForestPipeline
+from graph_conv_net.pipelines.hyperparams import FirstGCNPipelineHyperparams, RandomForestPipeline
+from graph_conv_net.pipelines.pipelines import PipelineNames
 from graph_conv_net.pipelines.random_forest.random_forest_pipeline import random_forest_pipeline
 from graph_conv_net.results.result_writer import ResultWriter
 from graph_conv_net.utils.utils import datetime_to_human_readable_str

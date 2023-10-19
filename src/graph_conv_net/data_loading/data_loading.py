@@ -8,7 +8,7 @@ import os
 from multiprocessing import Pool
 
 from graph_conv_net.params.params import ProgramParams
-from graph_conv_net.pipelines.pipelines import BaseHyperparams
+from graph_conv_net.pipelines.hyperparams import BaseHyperparams
 
 def graph_labelling(nx_graph: nx.Graph):
     """

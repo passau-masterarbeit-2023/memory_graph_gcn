@@ -1,10 +1,5 @@
 from datetime import datetime
 import torch_geometric.data
-from graph_conv_net.embedding.node_to_vec import generate_node_embedding
-from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph
-from graph_conv_net.results.base_result_writer import BaseResultWriter
-from graph_conv_net.utils.debugging import dp
-from graph_conv_net.utils.utils import datetime_to_human_readable_str
 import torch
 import numpy as np
 import torch.nn.functional as F
@@ -13,7 +8,12 @@ import networkx as nx
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.ml.first_model import GNN
 from graph_conv_net.ml.evaluation import evaluate_metrics
-from graph_conv_net.pipelines.pipelines import FirstGCNPipelineHyperparams, add_hyperparams_to_result_writer
+from graph_conv_net.embedding.node_to_vec import generate_node_embedding
+from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph
+from graph_conv_net.pipelines.hyperparams import FirstGCNPipelineHyperparams, add_hyperparams_to_result_writer
+from graph_conv_net.results.base_result_writer import BaseResultWriter
+from graph_conv_net.utils.debugging import dp
+from graph_conv_net.utils.utils import datetime_to_human_readable_str
 
 def first_gcn_pipeline(
     params: ProgramParams,
@@ -25,11 +25,12 @@ def first_gcn_pipeline(
     """
 
     add_hyperparams_to_result_writer(
-        results_writer,
+        params,
         hyperparams,
+        results_writer,
     )
-    node_embedding_types = [node_embedding_type.value for node_embedding_type in params.cli_args.args.node_embedding]
-    node_embedding_types_str = f"[{'-'.join(node_embedding_types)}]]"
+    node_embedding_types = [node_embedding_type for node_embedding_type in params.cli_args.args.node_embedding]
+    node_embedding_types_str = f"{'-'.join(node_embedding_types)}"
     results_writer.set_result(
         "node_embedding",
         node_embedding_types_str,

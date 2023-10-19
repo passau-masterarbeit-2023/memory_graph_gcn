@@ -1,7 +1,7 @@
 from datetime import datetime
 from graph_conv_net.data_loading.data_loading import dev_load_training_graphs
 from graph_conv_net.params.params import ProgramParams
-from graph_conv_net.pipelines.pipelines import BaseHyperparams
+from graph_conv_net.pipelines.hyperparams import BaseHyperparams
 from graph_conv_net.utils.utils import datetime_to_human_readable_str
 
 def common_load_labelled_graph(

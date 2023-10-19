@@ -1,6 +1,8 @@
 import os
 from copy import deepcopy
 
+from graph_conv_net.embedding.node_to_vec_enums import NodeEmbeddingType
+
 #from research_base.params.base_program_params import BaseProgramParams
 from .base_program_params import BaseProgramParams
 
@@ -88,3 +90,7 @@ class ProgramParams(BaseProgramParams):
         if self.cli_args.args.dir_annotated_graph_dot_gv_path is not None:
             self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH = self.cli_args.args.dir_annotated_graph_dot_gv_path
             assert isinstance(self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH, str)
+
+        self.USE_NODE2VEC_EMBEDDING = NodeEmbeddingType.Node2Vec.value in self.cli_args.args.node_embedding
+        self.USE_SEMANTIC_EMBEDDING = NodeEmbeddingType.Semantic.value in self.cli_args.args.node_embedding
+    
