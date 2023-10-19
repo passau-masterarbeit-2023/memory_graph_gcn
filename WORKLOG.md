@@ -4,6 +4,14 @@ Goal: ML for Key detection > We want to learn a model using a Graph Convolution 
 
 ## Logs
 
+### Thu 19 Oct 2023
+
+Trying to integrate correctly our Custom (CHN) Node Semantic Embedding into Python ML pipelines.
+
+```
+🏁 Program finished in 3948.596732 total sec (01h 05m 48s) -> Test on Node2Vec with semantic embedding for node embedding... with new manual Data creation. Bad results.
+```
+
 ### Wed 18 Oct 2023
 
 ##### hyperparams search
@@ -44,7 +52,7 @@ C->B
 }
 ```
 
-* [ ] Integrate additional embedding into Python pipelines.
+* [X] Integrate additional embedding into Python pipelines.
 
 ### Tue 17 Oct 2023
 

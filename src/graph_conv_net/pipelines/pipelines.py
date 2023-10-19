@@ -7,6 +7,10 @@ class PipelineNames(Enum):
     FirstGCNPipeline = "first-gcn-pipeline"
     RandomForestPipeline = "random-forest-pipeline"
 
+class NodeEmbeddingType(Enum):
+    Node2Vec = "node2vec"
+    Semantic = "semantic"
+
 @dataclass(init=True, repr=True, eq=True, unsafe_hash=True, frozen=True)
 class BaseHyperparams(object):
     index: int

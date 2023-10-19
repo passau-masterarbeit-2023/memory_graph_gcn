@@ -102,10 +102,9 @@ def main(params: ProgramParams):
     for i in range(len(hyperparams_list)):
         params.COMMON_LOGGER.info("Hyperparams [{0}]: {1}".format(i, hyperparams_list[i]))
 
-    params.nb_pipeline_runs = len(hyperparams_list)
-
     if not params.DEBUG:
         print("🚀 Running pipelines...")
+        params.nb_pipeline_runs = len(hyperparams_list)
 
         # Set the batch size
         BATCH = 6
@@ -123,6 +122,7 @@ def main(params: ProgramParams):
                 )
     else:
         print("🚧 Running in DEBUG mode, so not in parallel...")
+        params.nb_pipeline_runs = 1
         
         print("len(hyperparams_list): {0}".format(len(hyperparams_list)))
         first_hyperparams = hyperparams_list[0]

@@ -26,7 +26,6 @@ class ProgramParams(BaseProgramParams):
     ANNOTATED_GRAPH_DOT_GV_DIR_PATH: str
     PICKLE_DATASET_DIR_PATH: str
     RESULT_SAVE_FILE_FORMAT: str
-    ADD_SEMANTIC_EMBEDDING: bool
 
     def __init__(
             self, 
@@ -89,9 +88,3 @@ class ProgramParams(BaseProgramParams):
         if self.cli_args.args.dir_annotated_graph_dot_gv_path is not None:
             self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH = self.cli_args.args.dir_annotated_graph_dot_gv_path
             assert isinstance(self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH, str)
-        
-        if self.cli_args.args.embedding is not None:
-            self.ADD_SEMANTIC_EMBEDDING = self.cli_args.args.embedding
-            assert isinstance(self.ADD_SEMANTIC_EMBEDDING, bool)
-        else:
-            self.ADD_SEMANTIC_EMBEDDING = False

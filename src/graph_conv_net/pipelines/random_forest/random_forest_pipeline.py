@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
-from graph_conv_net.embedding.node_to_vec import generate_node2vec_graph_embedding
+from graph_conv_net.embedding.node_to_vec import generate_node_embedding
 from graph_conv_net.ml.evaluation import evaluate_metrics
 from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph
 from graph_conv_net.results.base_result_writer import BaseResultWriter
@@ -45,11 +45,10 @@ def random_forest_pipeline(
         start_embedding = datetime.now()
 
         # Generate Node2Vec embeddings
-        embeddings: list[np.ndarray[tuple[int], np.dtype[np.float32]]] = generate_node2vec_graph_embedding(
+        embeddings: list[np.ndarray[tuple[int], np.dtype[np.float32]]] = generate_node_embedding(
             params,
             labelled_graph,
             hyperparams,
-            add_node_semantic_embedding=params.ADD_SEMANTIC_EMBEDDING,
         )
         print(f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}] embeddings len: {len(embeddings)}, features: {embeddings[0].shape}")
         

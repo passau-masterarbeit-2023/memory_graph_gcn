@@ -1,6 +1,6 @@
 from datetime import datetime
 import torch_geometric.data
-from graph_conv_net.embedding.node_to_vec import generate_node2vec_graph_embedding
+from graph_conv_net.embedding.node_to_vec import generate_node_embedding
 from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph
 from graph_conv_net.results.base_result_writer import BaseResultWriter
 from graph_conv_net.utils.debugging import dp
@@ -9,6 +9,7 @@ import torch
 import numpy as np
 import torch.nn.functional as F
 import networkx as nx
+import json
 
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.ml.first_model import GNN
@@ -28,10 +29,11 @@ def first_gcn_pipeline(
         results_writer,
         hyperparams,
     )
-    print(" ? additional semantic embedding {0}".format(params.ADD_SEMANTIC_EMBEDDING))
     results_writer.set_result(
-        "additional_semantic_embedding",
-        str(params.ADD_SEMANTIC_EMBEDDING),
+        "node_embedding",
+        json.dumps(
+            params.cli_args.args.node_embedding,
+        ),
     )
 
     # load data
@@ -54,11 +56,10 @@ def first_gcn_pipeline(
         )
         
         # Generate Node2Vec embeddings
-        embeddings = generate_node2vec_graph_embedding(
+        embeddings = generate_node_embedding(
             params,
             labelled_graph,
             hyperparams,
-            add_node_semantic_embedding=params.ADD_SEMANTIC_EMBEDDING,
         )
         print(
             f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",

@@ -3,7 +3,7 @@ import os
 import sys
 import argparse
 
-from graph_conv_net.pipelines.pipelines import PipelineNames
+from graph_conv_net.pipelines.pipelines import NodeEmbeddingType, PipelineNames
 
 # wrapped program flags
 class CLIArguments:
@@ -58,18 +58,20 @@ class CLIArguments:
             help="load file containing annotated DOT graph"
         )
         parser.add_argument(
-            '-e',
-            '--embedding',
-            action='store_true',
-            help="Add additional node embedding to the GCN model. Note that the embedding must be provided in the 'comment' field of the DOT graph."
-        )
-        parser.add_argument(
             '-p',
             '--pipelines',
             type=str,
             nargs='+',  # this allows multiple values for this argument
             choices=[e.value for e in PipelineNames],  # limit choices to the Enum values
             help=f"List of pipeline names: {[e.value for e in PipelineNames]}"
+        )
+        parser.add_argument(
+            '-e',
+            '--node-embedding',
+            type=str,
+            nargs='+',
+            choices=[e.value for e in NodeEmbeddingType],
+            help=f"List of node embedding types: {[e.value for e in NodeEmbeddingType]}"
         )
 
         # save parsed arguments
@@ -93,6 +95,20 @@ class CLIArguments:
                     exit(1)
         else:
             print(" 🔴 No pipelines specified. Stopping...")
+            exit(1)
+        
+        # node embedding types
+        if self.args.node_embedding:
+            for node_embedding in self.args.node_embedding:
+                if node_embedding == NodeEmbeddingType.Node2Vec.value:
+                    print(" 🔷 Using Node2Vec node embedding")
+                elif node_embedding == NodeEmbeddingType.Semantic.value:
+                    print(" 🔷 Using Semantic node embedding")
+                else:
+                    print(f"Unknown node embedding type: {node_embedding}")
+                    exit(1)
+        else:
+            print(" 🔴 No node embedding types specified. Stopping...")
             exit(1)
 
         # log parsed arguments
