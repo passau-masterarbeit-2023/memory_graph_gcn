@@ -9,7 +9,6 @@ import torch
 import numpy as np
 import torch.nn.functional as F
 import networkx as nx
-import json
 
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.ml.first_model import GNN
@@ -29,11 +28,11 @@ def first_gcn_pipeline(
         results_writer,
         hyperparams,
     )
+    node_embedding_types = [node_embedding_type.value for node_embedding_type in params.cli_args.args.node_embedding]
+    node_embedding_types_str = f"[{'-'.join(node_embedding_types)}]]"
     results_writer.set_result(
         "node_embedding",
-        json.dumps(
-            params.cli_args.args.node_embedding,
-        ),
+        node_embedding_types_str,
     )
 
     # load data
@@ -117,6 +116,12 @@ def first_gcn_pipeline(
     num_classes = 2 # label 0 or 1
     print("num_features: {0}".format(num_features))
     print("num_classes: {0}".format(num_classes))
+
+    results_writer.set_result(
+        "nb_node_features",
+        str(num_features),
+    )
+    
     model = GNN(num_features, num_classes)  # Replace with your model class and appropriate input/output sizes
     
     # Define loss function and optimizer

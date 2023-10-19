@@ -12,8 +12,8 @@ def generate_node_embedding(
     graph: nx.Graph,
     hyperparams: Node2VecHyperparams,
 ):
-    USE_NODE2VEC_EMBEDDING = NodeEmbeddingType.Semantic.value in params.cli_args.args.node_embedding
-    USE_SEMANTIC_EMBEDDING = NodeEmbeddingType.Node2Vec.value in params.cli_args.args.node_embedding
+    USE_NODE2VEC_EMBEDDING = NodeEmbeddingType.Node2Vec.value in params.cli_args.args.node_embedding
+    USE_SEMANTIC_EMBEDDING = NodeEmbeddingType.Semantic.value in params.cli_args.args.node_embedding
     
     model = None
     if USE_NODE2VEC_EMBEDDING: 
