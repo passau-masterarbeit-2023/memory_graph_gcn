@@ -1,13 +1,14 @@
 from datetime import datetime
 import torch_geometric.data
-from torch_geometric.utils import from_networkx, convert
 from graph_conv_net.embedding.node_to_vec import generate_node2vec_graph_embedding
 from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph
 from graph_conv_net.results.base_result_writer import BaseResultWriter
+from graph_conv_net.utils.debugging import dp
 from graph_conv_net.utils.utils import datetime_to_human_readable_str
 import torch
 import numpy as np
 import torch.nn.functional as F
+import networkx as nx
 
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.ml.first_model import GNN
@@ -45,7 +46,12 @@ def first_gcn_pipeline(
     
     print(" 🔘 Generating embeddings...")
     data_from_graphs = []
-    for labelled_graph in labelled_graphs:
+    for i in range(len(labelled_graphs)):
+        labelled_graph = labelled_graphs[i]
+        dp(
+            "Graph contains: nb nodes: {0}".format(len(labelled_graph.nodes)), 
+            "nb edges: {0}".format(len(labelled_graph.edges))
+        )
         
         # Generate Node2Vec embeddings
         embeddings = generate_node2vec_graph_embedding(
@@ -54,17 +60,40 @@ def first_gcn_pipeline(
             hyperparams,
             add_node_semantic_embedding=params.ADD_SEMANTIC_EMBEDDING,
         )
-        print(f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}] embeddings len: {len(embeddings)}, features: {embeddings[0].shape}")
+        print(
+            f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
+            f"[graph: {i}/{len(labelled_graphs)}]]",
+            f"embeddings len: {len(embeddings)}, features: {embeddings[0].shape}",
+        )
         
-        # Convert the graph to a PyTorch Geometric data object
-        data: torch_geometric.data.Data = from_networkx(labelled_graph)
+        # Node features using custom Node2Vec based embeddings
+        node_feature_matrix = torch.tensor(np.vstack(embeddings), dtype=torch.float)
 
-        # Replace node features with Node2Vec embeddings
-        data.x = torch.tensor(embeddings, dtype=torch.float) # type: ignore
+        # Edge features using edge weights
+        labelled_graph = nx.convert_node_labels_to_integers(labelled_graph)
+        edge_features = []
+        for u, v, edge_data in list(labelled_graph.edges(data=True)):
+            edge_features.append(edge_data['weight'])
+        edge_feature_matrix = torch.tensor(edge_features, dtype=torch.float)
 
         # Prepare edge connectivity (from adjacency matrix or edge list)
-        data.edge_index = convert.from_networkx(labelled_graph).edge_index # type: ignore
-        data.y = torch.tensor([labelled_graph.nodes[node]['label'] for node in labelled_graph.nodes()], dtype=torch.float).unsqueeze(1) # type: ignore
+        edges = list(labelled_graph.edges)
+        dp("type(edges): {0}".format(type(edges)))
+        dp("len(edges): {0}".format(len(edges)))
+        dp("type(edges[0]): {0}".format(type(edges[0])))
+
+        edge_index = torch.tensor(edges, dtype=torch.long).t().contiguous()
+        graph_connectivity = edge_index.view(2, -1)
+        
+        node_labels = torch.tensor([labelled_graph.nodes[node]['label'] for node in labelled_graph.nodes()], dtype=torch.float).unsqueeze(1) 
+        
+        data = torch_geometric.data.Data(
+            x=node_feature_matrix,
+            edge_index=graph_connectivity,
+            edge_attr=edge_feature_matrix,
+            y=node_labels,
+        )
+        data.validate(raise_on_error=True)
         data_from_graphs.append(data)
     
     end_total_embedding = datetime.now()

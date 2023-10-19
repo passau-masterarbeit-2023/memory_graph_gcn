@@ -66,6 +66,20 @@ def load_annotated_graph(
     else:
         # load the graph from the .gv file
         try:
+            # with open(annotated_graph_dot_gv_file_path, "r") as f:
+            #     lines = f.readlines()
+
+            # # Remove lines that start with 'comment'
+            # lines = [line for line in lines if not line.lstrip().startswith('comment')]
+
+            # graph_str = ''.join(lines)
+
+            # import pygraphviz
+            # import networkx as nx
+
+            # A = pygraphviz.AGraph(string=graph_str)
+            # nx_graph = nx.DiGraph(A)
+
             nx_graph = nx.Graph(nx.nx_pydot.read_dot(annotated_graph_dot_gv_file_path))
         except Exception as e:
             print(f"Error reading {annotated_graph_dot_gv_file_path}: {e}")
@@ -112,7 +126,7 @@ def dev_load_training_graphs(
         annotated_graph_dot_gv_dir_path
     )
     print("Found " + str(len(annotated_graph_dot_gv_file_paths)) + " graphs inside " + annotated_graph_dot_gv_dir_path)
-    for i in range(0, (len(annotated_graph_dot_gv_file_paths) // 100)):
+    for i in range(0, (len(annotated_graph_dot_gv_file_paths) % 10)):
         print("path:", annotated_graph_dot_gv_file_paths[i])
 
     # for now, as a test, filter only "Training" graphs

@@ -1,4 +1,5 @@
 # direct raw access to params
+import os
 import sys
 import argparse
 
@@ -73,6 +74,12 @@ class CLIArguments:
 
         # save parsed arguments
         self.args = parser.parse_args()
+
+        # set os env var DEBUG to 0 or 1
+        if self.args.debug:
+            os.environ["DEBUG"] = "1"
+        else:
+            os.environ["DEBUG"] = "0"
 
         # pipelines to launch
         if self.args.pipelines:

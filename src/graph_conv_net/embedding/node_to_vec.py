@@ -46,6 +46,9 @@ def generate_node2vec_graph_embedding(
                 axis=None,
             )
             embeddings.append(node_embedding)
+
+            # remove 'comment' attribute from nodes, not supported by :from_networkx:
+            del graph.nodes[node]["comment"]
         else:
             embeddings.append(node_node2vec_embedding)
     
