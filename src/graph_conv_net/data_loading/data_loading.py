@@ -81,6 +81,9 @@ def load_annotated_graph(
             # nx_graph = nx.DiGraph(A)
 
             nx_graph = nx.Graph(nx.nx_pydot.read_dot(annotated_graph_dot_gv_file_path))
+        except ModuleNotFoundError as module_not_found_error:
+            print(f"Error reading {annotated_graph_dot_gv_file_path}: {module_not_found_error}")
+            exit(1)
         except Exception as e:
             print(f"Error reading {annotated_graph_dot_gv_file_path}: {e}")
             os.remove(annotated_graph_dot_gv_file_path)
