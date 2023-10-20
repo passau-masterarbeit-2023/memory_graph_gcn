@@ -6,6 +6,8 @@ from torch_geometric.utils import from_networkx
 import glob
 import os
 from multiprocessing import Pool
+from concurrent.futures import ProcessPoolExecutor, as_completed
+from tqdm import tqdm
 
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.hyperparams import BaseHyperparams
@@ -145,9 +147,36 @@ def dev_load_training_graphs(
     print("Loading " + str(len(annotated_graph_dot_gv_file_paths)) + " graphs...")
 
     # Parallelize the loading of the graphs into data objects
-    with Pool() as pool:
-        datas = pool.starmap(load_annotated_graph, [
-            (params, path) for path in annotated_graph_dot_gv_file_paths]
-        )
+    # with Pool() as pool:
+    #     datas = pool.starmap(load_annotated_graph, [
+    #         (params, path) for path in annotated_graph_dot_gv_file_paths]
+    #     )
+
+    datas = []
+    with ProcessPoolExecutor() as executor:
+        # Submit all tasks and keep their futures
+        futures = {
+            executor.submit(
+                load_annotated_graph, params, path
+            ): path for path in annotated_graph_dot_gv_file_paths
+        }
+        
+        # Create a TQDM progress bar
+        progress_bar = tqdm(total=len(futures), desc="Loading graphs", dynamic_ncols=True)
+
+        # Collect the results as they come in
+        for future in as_completed(futures):
+            path = futures[future]
+            try:
+                data = future.result()
+                datas.append(data)
+            except Exception as exc:
+                print(f'Generated an exception: {exc} with graph {path}')
+
+            # Update the progress bar
+            progress_bar.update(1)
+        
+        # Close the progress bar
+        progress_bar.close()
     
     return datas
