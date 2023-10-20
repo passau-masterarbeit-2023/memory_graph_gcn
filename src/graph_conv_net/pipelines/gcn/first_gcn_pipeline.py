@@ -128,7 +128,7 @@ def first_gcn_pipeline(
     # Training loop
     print(" 🔘 Training...")
     model.train()
-    epochs = hyperparams.training_epochs  # Replace with a sensible number of epochs
+    epochs = hyperparams.gcn_training_epochs  # Replace with a sensible number of epochs
 
     for _ in range(epochs):
         for data in train_data:

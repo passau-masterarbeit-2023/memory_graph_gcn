@@ -28,6 +28,9 @@ class ProgramParams(BaseProgramParams):
     ANNOTATED_GRAPH_DOT_GV_DIR_PATH: str
     PICKLE_DATASET_DIR_PATH: str
     RESULT_SAVE_FILE_FORMAT: str
+    HYPERPARAMS_JSON_FILE_PATH: str
+    NB_RANDOM_FOREST_JOBS: int
+    PARALLEL_PIPELINE_BATCH_SIZE: int
 
     def __init__(
             self, 
@@ -93,4 +96,3 @@ class ProgramParams(BaseProgramParams):
 
         self.USE_NODE2VEC_EMBEDDING = NodeEmbeddingType.Node2Vec.value in self.cli_args.args.node_embedding
         self.USE_SEMANTIC_EMBEDDING = NodeEmbeddingType.Semantic.value in self.cli_args.args.node_embedding
-    
