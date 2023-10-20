@@ -10,7 +10,8 @@ Trying to integrate correctly our Custom (CHN) Node Semantic Embedding into Pyth
 
 ```
 🏁 Program finished in 3948.596732 total sec (01h 05m 48s) -> Test on Node2Vec with semantic embedding for node embedding... with new manual Data creation. Bad results.
-🏁 Program finished in 6312.215446 total sec (01h 45m 12s) -> Test on Semantic node embedding only with GCN. Few results are interesting. 
+🏁 Program finished in 6312.215446 total sec (01h 45m 12s) -> Test on Semantic node embedding only with GCN. Few results are interesting.
+🏁 Program finished in 1009.283088 total sec (00h 16m 49s) -> Running GCN only with node semantic embedding.
 ```
 
 ### Wed 18 Oct 2023

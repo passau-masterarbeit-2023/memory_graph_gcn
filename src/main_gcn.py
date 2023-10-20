@@ -40,16 +40,17 @@ def main(params: ProgramParams):
 
     node2vec_dimensions_range = [128]
     node2vec_walk_length_range = [16, 32]
-    node2vec_num_walks_range = [50, 100]
+    node2vec_num_walks_range = [50]
     node2vec_p_range = [0.5, 1.0, 1.5]
     node2vec_q_range = [0.5, 1.0, 1.5]
     node2vec_window_range = [10]
     node2vec_batch_words_range = [8]
     node2vec_workers_range = [6]
 
-    TRAINING_EPOCHS = 5
-    NB_INPUT_GRAPHS = 32
-    NB_RANDOM_FOREST_TREES = 100
+    randomforest_trees_range = [100, 500, 1000]
+
+    TRAINING_EPOCHS = 20
+    NB_INPUT_GRAPHS = 600
     NB_RANDOM_FOREST_JOBS = 5
 
     hyperparam_index = 0
@@ -63,23 +64,24 @@ def main(params: ProgramParams):
                                 for node2vec_workers in node2vec_workers_range:
                                         
                                         if PipelineNames.RandomForestPipeline.value in params.cli_args.args.pipelines:
-                                            randforest_hyperparams = RandomForestPipeline(
-                                                pipeline_name=PipelineNames.RandomForestPipeline,
-                                                index=hyperparam_index,
-                                                nb_input_graphs=NB_INPUT_GRAPHS,
-                                                node2vec_dimensions=node2vec_dimensions,
-                                                node2vec_walk_length=node2vec_walk_length,
-                                                node2vec_num_walks=node2vec_num_walks,
-                                                node2vec_p=node2vec_p,
-                                                node2vec_q=node2vec_q,
-                                                node2vec_window=node2vec_window,
-                                                node2vec_batch_words=node2vec_batch_words,
-                                                node2vec_workers=node2vec_workers,
-                                                random_forest_n_estimators=NB_RANDOM_FOREST_TREES,
-                                                random_forest_n_jobs=NB_RANDOM_FOREST_JOBS,
-                                            )
-                                            hyperparams_list.append(randforest_hyperparams)
-                                            hyperparam_index += 1
+                                            for nb_trees in randomforest_trees_range:
+                                                randforest_hyperparams = RandomForestPipeline(
+                                                    pipeline_name=PipelineNames.RandomForestPipeline,
+                                                    index=hyperparam_index,
+                                                    nb_input_graphs=NB_INPUT_GRAPHS,
+                                                    node2vec_dimensions=node2vec_dimensions,
+                                                    node2vec_walk_length=node2vec_walk_length,
+                                                    node2vec_num_walks=node2vec_num_walks,
+                                                    node2vec_p=node2vec_p,
+                                                    node2vec_q=node2vec_q,
+                                                    node2vec_window=node2vec_window,
+                                                    node2vec_batch_words=node2vec_batch_words,
+                                                    node2vec_workers=node2vec_workers,
+                                                    random_forest_n_estimators=nb_trees,
+                                                    random_forest_n_jobs=NB_RANDOM_FOREST_JOBS,
+                                                )
+                                                hyperparams_list.append(randforest_hyperparams)
+                                                hyperparam_index += 1
 
                                         if PipelineNames.FirstGCNPipeline.value in params.cli_args.args.pipelines:
                                             gcn_hyperparams = FirstGCNPipelineHyperparams(
