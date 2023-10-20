@@ -38,14 +38,14 @@ def main(params: ProgramParams):
 
     hyperparams_list: list[RandomForestPipeline | FirstGCNPipelineHyperparams] = []
 
-    node2vec_dimensions_range = [128]
+    node2vec_dimensions_range = [128, 256]
     node2vec_walk_length_range = [16, 32]
-    node2vec_num_walks_range = [50]
+    node2vec_num_walks_range = [50, 100]
     node2vec_p_range = [0.5, 1.0, 1.5]
     node2vec_q_range = [0.5, 1.0, 1.5]
     node2vec_window_range = [10]
     node2vec_batch_words_range = [8]
-    node2vec_workers_range = [6]
+    node2vec_workers_range = [16]
 
     randomforest_trees_range = [100, 500, 1000]
 
@@ -108,7 +108,7 @@ def main(params: ProgramParams):
         params.nb_pipeline_runs = len(hyperparams_list)
 
         # Set the batch size
-        BATCH = 6
+        BATCH = 32
         print(">>> BATCH: {0}".format(BATCH))
 
         # Main code
