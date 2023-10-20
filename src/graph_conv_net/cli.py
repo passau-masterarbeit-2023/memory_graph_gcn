@@ -74,6 +74,13 @@ class CLIArguments:
             choices=[e.value for e in NodeEmbeddingType],
             help=f"List of node embedding types: {[e.value for e in NodeEmbeddingType]}"
         )
+        parser.add_argument(
+            '-n',
+            '--nb-input-graphs',
+            type=int,
+            default=None,
+            help="Number of input graphs to use. If None, use all available graphs."
+        )
 
         # save parsed arguments
         self.args = parser.parse_args()
@@ -111,6 +118,12 @@ class CLIArguments:
         else:
             print(" 🔴 No node embedding types specified. Stopping...")
             exit(1)
+
+        # nb input graphs
+        if self.args.nb_input_graphs:
+            print(f" 🔷 Using {self.args.nb_input_graphs} input graphs")
+        else:
+            print(" 🔷 Using all available input graphs")
 
         # log parsed arguments
         print("Parsed program params:")

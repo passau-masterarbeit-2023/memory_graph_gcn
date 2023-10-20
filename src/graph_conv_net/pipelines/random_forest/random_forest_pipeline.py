@@ -6,7 +6,7 @@ import numpy as np
 
 from graph_conv_net.embedding.node_to_vec import generate_node_embedding
 from graph_conv_net.ml.evaluation import evaluate_metrics
-from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph
+from graph_conv_net.pipelines.common.pipeline_common import common_init_result_writer_additional_results, common_load_labelled_graph
 from graph_conv_net.results.base_result_writer import BaseResultWriter
 from graph_conv_net.utils.utils import datetime_to_human_readable_str
 from graph_conv_net.params.params import ProgramParams
@@ -25,7 +25,7 @@ def random_forest_pipeline(
     A pipeline to test the Random Forest model.
     """
     
-    add_hyperparams_to_result_writer(
+    common_init_result_writer_additional_results(
         params,
         hyperparams,
         results_writer,
@@ -36,6 +36,7 @@ def random_forest_pipeline(
     labelled_graphs = common_load_labelled_graph(
         params,
         hyperparams,
+        results_writer,
     )
     
     # perform embedding of graph nodes

@@ -9,7 +9,7 @@ from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.ml.first_model import GNN
 from graph_conv_net.ml.evaluation import evaluate_metrics
 from graph_conv_net.embedding.node_to_vec import generate_node_embedding
-from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph
+from graph_conv_net.pipelines.common.pipeline_common import common_init_result_writer_additional_results, common_load_labelled_graph
 from graph_conv_net.pipelines.hyperparams import FirstGCNPipelineHyperparams, add_hyperparams_to_result_writer
 from graph_conv_net.results.base_result_writer import BaseResultWriter
 from graph_conv_net.utils.debugging import dp
@@ -24,16 +24,10 @@ def first_gcn_pipeline(
     A first pipeline to test the GCN model.
     """
 
-    add_hyperparams_to_result_writer(
+    common_init_result_writer_additional_results(
         params,
         hyperparams,
         results_writer,
-    )
-    node_embedding_types = [node_embedding_type for node_embedding_type in params.cli_args.args.node_embedding]
-    node_embedding_types_str = f"{'-'.join(node_embedding_types)}"
-    results_writer.set_result(
-        "node_embedding",
-        node_embedding_types_str,
     )
 
     # load data
@@ -41,6 +35,7 @@ def first_gcn_pipeline(
     labelled_graphs = common_load_labelled_graph(
         params,
         hyperparams,
+        results_writer,
     )
     
     # convert graphs to PyTorch Geometric data objects

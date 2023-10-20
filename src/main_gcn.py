@@ -50,7 +50,6 @@ def main(params: ProgramParams):
     randomforest_trees_range = [100, 500, 1000]
 
     TRAINING_EPOCHS = 20
-    NB_INPUT_GRAPHS = 600
     NB_RANDOM_FOREST_JOBS = 5
 
     hyperparam_index = 0
@@ -68,7 +67,6 @@ def main(params: ProgramParams):
                                                 randforest_hyperparams = RandomForestPipeline(
                                                     pipeline_name=PipelineNames.RandomForestPipeline,
                                                     index=hyperparam_index,
-                                                    nb_input_graphs=NB_INPUT_GRAPHS,
                                                     node2vec_dimensions=node2vec_dimensions,
                                                     node2vec_walk_length=node2vec_walk_length,
                                                     node2vec_num_walks=node2vec_num_walks,
@@ -87,7 +85,6 @@ def main(params: ProgramParams):
                                             gcn_hyperparams = FirstGCNPipelineHyperparams(
                                                 pipeline_name=PipelineNames.FirstGCNPipeline,
                                                 index=hyperparam_index,
-                                                nb_input_graphs=NB_INPUT_GRAPHS,
                                                 node2vec_dimensions=node2vec_dimensions,
                                                 node2vec_walk_length=node2vec_walk_length,
                                                 node2vec_num_walks=node2vec_num_walks,

@@ -125,7 +125,10 @@ def dev_load_training_graphs(
     annotated_graph_dot_gv_file_paths = find_gv_files(
         annotated_graph_dot_gv_dir_path
     )
-    print("Found " + str(len(annotated_graph_dot_gv_file_paths)) + " graphs inside " + annotated_graph_dot_gv_dir_path)
+    print("Found {} graphs inside {}".format(
+        str(len(annotated_graph_dot_gv_file_paths)),
+        annotated_graph_dot_gv_dir_path
+    ))
     for i in range(0, (len(annotated_graph_dot_gv_file_paths) % 10)):
         print("path:", annotated_graph_dot_gv_file_paths[i])
 
@@ -136,8 +139,9 @@ def dev_load_training_graphs(
     ]
 
     # for now, only load a certain number of graphs
-    if hyperparams.nb_input_graphs is not None:
-        annotated_graph_dot_gv_file_paths = annotated_graph_dot_gv_file_paths[:hyperparams.nb_input_graphs]
+    nb_requested_input_graphs = params.cli_args.args.nb_input_graphs
+    if nb_requested_input_graphs is not None:
+        annotated_graph_dot_gv_file_paths = annotated_graph_dot_gv_file_paths[:nb_requested_input_graphs]
     print("Loading " + str(len(annotated_graph_dot_gv_file_paths)) + " graphs...")
 
     # Parallelize the loading of the graphs into data objects

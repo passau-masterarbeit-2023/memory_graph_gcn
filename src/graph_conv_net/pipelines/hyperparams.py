@@ -9,7 +9,6 @@ from graph_conv_net.results.base_result_writer import BaseResultWriter
 class BaseHyperparams(object):
     index: int
     pipeline_name: PipelineNames
-    nb_input_graphs: int
 
 def add_hyperparams_to_result_writer(
     params: ProgramParams,
