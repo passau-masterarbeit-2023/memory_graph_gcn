@@ -2,11 +2,12 @@ from dataclasses import dataclass
 from itertools import product
 import json
 import os
-from graph_conv_net.embedding.node_to_vec_enums import determine_embeddings_used
+from graph_conv_net.embedding.node_to_vec_enums import NodeEmbeddingType
 
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.pipelines import PipelineNames
 from graph_conv_net.results.base_result_writer import BaseResultWriter
+from graph_conv_net.utils.utils import str2enum
 
 
 @dataclass(init=True, repr=True, eq=True, unsafe_hash=True, frozen=True)
@@ -14,7 +15,7 @@ class BaseHyperparams(object):
     index: int
     pipeline_name: PipelineNames
     input_mem2graph_dataset_dir_path: str
-    node_embedding: list[str]
+    node_embedding: NodeEmbeddingType
 
 def add_hyperparams_to_result_writer(
     params: ProgramParams,
@@ -29,10 +30,20 @@ def add_hyperparams_to_result_writer(
 
         if type(value) is PipelineNames:
             value = value.value
-        elif "node2vec" in field and not params.USE_NODE2VEC_EMBEDDING:
+        if type(value) is NodeEmbeddingType:
+            # this is a more complex case, because we want to replace "comment" by the real name of the embedding in the comment fields
+            value = value.to_string(
+                hyperparams.input_mem2graph_dataset_dir_path
+            )
+        elif "node2vec" in field and not hyperparams.node_embedding.is_using_node2vec():
             # hyperparams from Node2Vec are not used, replace them with None
             value = "None"
-        
+        elif "random_forest" in field and hyperparams.pipeline_name != PipelineNames.RandomForestPipeline:
+            # hyperparams from RandomForest are not used, replace them with None
+            value = "None"
+        elif "first_gcn" in field and hyperparams.pipeline_name != PipelineNames.FirstGCNPipeline:
+            value = "None"
+
         result_writer.set_result(
             field, 
             value,
@@ -56,7 +67,7 @@ class Node2VecHyperparams(BaseHyperparams):
 
 @dataclass(init=True, repr=True, eq=True, unsafe_hash=True, frozen=True)
 class FirstGCNPipelineHyperparams(Node2VecHyperparams):
-    gcn_training_epochs: int
+    first_gcn_training_epochs: int
 
 @dataclass(init=True, repr=True, eq=True, unsafe_hash=True, frozen=True)
 class RandomForestPipeline(Node2VecHyperparams):
@@ -142,7 +153,36 @@ def generate_hyperparams(
     json_hyperparams = load_hyperparams_from_json(
         params.HYPERPARAMS_JSON_FILE_PATH,
     )
+
+    # Determine which node embeddings
+    node_embedding_types: list[NodeEmbeddingType] = []
+    if params.cli.args.node_embedding is not None:
+        selected_node_embedding = str2enum(
+            params.cli.args.node_embedding,
+            NodeEmbeddingType,
+        )
+        assert type(selected_node_embedding) is NodeEmbeddingType, (
+            "ERROR: node embedding is not a NodeEmbeddingType: {0}".format(
+                type(selected_node_embedding)
+            )
+        )
+        node_embedding_types.append(
+            selected_node_embedding
+        )
+    else:
+        # Nothing specified, use all node embeddings
+        _all_embeddings = NodeEmbeddingType.get_list_of_embeddings()
+        print("len(_all_embeddings): {0}".format(len(_all_embeddings)))
+        node_embedding_types.extend(
+            _all_embeddings
+        )
+    assert len(node_embedding_types) > 0, (
+        "ERROR: no node embedding specified."
+    )
+    print("🔷 node_embedding_types: {0}".format(node_embedding_types))
+
     node2vec_params_product = product(
+        node_embedding_types,
         mem2graph_dataset_dir_paths,
         json_hyperparams["node2vec_dimensions_range"],
         json_hyperparams["node2vec_walk_length_range"],
@@ -164,6 +204,7 @@ def generate_hyperparams(
     # Iterate through the Cartesian product
     for node2vec_params in node2vec_params_product:
         (
+            node_embedding,
             input_mem2graph_dataset_dir_path,
             node2vec_dimensions,
             node2vec_walk_length,
@@ -174,10 +215,6 @@ def generate_hyperparams(
             node2vec_batch_words,
             node2vec_workers
         ) = node2vec_params
-        
-        declared_embeddings_used = determine_embeddings_used(
-            params.cli.args, input_mem2graph_dataset_dir_path
-        )
 
         if PipelineNames.RandomForestPipeline.value in params.cli.args.pipelines:
             for nb_trees in randomforest_trees_range:
@@ -185,7 +222,7 @@ def generate_hyperparams(
                     index=hyperparam_index,
                     pipeline_name=PipelineNames.RandomForestPipeline,
                     input_mem2graph_dataset_dir_path=input_mem2graph_dataset_dir_path,
-                    node_embedding=declared_embeddings_used,
+                    node_embedding=node_embedding,
                     node2vec_dimensions=node2vec_dimensions,
                     node2vec_walk_length=node2vec_walk_length,
                     node2vec_num_walks=node2vec_num_walks,
@@ -206,7 +243,7 @@ def generate_hyperparams(
                     index=hyperparam_index,
                     pipeline_name=PipelineNames.FirstGCNPipeline,
                     input_mem2graph_dataset_dir_path=input_mem2graph_dataset_dir_path,
-                    node_embedding=declared_embeddings_used,
+                    node_embedding=node_embedding,
                     node2vec_dimensions=node2vec_dimensions,
                     node2vec_walk_length=node2vec_walk_length,
                     node2vec_num_walks=node2vec_num_walks,
@@ -215,7 +252,7 @@ def generate_hyperparams(
                     node2vec_window=node2vec_window,
                     node2vec_batch_words=node2vec_batch_words,
                     node2vec_workers=node2vec_workers,
-                    gcn_training_epochs=gcn_training_epochs,
+                    first_gcn_training_epochs=gcn_training_epochs,
                 )
                 hyperparams_list.append(gcn_hyperparams)
                 hyperparam_index += 1

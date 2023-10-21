@@ -15,12 +15,17 @@ def str2bool(string: str) -> bool:
     return json.loads(string.lower())
 
 T = TypeVar('T', bound=Enum)
-
 def str2enum(s: str, enum_cls: Type[T]) -> T:
     """
     Convert a string to an enum member.
     """
-    return enum_cls[s.upper()]
+    enum_upper_to_key = {e.value.upper(): e for e in enum_cls}
+    print(f"enum_upper_to_key: {enum_upper_to_key}")
+
+    if s.upper() not in enum_upper_to_key.keys():
+        raise ValueError(f"Invalid value for enum {enum_cls}: {s}")
+    else:
+        return enum_upper_to_key[s.upper()]
 
 def datetime2str(datetime: datetime):
     """

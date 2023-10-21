@@ -11,9 +11,15 @@ def generate_node_embedding(
     graph: nx.Graph,
     hyperparams: Node2VecHyperparams,
 ):
-    
+    """
+    Generate node embedding for the graph.
+    Parse every node in the graph, and generate a node embedding.
+    """
+    use_node2vec_embedding = hyperparams.node_embedding.is_using_node2vec()
+    use_comment_embedding = hyperparams.node_embedding.is_using_custom_comment_embedding()
+
     model = None
-    if params.USE_NODE2VEC_EMBEDDING: 
+    if use_node2vec_embedding: 
         # Generate Node2Vec embeddings
         node2vec = Node2Vec(
             graph, 
@@ -36,11 +42,11 @@ def generate_node_embedding(
         node_node2vec_embedding = None
         node_comment_embedding = None
         
-        if params.USE_NODE2VEC_EMBEDDING:
+        if use_node2vec_embedding:
             assert model is not None
             node_node2vec_embedding = model.wv[str(node)]
 
-        if params.USE_COMMENT_EMBEDDING:
+        if use_comment_embedding:
             assert data["comment"] is not None
             # additional semantic embedding
             additional_node_comment_embedding: list[int | float] = json.loads(data["comment"].replace("\"", ""))

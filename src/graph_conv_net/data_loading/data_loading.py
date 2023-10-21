@@ -8,7 +8,7 @@ import os
 from multiprocessing import Pool
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
-from graph_conv_net.embedding.node_to_vec_enums import check_custom_comment_embeddings_used
+from graph_conv_net.embedding.node_to_vec_enums import check_comment_embedding_coherence
 
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.hyperparams import BaseHyperparams
@@ -86,8 +86,8 @@ def load_annotated_graph(
 
             nx_graph = nx.Graph(nx.nx_pydot.read_dot(annotated_graph_dot_gv_file_path))
 
-            check_custom_comment_embeddings_used(
-                hyperparams.node_embedding,
+            check_comment_embedding_coherence(
+                annotated_graph_dot_gv_file_path,
                 nx_graph,
             )
 

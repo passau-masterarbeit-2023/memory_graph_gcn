@@ -105,7 +105,4 @@ class ProgramParams(BaseProgramParams):
         if self.cli.args.parallel_batch_size is not None:
             self.PARALLEL_PIPELINE_BATCH_SIZE = self.cli.args.parallel_batch_size
             assert isinstance(self.PARALLEL_PIPELINE_BATCH_SIZE, int)
-
-        self.USE_NODE2VEC_EMBEDDING = NodeEmbeddingType.Node2Vec.value in self.cli.args.node_embedding
-        self.USE_COMMENT_EMBEDDING = NodeEmbeddingType.Comment.value in self.cli.args.node_embedding
         

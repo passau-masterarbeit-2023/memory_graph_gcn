@@ -68,9 +68,9 @@ class CLIArguments:
             '-e',
             '--node-embedding',
             type=str,
-            nargs='+',
+            default=None,
             choices=[e.value for e in NodeEmbeddingType],
-            help=f"List of node embedding types: {[e.value for e in NodeEmbeddingType]}. Custom comment embedding depends on the input Mem2Graph dataset."
+            help=f"Node embedding type: {[e.value for e in NodeEmbeddingType]}. Custom comment embedding depends on the input Mem2Graph dataset."
         )
         parser.add_argument(
             '-n',
@@ -117,18 +117,18 @@ class CLIArguments:
             exit(1)
         
         # node embedding types
-        if self.args.node_embedding:
-            for node_embedding in self.args.node_embedding:
-                if node_embedding == NodeEmbeddingType.Node2Vec.value:
-                    print("🔷 Using Node2Vec node embedding")
-                elif node_embedding == NodeEmbeddingType.Comment.value:
-                    print("🔷 Using custom node embedding stored in comment fields of graph nodes.")
-                else:
-                    print(f"Unknown node embedding type: {node_embedding}")
-                    exit(1)
+        if self.args.node_embedding is not None:
+            if self.args.node_embedding == NodeEmbeddingType.Node2Vec.value:
+                print("🔷 Using Node2Vec node embedding")
+            elif self.args.node_embedding == NodeEmbeddingType.CustomCommentEmbedding.value:
+                print("🔷 Using custom node embedding stored in comment fields of graph nodes.")
+            elif self.args.node_embedding == NodeEmbeddingType.Node2VecAndComment.value:
+                print("🔷 Using both Node2Vec and custom node embedding stored in comment fields of graph nodes.")
+            else:
+                print(f"Unknown node embedding type: {self.args.node_embedding}")
+                exit(1)
         else:
-            print("🔴 No node embedding types specified. Stopping...")
-            exit(1)
+            print("🔷 No node embedding types specified. Iterating over all available embeddings combinations.")
 
         # nb input graphs
         if self.args.nb_input_graphs:
