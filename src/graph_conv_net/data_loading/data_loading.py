@@ -8,6 +8,7 @@ import os
 from multiprocessing import Pool
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
+from graph_conv_net.embedding.node_to_vec_enums import check_custom_comment_embeddings_used
 
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.hyperparams import BaseHyperparams
@@ -46,6 +47,7 @@ def convert_graph_to_ml_data(nx_graph: nx.Graph):
 
 def load_annotated_graph(
     params: ProgramParams ,
+    hyperparams: BaseHyperparams,
     annotated_graph_dot_gv_file_path: str
 ):
     """
@@ -83,11 +85,20 @@ def load_annotated_graph(
             # nx_graph = nx.DiGraph(A)
 
             nx_graph = nx.Graph(nx.nx_pydot.read_dot(annotated_graph_dot_gv_file_path))
+
+            check_custom_comment_embeddings_used(
+                hyperparams.node_embedding,
+                nx_graph,
+            )
+
         except ModuleNotFoundError as module_not_found_error:
-            print(f"Error reading {annotated_graph_dot_gv_file_path}: {module_not_found_error}")
+            print(f" 󰮘 Error reading {annotated_graph_dot_gv_file_path}: {module_not_found_error}")
+            exit(1)
+        except AssertionError as assertion_error:
+            print(f" 󰮘 Error reading {annotated_graph_dot_gv_file_path}: {assertion_error}")
             exit(1)
         except Exception as e:
-            print(f"Error reading {annotated_graph_dot_gv_file_path}: {e}")
+            print(f" 󰮘 Error reading {annotated_graph_dot_gv_file_path}: {e}")
             os.remove(annotated_graph_dot_gv_file_path)
             print(f" 󰆴 -> Removed {annotated_graph_dot_gv_file_path}")
             return None
@@ -144,23 +155,17 @@ def dev_load_training_graphs(
     ]
 
     # for now, only load a certain number of graphs
-    nb_requested_input_graphs = params.cli_args.args.nb_input_graphs
+    nb_requested_input_graphs = params.cli.args.nb_input_graphs
     if nb_requested_input_graphs is not None:
         annotated_graph_dot_gv_file_paths = annotated_graph_dot_gv_file_paths[:nb_requested_input_graphs]
     print("Loading " + str(len(annotated_graph_dot_gv_file_paths)) + " graphs...")
-
-    # Parallelize the loading of the graphs into data objects
-    # with Pool() as pool:
-    #     datas = pool.starmap(load_annotated_graph, [
-    #         (params, path) for path in annotated_graph_dot_gv_file_paths]
-    #     )
 
     datas = []
     with ProcessPoolExecutor() as executor:
         # Submit all tasks and keep their futures
         futures = {
             executor.submit(
-                load_annotated_graph, params, path
+                load_annotated_graph, params, hyperparams, path
             ): path for path in annotated_graph_dot_gv_file_paths
         }
         

@@ -43,13 +43,15 @@ def main(params: ProgramParams):
     for i in range(len(hyperparams_list)):
         params.COMMON_LOGGER.info("Hyperparams [{0}]: {1}".format(i, hyperparams_list[i]))
 
-    if not params.DEBUG:
+    if params.DRY_RUN:
+        print("🔶 DRY_RUN mode, no compute instances will be launched...")
+    elif not params.DEBUG:
         print("🚀 Running pipelines...")
         params.nb_pipeline_runs = len(hyperparams_list)
 
         # Set the batch size
         batch = params.PARALLEL_PIPELINE_BATCH_SIZE
-        print(">>> BATCH: {0}".format(batch))
+        print("🔷 Parallel computing BATCH size: {0}".format(batch))
 
         # Main code
         with ProcessPoolExecutor(max_workers=batch) as executor:

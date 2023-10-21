@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from itertools import product
 import json
+import os
+from graph_conv_net.embedding.node_to_vec_enums import determine_embeddings_used
 
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.pipelines import PipelineNames
@@ -11,6 +13,8 @@ from graph_conv_net.results.base_result_writer import BaseResultWriter
 class BaseHyperparams(object):
     index: int
     pipeline_name: PipelineNames
+    input_mem2graph_dataset_dir_path: str
+    node_embedding: list[str]
 
 def add_hyperparams_to_result_writer(
     params: ProgramParams,
@@ -91,6 +95,36 @@ def load_hyperparams_from_json(
     
     return json_of_hyperparams
 
+def get_mem2graph_dataset_dir_paths(
+    params: ProgramParams,
+):
+    """
+    Determine the Mem2Graph dataset directory paths.
+    """
+    mem2graph_dataset_dir_paths = []
+    if params.cli.args.all_mem2graph_datasets:
+        # Using all Mem2Graph datasets
+        params.COMMON_LOGGER.info("🔷 Looking for Mem2Graph dataset directories in {0}...".format(
+            params.ALL_MEM2GRAPH_DATASET_DIR_PATH
+        ))
+
+        for dir_name in os.listdir(params.ALL_MEM2GRAPH_DATASET_DIR_PATH):
+            if ".gitignore" not in dir_name:
+                mem2graph_dataset_dir_paths.append(
+                    os.path.join(params.ALL_MEM2GRAPH_DATASET_DIR_PATH, dir_name)
+                )
+    else:
+        # Using default Mem2Graph dataset
+        mem2graph_dataset_dir_paths.append(
+            params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH
+        )
+
+    params.COMMON_LOGGER.info("🗃 Found {0} Mem2Graph dataset directories.".format(
+        str(len(mem2graph_dataset_dir_paths))
+    ))
+    
+    return mem2graph_dataset_dir_paths
+
 def generate_hyperparams(
     params: ProgramParams,
 ):
@@ -99,11 +133,17 @@ def generate_hyperparams(
     """
     hyperparams_list: list[RandomForestPipeline | FirstGCNPipelineHyperparams] = []
 
+    # get Mem2Graph dataset path list
+    mem2graph_dataset_dir_paths = get_mem2graph_dataset_dir_paths(
+        params,
+    )
+
     # Generate the Cartesian product for node2vec parameters
     json_hyperparams = load_hyperparams_from_json(
         params.HYPERPARAMS_JSON_FILE_PATH,
     )
     node2vec_params_product = product(
+        mem2graph_dataset_dir_paths,
         json_hyperparams["node2vec_dimensions_range"],
         json_hyperparams["node2vec_walk_length_range"],
         json_hyperparams["node2vec_num_walks_range"],
@@ -124,6 +164,7 @@ def generate_hyperparams(
     # Iterate through the Cartesian product
     for node2vec_params in node2vec_params_product:
         (
+            input_mem2graph_dataset_dir_path,
             node2vec_dimensions,
             node2vec_walk_length,
             node2vec_num_walks,
@@ -134,11 +175,17 @@ def generate_hyperparams(
             node2vec_workers
         ) = node2vec_params
         
-        if PipelineNames.RandomForestPipeline.value in params.cli_args.args.pipelines:
+        declared_embeddings_used = determine_embeddings_used(
+            params.cli.args, input_mem2graph_dataset_dir_path
+        )
+
+        if PipelineNames.RandomForestPipeline.value in params.cli.args.pipelines:
             for nb_trees in randomforest_trees_range:
                 randforest_hyperparams = RandomForestPipeline(
-                    pipeline_name=PipelineNames.RandomForestPipeline,
                     index=hyperparam_index,
+                    pipeline_name=PipelineNames.RandomForestPipeline,
+                    input_mem2graph_dataset_dir_path=input_mem2graph_dataset_dir_path,
+                    node_embedding=declared_embeddings_used,
                     node2vec_dimensions=node2vec_dimensions,
                     node2vec_walk_length=node2vec_walk_length,
                     node2vec_num_walks=node2vec_num_walks,
@@ -153,11 +200,13 @@ def generate_hyperparams(
                 hyperparams_list.append(randforest_hyperparams)
                 hyperparam_index += 1
 
-        if PipelineNames.FirstGCNPipeline.value in params.cli_args.args.pipelines:
+        if PipelineNames.FirstGCNPipeline.value in params.cli.args.pipelines:
             for gcn_training_epochs in gcn_training_epochs_range:
                 gcn_hyperparams = FirstGCNPipelineHyperparams(
-                    pipeline_name=PipelineNames.FirstGCNPipeline,
                     index=hyperparam_index,
+                    pipeline_name=PipelineNames.FirstGCNPipeline,
+                    input_mem2graph_dataset_dir_path=input_mem2graph_dataset_dir_path,
+                    node_embedding=declared_embeddings_used,
                     node2vec_dimensions=node2vec_dimensions,
                     node2vec_walk_length=node2vec_walk_length,
                     node2vec_num_walks=node2vec_num_walks,

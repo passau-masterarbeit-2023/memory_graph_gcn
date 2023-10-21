@@ -1,5 +1,6 @@
 from datetime import datetime
 from graph_conv_net.data_loading.data_loading import dev_load_training_graphs
+from graph_conv_net.embedding.node_to_vec_enums import NodeEmbeddingType
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.hyperparams import BaseHyperparams, add_hyperparams_to_result_writer
 from graph_conv_net.results.base_result_writer import BaseResultWriter
@@ -20,7 +21,7 @@ def common_load_labelled_graph(
     labelled_graphs = dev_load_training_graphs(
         params,
         hyperparams,
-        params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH
+        hyperparams.input_mem2graph_dataset_dir_path,
     )
     
     end = datetime.now()
@@ -58,10 +59,4 @@ def common_init_result_writer_additional_results(
         params,
         hyperparams,
         results_writer,
-    )
-    node_embedding_types = [node_embedding_type for node_embedding_type in params.cli_args.args.node_embedding]
-    node_embedding_types_str = f"{'-'.join(node_embedding_types)}"
-    results_writer.set_result(
-        "node_embedding",
-        node_embedding_types_str,
     )

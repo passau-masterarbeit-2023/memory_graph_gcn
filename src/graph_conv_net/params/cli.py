@@ -33,9 +33,15 @@ class CLIArguments:
         """
         parser = argparse.ArgumentParser(description='Program [ARGUMENTS]')
         parser.add_argument(
+            '-d',
             '--debug', 
             action='store_true',
             help="Run in debug mode."
+        )
+        parser.add_argument(
+            "--dry-run",
+            action="store_true",
+            help="Dry run. Do not launch compute instances."
         )
         parser.add_argument(
             '-w',
@@ -45,18 +51,10 @@ class CLIArguments:
             help="max ml workers (threads for ML threads pool, -1 for illimited)"
         )
         parser.add_argument(
-            '-fad',
             '--dir_annotated_graph_dot_gv_path', 
             type=str, 
             default=None,
             help="path to annotated DOT graph directory"
-        )
-        parser.add_argument(
-            '-fa',
-            '--file_annotated_graph_dot_gv_path',
-            type=str,
-            default=None,
-            help="load file containing annotated DOT graph"
         )
         parser.add_argument(
             '-p',
@@ -72,7 +70,7 @@ class CLIArguments:
             type=str,
             nargs='+',
             choices=[e.value for e in NodeEmbeddingType],
-            help=f"List of node embedding types: {[e.value for e in NodeEmbeddingType]}"
+            help=f"List of node embedding types: {[e.value for e in NodeEmbeddingType]}. Custom comment embedding depends on the input Mem2Graph dataset."
         )
         parser.add_argument(
             '-n',
@@ -80,6 +78,19 @@ class CLIArguments:
             type=int,
             default=None,
             help="Number of input graphs to use. If None, use all available graphs."
+        )
+        parser.add_argument(
+            '-a',
+            '--all-mem2graph-datasets',
+            action='store_true',
+            help="Use all Mem2Graph datasets. Uses env var ALL_MEM2GRAPH_DATASET_DIR_PATH which specifies where are the Mem2Graph-generated graphs."
+        )
+        parser.add_argument(
+            '-b',
+            '--parallel-batch-size',
+            type=int,
+            default=None,
+            help="Batch size for parallel processing of graphs."
         )
 
         # save parsed arguments
@@ -95,35 +106,39 @@ class CLIArguments:
         if self.args.pipelines:
             for pipeline in self.args.pipelines:
                 if pipeline == PipelineNames.FirstGCNPipeline.value:
-                    print(" 🔷 Launching First GCN Pipeline")
+                    print("🔷 Launching First GCN Pipeline")
                 elif pipeline == PipelineNames.RandomForestPipeline.value:
-                    print(" 🔷 Launching Random Forest Pipeline")
+                    print("🔷 Launching Random Forest Pipeline")
                 else:
                     print(f"Unknown pipeline: {pipeline}")
                     exit(1)
         else:
-            print(" 🔴 No pipelines specified. Stopping...")
+            print("🔴 No pipelines specified. Stopping...")
             exit(1)
         
         # node embedding types
         if self.args.node_embedding:
             for node_embedding in self.args.node_embedding:
                 if node_embedding == NodeEmbeddingType.Node2Vec.value:
-                    print(" 🔷 Using Node2Vec node embedding")
-                elif node_embedding == NodeEmbeddingType.Semantic.value:
-                    print(" 🔷 Using Semantic node embedding")
+                    print("🔷 Using Node2Vec node embedding")
+                elif node_embedding == NodeEmbeddingType.Comment.value:
+                    print("🔷 Using custom node embedding stored in comment fields of graph nodes.")
                 else:
                     print(f"Unknown node embedding type: {node_embedding}")
                     exit(1)
         else:
-            print(" 🔴 No node embedding types specified. Stopping...")
+            print("🔴 No node embedding types specified. Stopping...")
             exit(1)
 
         # nb input graphs
         if self.args.nb_input_graphs:
-            print(f" 🔷 Using {self.args.nb_input_graphs} input graphs")
+            print(f"🔷 Using {self.args.nb_input_graphs} input graphs")
         else:
-            print(" 🔷 Using all available input graphs")
+            print("🔷 Using all available input graphs")
+
+        # all Mem2Graph datasets
+        if self.args.all_mem2graph_datasets:
+            print("🔷 Using all Mem2Graph datasets to generate compute instances")
 
         # log parsed arguments
         print("Parsed program params:")

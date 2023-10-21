@@ -68,7 +68,7 @@ class BaseProgramParams(ABC):
         else:
             self.SAVE_RESULT_LOGS = False
         
-        print(" 🚧 DEBUG: {0}".format(self.DEBUG))
+        print("🚧 DEBUG: {0}".format(self.DEBUG))
 
         self.__check_all_paths()
         self.__construct_log()

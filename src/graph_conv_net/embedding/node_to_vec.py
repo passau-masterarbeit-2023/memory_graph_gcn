@@ -34,31 +34,31 @@ def generate_node_embedding(
     embeddings = []
     for node, data in graph.nodes(data=True):
         node_node2vec_embedding = None
-        node_semantic_embedding = None
+        node_comment_embedding = None
         
         if params.USE_NODE2VEC_EMBEDDING:
             assert model is not None
             node_node2vec_embedding = model.wv[str(node)]
 
-        if params.USE_SEMANTIC_EMBEDDING:
+        if params.USE_COMMENT_EMBEDDING:
             assert data["comment"] is not None
             # additional semantic embedding
-            additional_node_semantic_embedding: list[int | float] = json.loads(data["comment"].replace("\"", ""))
-            node_semantic_embedding = np.array(
-                additional_node_semantic_embedding, dtype=np.float32
+            additional_node_comment_embedding: list[int | float] = json.loads(data["comment"].replace("\"", ""))
+            node_comment_embedding = np.array(
+                additional_node_comment_embedding, dtype=np.float32
             )
 
         # save node embedding
-        if node_node2vec_embedding is not None and node_semantic_embedding is not None:
+        if node_node2vec_embedding is not None and node_comment_embedding is not None:
             node_embedding = np.concatenate(
-                (node_node2vec_embedding, node_semantic_embedding),
+                (node_node2vec_embedding, node_comment_embedding),
                 axis=None,
             )
             embeddings.append(node_embedding)
         elif node_node2vec_embedding is not None:
             embeddings.append(node_node2vec_embedding)
-        elif node_semantic_embedding is not None:
-            embeddings.append(node_semantic_embedding)
+        elif node_comment_embedding is not None:
+            embeddings.append(node_comment_embedding)
         else:
             raise Exception("No node embedding generated!")
     

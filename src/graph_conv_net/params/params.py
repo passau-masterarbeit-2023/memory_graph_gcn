@@ -9,13 +9,13 @@ from .base_program_params import BaseProgramParams
 from graph_conv_net.pipelines.pipelines import PipelineNames
 from graph_conv_net.results.result_writer import ResultWriter
 
-from ..cli import CLIArguments
+from .cli import CLIArguments
 
 class ProgramParams(BaseProgramParams):
     """
     Wrapper class for program parameters.
     """
-    cli_args: CLIArguments
+    cli: CLIArguments
     app_name : str = "GCN_ML"
 
     nb_pipeline_runs: int = 1
@@ -25,6 +25,8 @@ class ProgramParams(BaseProgramParams):
     # NOTE: lowercase values are from the CLI
 
     # ENV vars. WARN: Don't forget to add them to the .env file
+    DRY_RUN: bool
+    ALL_MEM2GRAPH_DATASET_DIR_PATH: str
     ANNOTATED_GRAPH_DOT_GV_DIR_PATH: str
     PICKLE_DATASET_DIR_PATH: str
     RESULT_SAVE_FILE_FORMAT: str
@@ -75,24 +77,35 @@ class ProgramParams(BaseProgramParams):
         """
         Load given program arguments.
         """
-        self.cli_args: CLIArguments = CLIArguments()
+        self.cli: CLIArguments = CLIArguments()
 
 
     def _consume_program_argv(self):
         """
         Consume given program arguments.
         """
-        if self.cli_args.args.debug is not None:
-            self.DEBUG = self.cli_args.args.debug
+        if self.cli.args.debug is not None:
+            self.DEBUG = self.cli.args.debug
             assert isinstance(self.DEBUG, bool)
 
-        if self.cli_args.args.max_ml_workers is not None:
-            self.MAX_ML_WORKERS = int(self.cli_args.args.max_ml_workers)
+        if self.cli.args.max_ml_workers is not None:
+            self.MAX_ML_WORKERS = int(self.cli.args.max_ml_workers)
             assert isinstance(self.MAX_ML_WORKERS, int)
         
-        if self.cli_args.args.dir_annotated_graph_dot_gv_path is not None:
-            self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH = self.cli_args.args.dir_annotated_graph_dot_gv_path
+        if self.cli.args.dir_annotated_graph_dot_gv_path is not None:
+            self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH = self.cli.args.dir_annotated_graph_dot_gv_path
             assert isinstance(self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH, str)
+        
+        if self.cli.args.dry_run is not None:
+            self.DRY_RUN = self.cli.args.dry_run
+            assert isinstance(self.DRY_RUN, bool)
+        else:
+                self.DRY_RUN = False
+        
+        if self.cli.args.parallel_batch_size is not None:
+            self.PARALLEL_PIPELINE_BATCH_SIZE = self.cli.args.parallel_batch_size
+            assert isinstance(self.PARALLEL_PIPELINE_BATCH_SIZE, int)
 
-        self.USE_NODE2VEC_EMBEDDING = NodeEmbeddingType.Node2Vec.value in self.cli_args.args.node_embedding
-        self.USE_SEMANTIC_EMBEDDING = NodeEmbeddingType.Semantic.value in self.cli_args.args.node_embedding
+        self.USE_NODE2VEC_EMBEDDING = NodeEmbeddingType.Node2Vec.value in self.cli.args.node_embedding
+        self.USE_COMMENT_EMBEDDING = NodeEmbeddingType.Comment.value in self.cli.args.node_embedding
+        

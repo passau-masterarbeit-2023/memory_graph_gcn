@@ -1,5 +1,5 @@
 {
-    "node2vec_dimensions_range": [128, 256],
+    "node2vec_dimensions_range": [128],
     "node2vec_walk_length_range": [16, 32],
     "node2vec_num_walks_range": [50, 100],
     "node2vec_p_range": [0.5, 1.0, 1.5],
