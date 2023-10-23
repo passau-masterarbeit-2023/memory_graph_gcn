@@ -45,10 +45,10 @@ def embedding_name_from_dir_path(
     Return the name of the embedding used in the given mem2graph dataset dir path.
     """
     match = re.search(
-        r'-c_([^_-]+)', input_mem2graph_dataset_dir_path
+        r'(?<=_-c_)\w+[-a-zA-Z+]*', input_mem2graph_dataset_dir_path
     )
     if match:
-        return match.group(1)
+        return match.group(0)
     else:
         print(
             "🚩 PANIC: embedding type not found in dir path. "
