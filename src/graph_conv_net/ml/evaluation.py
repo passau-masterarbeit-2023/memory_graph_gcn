@@ -91,8 +91,5 @@ def evaluate_metrics(
     # save results
     for metric_name, metric_value in metrics.items():
         result_writer.set_result(metric_name, str(metric_value))
-    result_writer.save_results_to_file(
-        str2enum(params.RESULT_SAVE_FILE_FORMAT, SaveFileFormat)
-    )
         
     return metrics

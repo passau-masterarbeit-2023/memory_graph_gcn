@@ -1,12 +1,15 @@
+from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.linear_model import LogisticRegression, SGDClassifier
 from graph_conv_net.pipelines.hyperparams import RandomForestPipeline, add_hyperparams_to_result_writer
+from graph_conv_net.pipelines.pipelines import ClassicMLSubpipelineNames
 import numpy as np
 
 from graph_conv_net.embedding.node_to_vec import generate_node_embedding
 from graph_conv_net.ml.evaluation import evaluate_metrics
-from graph_conv_net.pipelines.common.pipeline_common import common_init_result_writer_additional_results, common_load_labelled_graph
+from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph, common_pipeline_end
 from graph_conv_net.results.base_result_writer import BaseResultWriter
 from graph_conv_net.utils.utils import datetime_to_human_readable_str
 from graph_conv_net.params.params import ProgramParams
@@ -24,12 +27,6 @@ def random_forest_pipeline(
     """
     A pipeline to test the Random Forest model.
     """
-    
-    common_init_result_writer_additional_results(
-        params,
-        hyperparams,
-        results_writer,
-    )
 
     # load data
     print(" 🔘 Loading data...")
@@ -74,7 +71,8 @@ def random_forest_pipeline(
     duration_total_embedding = end_total_embedding - start_total_embedding
     duration_total_embedding_human_readable = datetime_to_human_readable_str(duration_total_embedding)
     print("Generating ALL embeddings took: {0}".format(duration_total_embedding_human_readable))
-    
+    results_writer.set_result("duration_embedding", duration_total_embedding_human_readable)
+
     # split data into train and test sets
     print(" 🔘 Splitting data into train and test sets...")
     PERCENTAGE_OF_DATA_FOR_TRAINING = 0.8
@@ -124,11 +122,81 @@ def random_forest_pipeline(
     print("X_test.shape: {0}".format(X_test.shape))
     print("y_test.shape: {0}".format(y_test.shape))
 
-    # Initialize Random Forest model
-    clf = RandomForestClassifier(
-        n_estimators=hyperparams.random_forest_n_estimators, 
-        random_state=params.RANDOM_SEED,
-        n_jobs=hyperparams.random_forest_n_jobs,
+    # train and test classical ML models
+    print(" 🔘 Training and testing classical ML models...")
+    train_and_eval_classical_ml(
+        params,
+        hyperparams,
+        deepcopy(results_writer),
+        RandomForestClassifier(
+            n_estimators=hyperparams.random_forest_n_estimators, 
+            random_state=params.RANDOM_SEED,
+            n_jobs=hyperparams.random_forest_n_jobs,
+        ),
+        X_train,
+        y_train,
+        X_test,
+        y_test,
+    )
+    train_and_eval_classical_ml(
+        params,
+        hyperparams,
+        deepcopy(results_writer),
+        SGDClassifier(random_state=42, n_jobs = params.MAX_ML_WORKERS),
+        X_train,
+        y_train,
+        X_test,
+        y_test,
+    )
+    train_and_eval_classical_ml(
+        params,
+        hyperparams,
+        deepcopy(results_writer),
+        LogisticRegression(n_jobs = params.MAX_ML_WORKERS),
+        X_train,
+        y_train,
+        X_test,
+        y_test,
+    )
+
+def train_and_eval_classical_ml(
+    params: ProgramParams,
+    hyperparams: RandomForestPipeline,
+    results_writer: BaseResultWriter,
+    clf: RandomForestClassifier | SGDClassifier | LogisticRegression,
+    X_train: np.ndarray,
+    y_train: np.ndarray,
+    X_test: np.ndarray,
+    y_test: np.ndarray,
+):
+    """
+    Train and evaluate a classical ML model.
+    """
+
+    start_time_train_test = datetime.now()
+
+    # subpipeline
+    subpipeline = None
+    if type(clf) == RandomForestClassifier:
+        subpipeline = ClassicMLSubpipelineNames.RandomForestPipeline
+    elif type(clf) == SGDClassifier:
+        subpipeline = ClassicMLSubpipelineNames.SGDClassifierPipeline
+    elif type(clf) == LogisticRegression:
+        subpipeline = ClassicMLSubpipelineNames.LogisticRegressionPipeline
+    else:
+        raise ValueError("ERROR: Unknown subpipeline: {0}".format(subpipeline))
+    
+    assert subpipeline is not None
+    results_writer.set_result(
+        "subpipeline_name",
+        subpipeline.value,
+    )
+
+    # Save the hyperparams to the results writer
+    add_hyperparams_to_result_writer(
+        params,
+        hyperparams,
+        results_writer,
     )
 
     # Training
@@ -140,10 +208,17 @@ def random_forest_pipeline(
 
     # Evaluation metrics
     print(" 🔘 Evaluating...")
-    metrics = evaluate_metrics(
+    _ = evaluate_metrics(
         y_test, 
         y_pred,
         results_writer,
         params,
     )
-    return metrics
+    
+    # conclude pipeline
+    common_pipeline_end(
+        params,
+        subpipeline,
+        start_time_train_test,
+        results_writer,
+    )

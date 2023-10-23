@@ -1,5 +1,11 @@
+from copy import deepcopy
 from datetime import datetime
 import torch_geometric.data
+from graph_conv_net.ml.advanced_gcn import AdvancedGCN
+from graph_conv_net.ml.gcn_with_dropout import ImprovedGNN
+from graph_conv_net.ml.simple_gcn import LessSimplifiedGNN
+from graph_conv_net.ml.very_simple_gcn import VerySimplifiedGNN
+from graph_conv_net.pipelines.pipelines import GCNSubpipelineNames
 import torch
 import numpy as np
 import torch.nn.functional as F
@@ -9,13 +15,13 @@ from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.ml.first_model import GNN
 from graph_conv_net.ml.evaluation import evaluate_metrics
 from graph_conv_net.embedding.node_to_vec import generate_node_embedding
-from graph_conv_net.pipelines.common.pipeline_common import common_init_result_writer_additional_results, common_load_labelled_graph
+from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph, common_pipeline_end
 from graph_conv_net.pipelines.hyperparams import FirstGCNPipelineHyperparams, add_hyperparams_to_result_writer
-from graph_conv_net.results.base_result_writer import BaseResultWriter
+from graph_conv_net.results.base_result_writer import BaseResultWriter, SaveFileFormat
 from graph_conv_net.utils.debugging import dp
-from graph_conv_net.utils.utils import datetime_to_human_readable_str
+from graph_conv_net.utils.utils import datetime_to_human_readable_str, str2enum
 
-def first_gcn_pipeline(
+def gcn_pipeline(
     params: ProgramParams,
     hyperparams: FirstGCNPipelineHyperparams,
     results_writer: BaseResultWriter,
@@ -23,12 +29,6 @@ def first_gcn_pipeline(
     """
     A first pipeline to test the GCN model.
     """
-
-    common_init_result_writer_additional_results(
-        params,
-        hyperparams,
-        results_writer,
-    )
 
     # load data
     print(" 🔘 Loading data...")
@@ -96,6 +96,7 @@ def first_gcn_pipeline(
     duration_total_embedding = end_total_embedding - start_total_embedding
     duration_total_embedding_human_readable = datetime_to_human_readable_str(duration_total_embedding)
     print("Generating ALL embeddings took: {0}".format(duration_total_embedding_human_readable))
+    results_writer.set_result("duration_embedding", duration_total_embedding_human_readable)
 
     # split data into train and test sets
     print(" 🔘 Splitting data into train and test sets...")
@@ -118,12 +119,99 @@ def first_gcn_pipeline(
         str(num_features),
     )
     
-    model = GNN(num_features, num_classes)  # Replace with your model class and appropriate input/output sizes
+    # train and evaluate models
+    print(" 🔘 Training and evaluating models...")
+
+    train_and_eval_gcn(
+        params = params,
+        hyperparams = hyperparams,
+        results_writer = deepcopy(results_writer),
+        model = VerySimplifiedGNN(num_features, num_classes),
+        train_data = deepcopy(train_data),
+        test_data = deepcopy(test_data),
+    )
+    train_and_eval_gcn(
+        params = params,
+        hyperparams = hyperparams,
+        results_writer = deepcopy(results_writer),
+        model = LessSimplifiedGNN(num_features, num_classes),
+        train_data = deepcopy(train_data),
+        test_data = deepcopy(test_data),
+    )
+    train_and_eval_gcn(
+        params = params,
+        hyperparams = hyperparams,
+        results_writer = deepcopy(results_writer),
+        model = GNN(num_features, num_classes),
+        train_data = deepcopy(train_data),
+        test_data = deepcopy(test_data),
+    )
+    train_and_eval_gcn(
+        params = params,
+        hyperparams = hyperparams,
+        results_writer = deepcopy(results_writer),
+        model = ImprovedGNN(num_features, num_classes),
+        train_data = deepcopy(train_data),
+        test_data = deepcopy(test_data),
+    )
+    train_and_eval_gcn(
+        params = params,
+        hyperparams = hyperparams,
+        results_writer = deepcopy(results_writer),
+        model = AdvancedGCN(num_features, num_classes),
+        train_data = deepcopy(train_data),
+        test_data = deepcopy(test_data),
+    )
     
+    
+
+def train_and_eval_gcn(
+        params: ProgramParams,
+        hyperparams: FirstGCNPipelineHyperparams,
+        results_writer: BaseResultWriter,
+        model: torch.nn.Module,
+        train_data: list[torch_geometric.data.Data],
+        test_data: list[torch_geometric.data.Data],
+):
+    """
+    Train and evaluate the GCN model.
+    """
+
+    start_time_train_test = datetime.now()
+
+    # Set the name of the subpipeline
+    subpipeline = None
+    if type(model) == VerySimplifiedGNN:
+        subpipeline = GCNSubpipelineNames.VerySimpleGCNPipeline
+    elif type(model) == LessSimplifiedGNN:
+        subpipeline = GCNSubpipelineNames.SimpleGCNPipeline
+    elif type(model) == GNN:
+        subpipeline = GCNSubpipelineNames.FirstGCNPipeline
+    elif type(model) == ImprovedGNN:
+        subpipeline = GCNSubpipelineNames.GCNWithDropoutPipeline
+    elif type(model) == AdvancedGCN:
+        subpipeline = GCNSubpipelineNames.AdvancedGCNPipeline
+    else:
+        raise Exception("Unknown model type: {0}".format(type(model)))
+
+    assert subpipeline is not None
+    results_writer.set_result(
+        "subpipeline_name",
+        subpipeline.value,
+    )
+
+    # Save the hyperparams to the results writer
+    add_hyperparams_to_result_writer(
+        params,
+        hyperparams,
+        results_writer,
+    )
+
     # Define loss function and optimizer
     pos_weight = torch.tensor([1.0, 50.0])  # Adjust the weight for the positive class
     criterion = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+
 
     # Training loop
     print(" 🔘 Training...")
@@ -161,10 +249,17 @@ def first_gcn_pipeline(
     all_pred_labels = np.array(all_pred_labels)
 
     # Compute the metrics
-    metrics = evaluate_metrics(
+    _ = evaluate_metrics(
         all_true_labels, 
         all_pred_labels,
         results_writer,
         params,
     )
-    return metrics
+
+    # conclude pipeline
+    common_pipeline_end(
+        params,
+        subpipeline,
+        start_time_train_test,
+        results_writer,
+    )

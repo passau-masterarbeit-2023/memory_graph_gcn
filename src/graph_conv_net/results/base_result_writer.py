@@ -12,6 +12,7 @@ class SaveFileFormat(Enum):
     CSV = "csv"
     JSON = "json"
     BOTH = "both"
+    FEATURE_CSV = "feature_csv"
 
 class BaseResultWriter(object):
     """
@@ -53,21 +54,21 @@ class BaseResultWriter(object):
             raise ValueError("ClassificationResultsWriter: Results already written")
         
         # add end time and duration
-        end_time = datetime.now()
-        self.set_result("end_time", end_time.strftime(DATETIME_FORMAT))
+        # end_time = datetime.now()
+        # self.set_result("end_time", end_time.strftime(DATETIME_FORMAT))
         
-        start_time_str = self.results["start_time"]
-        if start_time_str is None:
-            raise ValueError("ClassificationResultsWriter: start_time is None.")
+        # start_time_str = self.results["start_time"]
+        # if start_time_str is None:
+        #     raise ValueError("ClassificationResultsWriter: start_time is None.")
 
-        start_time = datetime.strptime(
-            start_time_str, DATETIME_FORMAT
-        )
-        duration = end_time - start_time
-        duration_hour_min_sec = datetime_to_human_readable_str(
-            duration
-        )
-        self.set_result("duration", duration_hour_min_sec)
+        # start_time = datetime.strptime(
+        #     start_time_str, DATETIME_FORMAT
+        # )
+        # duration = end_time - start_time
+        # duration_hour_min_sec = datetime_to_human_readable_str(
+        #     duration
+        # )
+        # self.set_result("duration", duration_hour_min_sec)
 
         # save results to file
         if save_file_format == SaveFileFormat.CSV:
@@ -77,21 +78,50 @@ class BaseResultWriter(object):
         elif save_file_format == SaveFileFormat.BOTH:
             self.__save_results_to_csv()
             self.__save_results_to_json()
+        elif save_file_format == SaveFileFormat.FEATURE_CSV:
+            self.__save_results_to_feature_csv()
         else:
             raise ValueError(f"Unknown save file format: {save_file_format}")
     
         self.__already_written_results = True
-        
-    def __save_results_to_csv(self) -> None:
+    
+    def __determine_save_file_path(self, extension: str) -> str:
         """
-        Write the results to the CSV file.
+        Determine the path of the save file.
         """
         pipeline_name = self.results["pipeline_name"]
+
+        subpipeline_name = self.results.get("subpipeline_name")
+        if subpipeline_name is None:
+            subpipeline_name = "unnamed-subpipeline"
+
         if self.results.get("pipeline_name") is None:
             pipeline_name = "unnamed-pipeline"
         assert pipeline_name is not None
 
-        csv_file_path = f"{self.save_dir_path}/{str(pipeline_name)}_all_results.csv"
+        save_file_path = f"{self.save_dir_path}/{str(pipeline_name)}_{str(subpipeline_name)}results.{extension}"
+        return save_file_path
+    
+    def __save_results_to_csv(self) -> None:
+        """
+        Write the results to the CSV file.
+        """
+        csv_file_path = self.__determine_save_file_path("csv")
+        file_exists = os.path.isfile(csv_file_path)
+        with open(csv_file_path, 'a', newline='') as f:
+            writer = csv.DictWriter(f, fieldnames=self.results.keys())
+            # write header only if file is empty or does not exist
+            if not file_exists or os.stat(csv_file_path).st_size == 0:
+                writer.writeheader()
+            writer.writerow(self.results)
+    
+    def __save_results_to_feature_csv(self) -> None:
+        """
+        Write the results to the CSV file.
+        """
+        save_dir_path = os.environ.get("RESULTS_LOGGER_DIR_PATH")
+        csv_file_path = f"{save_dir_path}/feature_evaluation_results.csv"
+
         file_exists = os.path.isfile(csv_file_path)
         with open(csv_file_path, 'a', newline='') as f:
             writer = csv.DictWriter(f, fieldnames=self.results.keys())

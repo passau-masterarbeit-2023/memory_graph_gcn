@@ -1,10 +1,11 @@
 from datetime import datetime
+from enum import Enum
 from graph_conv_net.data_loading.data_loading import dev_load_training_graphs
 from graph_conv_net.embedding.node_to_vec_enums import NodeEmbeddingType
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.hyperparams import BaseHyperparams, add_hyperparams_to_result_writer
-from graph_conv_net.results.base_result_writer import BaseResultWriter
-from graph_conv_net.utils.utils import datetime_to_human_readable_str
+from graph_conv_net.results.base_result_writer import BaseResultWriter, SaveFileFormat
+from graph_conv_net.utils.utils import datetime_to_human_readable_str, str2enum
 
 def common_load_labelled_graph(
     params: ProgramParams,
@@ -23,6 +24,7 @@ def common_load_labelled_graph(
         hyperparams,
         hyperparams.input_mem2graph_dataset_dir_path,
     )
+    assert len(labelled_graphs) > 0, "ERROR: No graph was actually loaded."
     
     end = datetime.now()
     duration = end - start
@@ -45,18 +47,31 @@ def common_load_labelled_graph(
     #print("t_graph.nodes.data(): {0}".format(t_graph.nodes.data()))
     return labelled_graphs
 
-def common_init_result_writer_additional_results(
+def common_pipeline_end(
     params: ProgramParams,
-    hyperparams: BaseHyperparams,
+    subpipeline: Enum,
+    start_time_train_test: datetime,
     results_writer: BaseResultWriter,
+    save_file_format: SaveFileFormat | None = None,
 ):
     """
-    Common initialization of the result writer,
-    with some additional results not specified
-    as hyperparameters.
+    A common pipeline end.
     """
-    add_hyperparams_to_result_writer(
-        params,
-        hyperparams,
-        results_writer,
-    )
+
+    # time
+    end_time_train_test = datetime.now()
+    duration_train_test = end_time_train_test - start_time_train_test
+    duration_train_test_human_readable = datetime_to_human_readable_str(duration_train_test)
+    print("Training and testing took: {0}, for subpipeline {1}".format(
+        duration_train_test_human_readable,
+        subpipeline.value,        
+    ))
+    results_writer.set_result("duration_train_test", duration_train_test_human_readable)
+
+    # save results
+    if save_file_format is not None:
+        results_writer.save_results_to_file(save_file_format)
+    else:
+        results_writer.save_results_to_file(
+            str2enum(params.RESULT_SAVE_FILE_FORMAT, SaveFileFormat)
+        )

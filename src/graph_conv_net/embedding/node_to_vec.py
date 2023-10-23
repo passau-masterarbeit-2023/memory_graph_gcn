@@ -3,13 +3,13 @@ import networkx as nx
 from node2vec import Node2Vec
 import numpy as np
 
-from graph_conv_net.pipelines.hyperparams import Node2VecHyperparams
+from graph_conv_net.pipelines.hyperparams import BaseHyperparams, Node2VecHyperparams
 from graph_conv_net.params.params import ProgramParams
 
 def generate_node_embedding(
     params: ProgramParams,
     graph: nx.Graph,
-    hyperparams: Node2VecHyperparams,
+    hyperparams: BaseHyperparams,
 ):
     """
     Generate node embedding for the graph.
@@ -20,6 +20,9 @@ def generate_node_embedding(
 
     model = None
     if use_node2vec_embedding: 
+        assert isinstance(hyperparams, Node2VecHyperparams), (
+            f"ERROR: Expected hyperparams to be of type Node2VecHyperparams, but got {type(hyperparams)}"
+        )
         # Generate Node2Vec embeddings
         node2vec = Node2Vec(
             graph, 

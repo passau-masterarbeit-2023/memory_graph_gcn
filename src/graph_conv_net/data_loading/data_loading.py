@@ -1,4 +1,5 @@
 import networkx as nx
+import pygraphviz
 import glob
 import os
 import pickle
@@ -8,7 +9,6 @@ import os
 from multiprocessing import Pool
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
-from graph_conv_net.embedding.node_to_vec_enums import check_comment_embedding_coherence
 
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.hyperparams import BaseHyperparams
@@ -70,36 +70,22 @@ def load_annotated_graph(
     else:
         # load the graph from the .gv file
         try:
-            # with open(annotated_graph_dot_gv_file_path, "r") as f:
-            #     lines = f.readlines()
-
-            # # Remove lines that start with 'comment'
-            # lines = [line for line in lines if not line.lstrip().startswith('comment')]
-
-            # graph_str = ''.join(lines)
-
-            # import pygraphviz
-            # import networkx as nx
-
-            # A = pygraphviz.AGraph(string=graph_str)
-            # nx_graph = nx.DiGraph(A)
-
+            # NOTE: The DOT file actually has a problem with the 'comment' attribute.
+            # A better solution would be to write a custom parser for the DOT file.
+            # Because replacing by '-' actually does really solve the issue.
+            # The comment is either considered a node, or removed...
             nx_graph = nx.Graph(nx.nx_pydot.read_dot(annotated_graph_dot_gv_file_path))
-
-            check_comment_embedding_coherence(
-                annotated_graph_dot_gv_file_path,
-                nx_graph,
-            )
+            # nx_graph = nx.Graph(nx.nx_agraph.read_dot(annotated_graph_dot_gv_file_path))
 
         except ModuleNotFoundError as module_not_found_error:
-            print(f" 󰮘 Error reading {annotated_graph_dot_gv_file_path}: {module_not_found_error}")
+            print(f" 󰮘 'ModuleNotFoundError' reading {annotated_graph_dot_gv_file_path}: {module_not_found_error}")
             exit(1)
         except AssertionError as assertion_error:
-            print(f" 󰮘 Error reading {annotated_graph_dot_gv_file_path}: {assertion_error}")
+            print(f" 󰮘 'AssertionError' reading {annotated_graph_dot_gv_file_path}: {assertion_error}")
             exit(1)
         except Exception as e:
-            print(f" 󰮘 Error reading {annotated_graph_dot_gv_file_path}: {e}")
-            os.remove(annotated_graph_dot_gv_file_path)
+            print(f" 󰮘 Error ('{type(e)}') reading {annotated_graph_dot_gv_file_path}: {e}")
+            #os.remove(annotated_graph_dot_gv_file_path)
             print(f" 󰆴 -> Removed {annotated_graph_dot_gv_file_path}")
             return None
         

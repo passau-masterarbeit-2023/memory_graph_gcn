@@ -41,7 +41,7 @@ def add_hyperparams_to_result_writer(
         elif "random_forest" in field and hyperparams.pipeline_name != PipelineNames.RandomForestPipeline:
             # hyperparams from RandomForest are not used, replace them with None
             value = "None"
-        elif "first_gcn" in field and hyperparams.pipeline_name != PipelineNames.FirstGCNPipeline:
+        elif "first_gcn" in field and hyperparams.pipeline_name != PipelineNames.GCNPipeline:
             value = "None"
 
         result_writer.set_result(
@@ -142,7 +142,6 @@ def generate_hyperparams(
     """
     Generate the hyperparameters.
     """
-    hyperparams_list: list[RandomForestPipeline | FirstGCNPipelineHyperparams] = []
 
     # get Mem2Graph dataset path list
     mem2graph_dataset_dir_paths = get_mem2graph_dataset_dir_paths(
@@ -198,7 +197,7 @@ def generate_hyperparams(
     gcn_training_epochs_range = json_hyperparams["gcn_training_epochs_range"]
 
     # Initialize hyperparams_list and hyperparam_index
-    hyperparams_list = []
+    hyperparams_list: list[RandomForestPipeline | FirstGCNPipelineHyperparams | BaseHyperparams] = []
     hyperparam_index = 0
 
     # Iterate through the Cartesian product
@@ -237,11 +236,11 @@ def generate_hyperparams(
                 hyperparams_list.append(randforest_hyperparams)
                 hyperparam_index += 1
 
-        if PipelineNames.FirstGCNPipeline.value in params.cli.args.pipelines:
+        if PipelineNames.GCNPipeline.value in params.cli.args.pipelines:
             for gcn_training_epochs in gcn_training_epochs_range:
                 gcn_hyperparams = FirstGCNPipelineHyperparams(
                     index=hyperparam_index,
-                    pipeline_name=PipelineNames.FirstGCNPipeline,
+                    pipeline_name=PipelineNames.GCNPipeline,
                     input_mem2graph_dataset_dir_path=input_mem2graph_dataset_dir_path,
                     node_embedding=node_embedding,
                     node2vec_dimensions=node2vec_dimensions,
@@ -256,5 +255,17 @@ def generate_hyperparams(
                 )
                 hyperparams_list.append(gcn_hyperparams)
                 hyperparam_index += 1
+    
+    # feature evaluation pipelines
+    for input_mem2graph_dataset_dir_path in mem2graph_dataset_dir_paths:
+        for node_embedding in node_embedding_types:
+            feature_eval_hyperparams = BaseHyperparams(
+                index=hyperparam_index,
+                pipeline_name=PipelineNames.FeatureEvaluationPipeline,
+                input_mem2graph_dataset_dir_path=input_mem2graph_dataset_dir_path,
+                node_embedding=node_embedding,
+            )
+            hyperparams_list.append(feature_eval_hyperparams)
+            hyperparam_index += 1
     
     return hyperparams_list

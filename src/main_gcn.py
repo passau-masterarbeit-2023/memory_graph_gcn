@@ -2,8 +2,9 @@ from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime
 
 from graph_conv_net.params.params import ProgramParams
-from graph_conv_net.pipelines.gcn.first_gcn_pipeline import first_gcn_pipeline
-from graph_conv_net.pipelines.hyperparams import FirstGCNPipelineHyperparams, RandomForestPipeline, generate_hyperparams
+from graph_conv_net.pipelines.feature_eval.feature_eval_pipeline import feature_evaluation_pipeline
+from graph_conv_net.pipelines.gcn.gcn_pipeline import gcn_pipeline
+from graph_conv_net.pipelines.hyperparams import BaseHyperparams, FirstGCNPipelineHyperparams, RandomForestPipeline, generate_hyperparams
 from graph_conv_net.pipelines.pipelines import PipelineNames
 from graph_conv_net.pipelines.random_forest.random_forest_pipeline import random_forest_pipeline
 from graph_conv_net.results.result_writer import ResultWriter
@@ -12,23 +13,28 @@ from graph_conv_net.utils.utils import datetime_to_human_readable_str
 def run_pipeline(
         i: int, 
         params: ProgramParams,
-        hyperparams: FirstGCNPipelineHyperparams | RandomForestPipeline
+        hyperparams: FirstGCNPipelineHyperparams | RandomForestPipeline | BaseHyperparams,
     ):
     params.RESULTS_LOGGER.info(f"Running pipeline [index:{i}] {hyperparams.pipeline_name}...")
     params.RESULTS_LOGGER.info(f"Current Hyperparams: {hyperparams}")
 
     result_writer = ResultWriter()
     
-    if hyperparams.pipeline_name == PipelineNames.FirstGCNPipeline:
+    if hyperparams.pipeline_name == PipelineNames.GCNPipeline:
         assert isinstance(hyperparams, FirstGCNPipelineHyperparams), (
             "ERROR: hyperparams is not of type FirstGCNPipelineHyperparams, but of type {0}".format(type(hyperparams))
         )
-        _ = first_gcn_pipeline(params,  hyperparams, result_writer)
+        gcn_pipeline(params,  hyperparams, result_writer)
     elif hyperparams.pipeline_name == PipelineNames.RandomForestPipeline:
         assert isinstance(hyperparams, RandomForestPipeline), (
             "ERROR: hyperparams is not of type RandomForestPipeline, but of type {0}".format(type(hyperparams))
         )
-        _ = random_forest_pipeline(params, hyperparams, result_writer)
+        random_forest_pipeline(params, hyperparams, result_writer)
+    elif hyperparams.pipeline_name == PipelineNames.FeatureEvaluationPipeline:
+        assert isinstance(hyperparams, BaseHyperparams), (
+            "ERROR: hyperparams is not of type BaseHyperparams, but of type {0}".format(type(hyperparams))
+        )
+        feature_evaluation_pipeline(params, hyperparams, result_writer)
     else:
         raise ValueError("ERROR: Unknown pipeline name: {0}".format(hyperparams.pipeline_name))
 
