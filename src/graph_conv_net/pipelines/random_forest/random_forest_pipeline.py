@@ -56,7 +56,7 @@ def random_forest_pipeline(
         samples = np.vstack(embeddings) # (2D array of float32)
 
         # labels from graph nodes 
-        labels_in_list = [labelled_graph.nodes[node]['label'] for node in labelled_graph.nodes]
+        labels_in_list = [labelled_graph.graph.nodes[node]['label'] for node in labelled_graph.graph.nodes]
         labels = np.array(labels_in_list, dtype=np.int32) # (1D array of int32)
         all_samples_and_labels.append(
             SamplesAndLabels(samples, labels)
@@ -93,6 +93,8 @@ def random_forest_pipeline(
         "Label and sample max lengths should be equal, but sample max length is {0} and label max length is {1}".format(max_length, max_label_length)
     )
 
+    # we need padding, since Random Forest requires all samples to have the same length
+    # This means that each 2D sample array will be padded with zeros to match the max length
     def pad_array(arr, max_length):
         pad_len = max_length - arr.shape[0]
         return np.pad(arr, [(0, pad_len), (0, 0)], mode='constant')

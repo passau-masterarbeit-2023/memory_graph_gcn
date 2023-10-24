@@ -46,8 +46,8 @@ def gcn_pipeline(
     for i in range(len(labelled_graphs)):
         labelled_graph = labelled_graphs[i]
         dp(
-            "Graph contains: nb nodes: {0}".format(len(labelled_graph.nodes)), 
-            "nb edges: {0}".format(len(labelled_graph.edges))
+            "Graph contains: nb nodes: {0}".format(len(labelled_graph.graph.nodes)), 
+            "nb edges: {0}".format(len(labelled_graph.graph.edges))
         )
         
         # Generate Node2Vec embeddings
@@ -66,7 +66,7 @@ def gcn_pipeline(
         node_feature_matrix = torch.tensor(np.vstack(embeddings), dtype=torch.float)
 
         # Edge features using edge weights
-        labelled_graph = nx.convert_node_labels_to_integers(labelled_graph)
+        labelled_graph = nx.convert_node_labels_to_integers(labelled_graph.graph)
         edge_features = []
         for u, v, edge_data in list(labelled_graph.edges(data=True)):
             edge_features.append(edge_data['weight'])

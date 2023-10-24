@@ -4,6 +4,12 @@ Goal: ML for Key detection > We want to learn a model using a Graph Convolution 
 
 ## Logs
 
+### Tue 24 Oct 2023
+
+Added sanity check script.
+
+Trying to fix the code, for feature engineering to work on the mem2graph dir datasets.
+
 ### Thu 19 Oct 2023
 
 Trying to integrate correctly our Custom (CHN) Node Semantic Embedding into Python ML pipelines.

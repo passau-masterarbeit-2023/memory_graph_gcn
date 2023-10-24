@@ -1,4 +1,6 @@
 import networkx as nx
+from graph_conv_net.data_loading.file_loading import find_gv_files
+from graph_conv_net.graph.memgraph import MemGraph, build_memgraph
 import pygraphviz
 import glob
 import os
@@ -46,8 +48,7 @@ def convert_graph_to_ml_data(nx_graph: nx.Graph):
     return from_networkx(nx_graph)
 
 def load_annotated_graph(
-    params: ProgramParams ,
-    hyperparams: BaseHyperparams,
+    pickle_dataset_dir_path: str,
     annotated_graph_dot_gv_file_path: str
 ):
     """
@@ -60,13 +61,15 @@ def load_annotated_graph(
     """    
     # load annotated graph
     file_name = os.path.basename(annotated_graph_dot_gv_file_path)
-    nx_graph_pickle_path = params.PICKLE_DATASET_DIR_PATH + "/" + file_name + ".pickle"
+    last_dir_folder_name = os.path.basename(os.path.dirname(annotated_graph_dot_gv_file_path))
+    memgraph_pickle_path = pickle_dataset_dir_path + "/" + last_dir_folder_name + "__" + file_name + ".pickle"
 
+    memgraph = None
     # Check if the save file exists
-    if os.path.exists(nx_graph_pickle_path):
+    if os.path.exists(memgraph_pickle_path):
         # Load the NetworkX graph from the save file
-        with open(nx_graph_pickle_path, 'rb') as file:
-            nx_graph = pickle.load(file)
+        with open(memgraph_pickle_path, 'rb') as file:
+            memgraph = pickle.load(file)
     else:
         # load the graph from the .gv file
         try:
@@ -100,20 +103,21 @@ def load_annotated_graph(
             
             nx.set_edge_attributes(nx_graph, {(u, v): weight}, 'weight')
         
-        # Save the NetworkX graph to a file using pickle
-        with open(nx_graph_pickle_path, 'wb') as file:
-            pickle.dump(nx_graph, file)
+        # build memgraph
+        memgraph = build_memgraph(
+            nx_graph,
+            annotated_graph_dot_gv_file_path,
+        )
 
-    return nx_graph
-
-def find_gv_files(directory_path):
-    # Create a pattern to match .gv files in all subdirectories
-    pattern = os.path.join(directory_path, '**', '*.gv')
+        # Save the memgraph to a pickle file
+        with open(memgraph_pickle_path, 'wb') as file:
+            pickle.dump(memgraph, file)
     
-    # Use glob.glob with the recursive pattern
-    gv_files = glob.glob(pattern, recursive=True)
-    
-    return gv_files
+    assert isinstance(memgraph, MemGraph), (
+        f"ERROR: memgraph should be of type MemGraph, but got {type(memgraph)}."
+        f"For GV file path: {annotated_graph_dot_gv_file_path}."
+    )
+    return memgraph
 
 def dev_load_training_graphs(
     params: ProgramParams,
@@ -146,12 +150,12 @@ def dev_load_training_graphs(
         annotated_graph_dot_gv_file_paths = annotated_graph_dot_gv_file_paths[:nb_requested_input_graphs]
     print("Loading " + str(len(annotated_graph_dot_gv_file_paths)) + " graphs...")
 
-    datas = []
+    memgraphs: list[MemGraph] = []
     with ProcessPoolExecutor() as executor:
         # Submit all tasks and keep their futures
         futures = {
             executor.submit(
-                load_annotated_graph, params, hyperparams, path
+                load_annotated_graph, params.PICKLE_DATASET_DIR_PATH, path
             ): path for path in annotated_graph_dot_gv_file_paths
         }
         
@@ -162,10 +166,11 @@ def dev_load_training_graphs(
         for future in as_completed(futures):
             path = futures[future]
             try:
-                data = future.result()
-                datas.append(data)
-            except Exception as exc:
-                print(f'Generated an exception: {exc} with graph {path}')
+                memgraph = future.result()
+                if memgraph:
+                    memgraphs.append(memgraph) # only append if not None
+            except Exception as err:
+                print(f'Generated an exception: {err} with graph {path}')
 
             # Update the progress bar
             progress_bar.update(1)
@@ -173,4 +178,4 @@ def dev_load_training_graphs(
         # Close the progress bar
         progress_bar.close()
     
-    return datas
+    return memgraphs

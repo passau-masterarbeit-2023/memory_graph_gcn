@@ -1,8 +1,12 @@
 import argparse
 from enum import Enum
+import os
 import re
 import networkx as nx
 import json
+from graph_conv_net.data_loading.file_loading import find_gv_files
+
+from graph_conv_net.utils.debugging import dp
 
 class NodeEmbeddingType(Enum):
     Node2Vec = "node2vec"
@@ -80,3 +84,64 @@ def get_graph_comment(
         comment_object = json.loads(comment_content)
         return comment_object
 
+def get_feature_names_from_comment(
+        input_mem2graph_dataset_dir_path: str,
+    ):
+    """
+    Get the feature names from the graph comment.
+    """
+
+    first_graph_file_path = os.path.join(
+        input_mem2graph_dataset_dir_path,
+        os.listdir(input_mem2graph_dataset_dir_path)[0],
+    )
+
+    comment_object = get_graph_comment(first_graph_file_path)
+    dp("first_graph comment object: {0}".format(json.dumps(comment_object)))
+
+    assert "embedding-fields" in comment_object.keys()
+    embeddings_fields: list[str] = comment_object["embedding-fields"]
+    assert isinstance(embeddings_fields, list)
+    assert isinstance(embeddings_fields[0], str) 
+    assert len(embeddings_fields) > 0
+
+    return embeddings_fields
+
+def check_embedding_feature_len_consistency(
+    input_mem2graph_dataset_dir_path: str,
+):
+    """
+    For every file in the input mem2graph dataset dir path,
+    check that the number of features in the graph comment is the same.
+    If not, do a comparison, and print the missing features.
+    """
+    # get all files in the folder
+    annotated_graph_dot_gv_file_paths = find_gv_files(
+        input_mem2graph_dataset_dir_path
+    )
+
+    list_of_feature_names = []
+    for gv_file_path in annotated_graph_dot_gv_file_paths:
+        comment_object = get_graph_comment(gv_file_path)
+        assert "embedding-fields" in comment_object.keys()
+        embeddings_fields: list[str] = comment_object["embedding-fields"]
+        assert isinstance(embeddings_fields, list)
+        assert isinstance(embeddings_fields[0], str) 
+        assert len(embeddings_fields) > 0
+        list_of_feature_names.append(embeddings_fields)
+    
+    # check that all lists of feature names are the same
+    for i in range(1, len(list_of_feature_names)):
+        assert list_of_feature_names[i] == list_of_feature_names[i-1], (
+            f"🚩 PANIC: feature names are not the same accross all graphs in the input mem2graph dataset dir path. "
+            f"Expected: {list_of_feature_names[i-1]}, but got: {list_of_feature_names[i]}"
+            f", difference is: {set(list_of_feature_names[i-1]) ^ set(list_of_feature_names[i])}"
+        )
+    
+    print(
+        f"✅ All graphs in the input mem2graph dataset dir path have the same feature names: {list_of_feature_names[0]}"
+        f", len: {len(list_of_feature_names[0])} "
+        f", for input dir: {input_mem2graph_dataset_dir_path}"
+        )
+    
+    return len(list_of_feature_names[0])

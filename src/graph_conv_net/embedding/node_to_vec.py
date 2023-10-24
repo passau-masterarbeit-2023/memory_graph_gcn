@@ -1,6 +1,8 @@
 import json
 import networkx as nx
 from node2vec import Node2Vec
+from graph_conv_net.graph.memgraph import MemGraph
+from graph_conv_net.utils.debugging import dp
 import numpy as np
 
 from graph_conv_net.pipelines.hyperparams import BaseHyperparams, Node2VecHyperparams
@@ -8,8 +10,9 @@ from graph_conv_net.params.params import ProgramParams
 
 def generate_node_embedding(
     params: ProgramParams,
-    graph: nx.Graph,
+    memgraph: MemGraph,
     hyperparams: BaseHyperparams,
+    custom_comment_embedding_length: int = 0,
 ):
     """
     Generate node embedding for the graph.
@@ -25,7 +28,7 @@ def generate_node_embedding(
         )
         # Generate Node2Vec embeddings
         node2vec = Node2Vec(
-            graph, 
+            memgraph.graph, 
             dimensions=hyperparams.node2vec_dimensions,
             walk_length=hyperparams.node2vec_walk_length,
             num_walks=hyperparams.node2vec_num_walks,
@@ -41,7 +44,7 @@ def generate_node_embedding(
         )
     
     embeddings = []
-    for node, data in graph.nodes(data=True):
+    for node, data in memgraph.graph.nodes(data=True):
         node_node2vec_embedding = None
         node_comment_embedding = None
         
@@ -51,8 +54,18 @@ def generate_node_embedding(
 
         if use_comment_embedding:
             assert data["comment"] is not None
+            # WARN: The statistical embedding can generate NaN values
+            # In that case, the embedding is not generated for this node (skipped node)
+            if "NaN" in data["comment"]:
+                dp(f"WARNING: NaN value in comment embedding for node {node}. Node embedding skipped.")
+                continue
+
             # additional semantic embedding
             additional_node_comment_embedding: list[int | float] = json.loads(data["comment"].replace("\"", ""))
+            assert(len(additional_node_comment_embedding) == custom_comment_embedding_length), (
+                f"ERROR: Expected comment embedding length to be {custom_comment_embedding_length}, but got {len(additional_node_comment_embedding)}, "
+                f"for node {node} with comment {data['comment']} "
+            )
             node_comment_embedding = np.array(
                 additional_node_comment_embedding, dtype=np.float32
             )
