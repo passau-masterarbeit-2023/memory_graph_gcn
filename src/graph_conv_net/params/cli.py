@@ -45,16 +45,17 @@ class CLIArguments:
         )
         parser.add_argument(
             '-w',
-            '--max_ml_workers', 
+            '--max-ml-workers', 
             type=int, 
             default=None,
             help="max ml workers (threads for ML threads pool, -1 for illimited)"
         )
         parser.add_argument(
-            '--dir_annotated_graph_dot_gv_path', 
+            '-i',
+            '--input-dir-path', 
             type=str, 
             default=None,
-            help="path to annotated DOT graph directory"
+            help="path to directory containing annotated DOT (.gv) graph directory"
         )
         parser.add_argument(
             '-p',

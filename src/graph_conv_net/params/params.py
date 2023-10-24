@@ -27,7 +27,6 @@ class ProgramParams(BaseProgramParams):
     # ENV vars. WARN: Don't forget to add them to the .env file
     DRY_RUN: bool
     ALL_MEM2GRAPH_DATASET_DIR_PATH: str
-    ANNOTATED_GRAPH_DOT_GV_DIR_PATH: str
     PICKLE_DATASET_DIR_PATH: str
     RESULT_SAVE_FILE_FORMAT: str
     HYPERPARAMS_JSON_FILE_PATH: str
@@ -84,6 +83,7 @@ class ProgramParams(BaseProgramParams):
         """
         Consume given program arguments.
         """
+        # NOTE: This is actually not needed, since the CLIArguments class already does this
         if self.cli.args.debug is not None:
             self.DEBUG = self.cli.args.debug
             assert isinstance(self.DEBUG, bool)
@@ -91,10 +91,6 @@ class ProgramParams(BaseProgramParams):
         if self.cli.args.max_ml_workers is not None:
             self.MAX_ML_WORKERS = int(self.cli.args.max_ml_workers)
             assert isinstance(self.MAX_ML_WORKERS, int)
-        
-        if self.cli.args.dir_annotated_graph_dot_gv_path is not None:
-            self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH = self.cli.args.dir_annotated_graph_dot_gv_path
-            assert isinstance(self.ANNOTATED_GRAPH_DOT_GV_DIR_PATH, str)
         
         if self.cli.args.dry_run is not None:
             self.DRY_RUN = self.cli.args.dry_run

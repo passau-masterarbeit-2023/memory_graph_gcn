@@ -42,6 +42,7 @@
         pythonPackages.pygraphviz
         pythonPackages.pydot # needed with networkx
         pythonPackages.networkx
+        pythonPackages.pillow
       ];
 
       postVenvCreation = ''

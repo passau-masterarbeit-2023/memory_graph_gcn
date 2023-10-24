@@ -75,7 +75,10 @@ def load_annotated_graph(
             with open(annotated_graph_dot_gv_file_path, "r") as f:
                 lines = f.readlines()
                 if not len(lines) >= 2:
-                    raise ValueError("🚩 ERROR: Expected at least 2 lines in file {annotated_graph_dot_gv_file_path}, but got {len(lines)}")
+                    raise ValueError(
+                        f"🚩 ERROR: Expected at least 2 lines in file {annotated_graph_dot_gv_file_path}, "
+                        f"but got {len(lines)} lines only."
+                    )
 
             # NOTE: The DOT file actually has a problem with the 'comment' attribute.
             # A better solution would be to write a custom parser for the DOT file.

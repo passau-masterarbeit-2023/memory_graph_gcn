@@ -15,7 +15,6 @@ def common_load_labelled_graph(
     """
     Load labelled graph from given path.
     """
-    print("Annotated graph from: {0}".format(params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH))
 
     start = datetime.now()
     

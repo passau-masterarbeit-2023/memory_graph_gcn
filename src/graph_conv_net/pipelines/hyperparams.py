@@ -124,11 +124,14 @@ def get_mem2graph_dataset_dir_paths(
                 mem2graph_dataset_dir_paths.append(
                     os.path.join(params.ALL_MEM2GRAPH_DATASET_DIR_PATH, dir_name)
                 )
-    else:
-        # Using default Mem2Graph dataset
+    elif params.cli.args.input_dir_path:
+        # Using input Mem2Graph dataset
         mem2graph_dataset_dir_paths.append(
-            params.ANNOTATED_GRAPH_DOT_GV_DIR_PATH
+            params.cli.args.input_dir_path
         )
+    else:
+        params.COMMON_LOGGER.error("🚩 PANIC: no Mem2Graph dataset directory path specified.")
+        exit(1)
 
     params.COMMON_LOGGER.info("🗃 Found {0} Mem2Graph dataset directories.".format(
         str(len(mem2graph_dataset_dir_paths))
