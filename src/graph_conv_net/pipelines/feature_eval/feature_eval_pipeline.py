@@ -1,24 +1,26 @@
 from copy import deepcopy
-import json
 import os
-from sklearn.preprocessing import StandardScaler
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from datetime import datetime
+from mpl_toolkits.axes_grid1 import make_axes_locatable
+
+# avoid error: RuntimeError: main thread is not in main loop
+import matplotlib
+matplotlib.use('Agg') # for running on server without display
+
 from graph_conv_net.embedding.node_to_vec import generate_node_embedding
-from graph_conv_net.embedding.node_to_vec_enums import check_embedding_feature_len_consistency, get_feature_names_from_comment, get_graph_comment
+from graph_conv_net.embedding.node_to_vec_enums import get_feature_names_from_comment
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph, common_pipeline_end
 from graph_conv_net.pipelines.hyperparams import BaseHyperparams, Node2VecHyperparams, add_hyperparams_to_result_writer
 from graph_conv_net.pipelines.pipelines import FeatureEvaluationSubpipelineNames
 from graph_conv_net.pipelines.random_forest.random_forest_pipeline import SamplesAndLabels
 from graph_conv_net.results.base_result_writer import BaseResultWriter, SaveFileFormat
-from graph_conv_net.utils.debugging import dp
 from graph_conv_net.utils.utils import datetime_to_human_readable_str
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-from datetime import datetime
-from enum import Enum
-import networkx as nx
+
 
 
 def __determine_feature_corr_matrix_save_file_path(
@@ -56,9 +58,7 @@ def feature_evaluation_pipeline(
         hyperparams,
         results_writer,
     )
-    custom_comment_embedding_len = check_embedding_feature_len_consistency(
-        hyperparams.input_mem2graph_dataset_dir_path
-    )
+    custom_comment_embedding_len = len(labelled_graphs[0].custom_embedding_fields)
 
     # get graph comment (for custom comment feature names)
     embeddings_fields = get_feature_names_from_comment(
@@ -104,30 +104,6 @@ def feature_evaluation_pipeline(
     print("Generating ALL embeddings took: {0}".format(duration_total_embedding_human_readable))
     results_writer.set_result("duration_embedding", duration_total_embedding_human_readable)
 
-    # # WARN: Some embeddings (the statistical embedding) is not always consistent in feature length
-    # # In that case, some 0-padding is necessary on the samples
-    # max_feature_length = max([samples_and_labels.samples.shape[1] for samples_and_labels in all_samples_and_labels])
-
-    # all_padded_samples = []
-    # for i in range(len(all_samples_and_labels)):
-    #     samples_and_labels = all_samples_and_labels[i]
-    #     sample_shape = samples_and_labels.samples.shape
-    #     if sample_shape[1] != max_feature_length:
-    #         # pad with zeros to have a consistent number of features
-    #         padding_shape = (sample_shape[0], max_feature_length - sample_shape[1])
-    #         padded_sample = np.hstack([samples_and_labels.samples, np.zeros(padding_shape)])
-    #         all_padded_samples.append(padded_sample)
-
-    #     else:
-    #         all_padded_samples.append(samples_and_labels.samples)
-    # assert len(all_padded_samples) == len(all_samples_and_labels)
-    # del all_samples_and_labels
-
-    # # check that all samples have same number of features
-    # assert len(set([padded_samples.shape[1] for padded_samples in all_padded_samples])) == 1, (
-    #     "ERROR: Not all samples have the same number of features."
-    # )
-
     nb_features = all_samples_and_labels[0].samples.shape[1]
     for i in range(len(all_samples_and_labels)):
         samples_and_labels = all_samples_and_labels[i]
@@ -139,7 +115,6 @@ def feature_evaluation_pipeline(
 
     # concat all samples
     samples = np.vstack([samples_and_labels.samples for samples_and_labels in all_samples_and_labels])
-    #samples = np.vstack([samples for samples in all_padded_samples])
 
     # get column names
     column_names = []
@@ -234,9 +209,12 @@ def _evaluate_features(
     # Print and visualize the correlation matrix
     print(f"Correlation matrix (algorithm: {correlation_algorithm}): \n{corr_matrix}")
 
-    plt.figure(figsize=(10, 10))
-    sns.heatmap(corr_matrix, annot=True, fmt=".2f", square=True, cmap='coolwarm')
-    plt.title(f"Feature Correlation Matrix (algorithm: {correlation_algorithm}) on {last_dir_component}")
+    plt.figure(figsize=(14, 12))
+
+    ax = sns.heatmap(corr_matrix, annot=True, fmt=".2f", square=True, cmap='coolwarm', annot_kws={"size": 8}, cbar=False)
+
+    # Adjust title position
+    plt.title(f"Feature Correlation Matrix (algorithm: {correlation_algorithm}) \non dir: {last_dir_component}")
 
     corr_matrix_save_path = __determine_feature_corr_matrix_save_file_path(
         last_dir_component, correlation_algorithm
@@ -246,6 +224,12 @@ def _evaluate_features(
         corr_matrix_save_path,
     )
 
+    # Adjust the colorbar size
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    plt.colorbar(ax.get_children()[0], cax=cax)
+
+    plt.tight_layout()
     plt.savefig(corr_matrix_save_path)
     plt.close()
 
@@ -255,11 +239,9 @@ def _evaluate_features(
 
     feature_column_names_sorted = (
         f"descending_best_column_names (algorithm: {correlation_algorithm}): {sorted_corr_sums.index.tolist()}"
-        #" ".join(sorted_corr_sums.index.tolist())
     )
     feature_column_values_sorted = (
         f"descending_best_column_values (algorithm: {correlation_algorithm}): {sorted_corr_sums.values.tolist()}"
-        #" ".join(map(str, sorted_corr_sums.values.tolist()))
     )
 
     params.RESULTS_LOGGER.info(

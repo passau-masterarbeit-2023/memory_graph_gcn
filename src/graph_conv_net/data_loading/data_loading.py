@@ -1,14 +1,10 @@
 import networkx as nx
 from graph_conv_net.data_loading.file_loading import find_gv_files
 from graph_conv_net.graph.memgraph import MemGraph, build_memgraph
-import pygraphviz
-import glob
 import os
 import pickle
 from torch_geometric.utils import from_networkx
-import glob
 import os
-from multiprocessing import Pool
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
 
@@ -59,10 +55,12 @@ def load_annotated_graph(
     Convert the graph to a PyTorch Geometric data object.
     Returns None if there was an error loading the graph.
     """    
+
+    # 0_graph_with_embedding_comments_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none__GraphWithEmbeddingComments_Training_Training_basic_V_6_8_P1_24_25634-1643890740-heap.raw_dot.gv.pickle
     # load annotated graph
     file_name = os.path.basename(annotated_graph_dot_gv_file_path)
     last_dir_folder_name = os.path.basename(os.path.dirname(annotated_graph_dot_gv_file_path))
-    memgraph_pickle_path = pickle_dataset_dir_path + "/" + last_dir_folder_name + "__" + file_name + ".pickle"
+    memgraph_pickle_path = pickle_dataset_dir_path + "/" + last_dir_folder_name[:2] + "__" + file_name + ".pickle"
 
     memgraph = None
     # Check if the save file exists
@@ -73,6 +71,12 @@ def load_annotated_graph(
     else:
         # load the graph from the .gv file
         try:
+            # check that the file contains at least 2 lines
+            with open(annotated_graph_dot_gv_file_path, "r") as f:
+                lines = f.readlines()
+                if not len(lines) >= 2:
+                    raise ValueError("🚩 ERROR: Expected at least 2 lines in file {annotated_graph_dot_gv_file_path}, but got {len(lines)}")
+
             # NOTE: The DOT file actually has a problem with the 'comment' attribute.
             # A better solution would be to write a custom parser for the DOT file.
             # Because replacing by '-' actually does really solve the issue.

@@ -5,14 +5,17 @@ and that each node has a comment attribute, whose length is equal to the number 
 provided in the graph top level comment.
 """
 
+from datetime import datetime
 import os
 from dotenv import load_dotenv
 
 from graph_conv_net.data_loading.data_loading import load_annotated_graph
 from graph_conv_net.data_loading.file_loading import find_gv_files, find_pickle_files
 from graph_conv_net.graph.memgraph import MemGraph
-from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
+
+from graph_conv_net.utils.utils import datetime_to_human_readable_str
 
 def load_env_file():
     """
@@ -69,41 +72,6 @@ def remove_pickled_cached_graphs():
     
     return nb_removed_cached_graphs
 
-# def load_and_check_graph_in_dir(
-#     dir_path: str,
-# ): 
-    
-#     gv_file_paths = find_gv_files(dir_path)
-#     memgraphs: list[MemGraph] = []
-
-#     # load memgraphs from gv files in dir
-#     PICKLE_DATASET_DIR_PATH = os.environ.get("PICKLE_DATASET_DIR_PATH")
-#     assert PICKLE_DATASET_DIR_PATH is not None, (
-#         "🚩 PANIC: PICKLE_DATASET_DIR_PATH is None. "
-#         "Please set it in the .env file."
-#     )
-#     for gv_file_path in gv_file_paths:
-#         memgraph = load_annotated_graph(
-#             PICKLE_DATASET_DIR_PATH,
-#             gv_file_path,
-#         )
-#         if memgraph is None:
-#             print("🔄 MemGraph from {0} is None, skipping...".format(gv_file_path))
-#             continue
-
-#         memgraphs.append(memgraph)
-    
-#     # check that the embedding length is consistent accross all graphs in the dir
-#     nb_feature_first = len(memgraphs[0].custom_embedding_fields)
-#     for memgraph in memgraphs:
-#         if len(memgraph.custom_embedding_fields) != nb_feature_first:
-#             raise ValueError("🚩 PANIC: embedding length is not consistent accross all graphs in the dir. "
-#                 f"Expected: {nb_feature_first}, but got: {memgraph.custom_embedding_fields}"
-#                 f", for graph: {memgraph.gv_file_path}"
-#             )
-
-#     return len(memgraphs)
-
 def load_graph(gv_file_path: str) -> MemGraph | None:
     PICKLE_DATASET_DIR_PATH = os.environ.get("PICKLE_DATASET_DIR_PATH")
     assert PICKLE_DATASET_DIR_PATH is not None, (
@@ -118,14 +86,6 @@ def load_graph(gv_file_path: str) -> MemGraph | None:
         print("🔄 MemGraph from {0} is None, skipping...".format(gv_file_path))
         return None
     return memgraph
-
-def check_embedding_length(memgraph: MemGraph, nb_feature_first: int) -> None:
-    if len(memgraph.custom_embedding_fields) != nb_feature_first:
-        raise ValueError(
-            "🚩 PANIC: embedding length is not consistent across all graphs in the dir. "
-            f"Expected: {nb_feature_first}, but got: {memgraph.custom_embedding_fields}"
-            f", for graph: {memgraph.gv_file_path}"
-        )
 
 def load_and_check_graph_in_dir(dir_path: str): 
     gv_file_paths = find_gv_files(dir_path)
@@ -218,5 +178,13 @@ def main():
 
 if __name__ == "__main__":
     print("🚀 Running program...")
+
+    start = datetime.now()
+
     load_env_file()
     main()
+
+    end = datetime.now()
+    duration = end - start
+    duration_human_readable = datetime_to_human_readable_str(duration)
+    print("🏁 Program took: {0}".format(duration_human_readable))
