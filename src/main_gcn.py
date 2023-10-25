@@ -44,8 +44,33 @@ def run_pipeline(
     except Exception as e:
         return (i, e, traceback.format_exc())  # Return the index, exception, and traceback
 
-    
+def display_pipeline_result_if_error(
+        start_time: datetime,
+        hyperparams_list: list[FirstGCNPipelineHyperparams | RandomForestPipeline | BaseHyperparams],
+        res: tuple[int, Exception, str]
+    ):
+    """
+    Display the pipeline result if there is an error.
+    In that case, exit the program.
+    """
 
+    idx, exception, tb = res
+    end_time: datetime = datetime.now()
+    duration = end_time - start_time
+    duration_hour_min_sec = datetime_to_human_readable_str(
+        duration
+    )
+    print(
+        f"❌ ERROR: in pipeline [index: {idx}], "
+        f"after {duration_hour_min_sec}, "
+        f"for pipeline {hyperparams_list[idx].pipeline_name}, "
+        f"with hyperparams {hyperparams_list[idx]}. \n"
+        f"Mem2Graph GV dataset dir: {hyperparams_list[idx].input_mem2graph_dataset_dir_path}. \n"
+        f"Exception: {exception} "
+    )
+    print(tb)
+    exit(1)
+    
 def main(params: ProgramParams):
 
     start_time = datetime.now()
@@ -89,21 +114,11 @@ def main(params: ProgramParams):
                 # Check for exceptions and print/log them
                 for future in futures:
                     if future:
-                        idx, exception, tb = future
-                        end_time: datetime = datetime.now()
-                        duration = end_time - start_time
-                        duration_hour_min_sec = datetime_to_human_readable_str(
-                            duration
+                        display_pipeline_result_if_error(
+                            start_time,
+                            hyperparams_list,
+                            future
                         )
-                        print(
-                            f"❌ ERROR: in pipeline [index: {idx}], "
-                            f"after {duration_hour_min_sec},"
-                            f"for pipeline {hyperparams_list[idx].pipeline_name}, "
-                            f"with hyperparams {hyperparams_list[idx]}. \n"
-                            f"Exception: {exception} "
-                        )
-                        print(tb)
-                        exit(1)
                     else:
                         print(f"✅ Pipeline ran successfully")
 
@@ -112,9 +127,16 @@ def main(params: ProgramParams):
         params.nb_pipeline_runs = 1
         
         print("len(hyperparams_list): {0}".format(len(hyperparams_list)))
-        first_hyperparams = hyperparams_list[0]
+        first_hyperparams = hyperparams_list[243]
+        assert first_hyperparams.index == 243
 
-        run_pipeline(0, params, first_hyperparams)
+        res = run_pipeline(0, params, first_hyperparams)
+        if res is not None:
+            display_pipeline_result_if_error(
+                start_time,
+                hyperparams_list,
+                res
+            )
     
     end_time = datetime.now()
     duration = end_time - start_time

@@ -12,7 +12,7 @@ def generate_node_embedding(
     params: ProgramParams,
     memgraph: MemGraph,
     hyperparams: BaseHyperparams,
-    custom_comment_embedding_length: int = 0,
+    custom_comment_embedding_length: int,
 ):
     """
     Generate node embedding for the graph.
@@ -53,18 +53,22 @@ def generate_node_embedding(
             node_node2vec_embedding = model.wv[str(node)]
 
         if use_comment_embedding:
-            assert data["comment"] is not None
+            node_comment: str | None = data["comment"]
+
+            assert node_comment is not None
             # WARN: The statistical embedding can generate NaN values
             # In that case, the embedding is not generated for this node (skipped node)
             if "NaN" in data["comment"]:
-                dp(f"WARNING: NaN value in comment embedding for node {node}. Node embedding skipped.")
-                continue
+                dp(f"WARNING: NaN value in comment embedding for node {node}. Replacing by 0.")
+                node_comment = node_comment.replace("NaN", "0")
+                
 
             # additional semantic embedding
-            additional_node_comment_embedding: list[int | float] = json.loads(data["comment"].replace("\"", ""))
+            additional_node_comment_embedding: list[int | float] = json.loads(node_comment.replace("\"", ""))
             assert(len(additional_node_comment_embedding) == custom_comment_embedding_length), (
                 f"ERROR: Expected comment embedding length to be {custom_comment_embedding_length}, but got {len(additional_node_comment_embedding)}, "
                 f"for node {node} with comment {data['comment']} "
+                f"for GV file path: {memgraph.gv_file_path}."
             )
             node_comment_embedding = np.array(
                 additional_node_comment_embedding, dtype=np.float32

@@ -37,6 +37,7 @@ def gcn_pipeline(
         hyperparams,
         results_writer,
     )
+    custom_comment_embedding_len = len(labelled_graphs[0].custom_embedding_fields)
     
     # convert graphs to PyTorch Geometric data objects
     start_total_embedding = datetime.now()
@@ -55,6 +56,7 @@ def gcn_pipeline(
             params,
             labelled_graph,
             hyperparams,
+            custom_comment_embedding_len,
         )
         print(
             f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",

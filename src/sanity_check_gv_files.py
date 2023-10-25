@@ -17,6 +17,49 @@ from tqdm import tqdm
 
 from graph_conv_net.utils.utils import datetime_to_human_readable_str
 
+# -------------------- CLI arguments -------------------- #
+import sys
+import argparse
+
+# wrapped program flags
+class CLIArguments:
+    args: argparse.Namespace
+
+    def __init__(self) -> None:
+        self.__log_raw_argv()
+        self.__parse_argv()
+    
+    def __log_raw_argv(self) -> None:
+        print("Passed program params:")
+        for i in range(len(sys.argv)):
+            print("param[{0}]: {1}".format(
+                i, sys.argv[i]
+            ))
+    
+    def __parse_argv(self) -> None:
+        """
+        python main [ARGUMENTS ...]
+        """
+        parser = argparse.ArgumentParser(description='Program [ARGUMENTS]')
+        # no delete old output files
+        parser.add_argument(
+            '-k',
+            '--keep-old-output',
+            action='store_true',
+            help="Keep old output files."
+        )
+
+        # save parsed arguments
+        self.args = parser.parse_args()
+
+        # log parsed arguments
+        print("Parsed program params:")
+        for arg in vars(self.args):
+            print("{0}: {1}".format(
+                arg, getattr(self.args, arg)
+            ))
+
+
 def load_env_file():
     """
     Load the environment variables from the .env file.
@@ -125,14 +168,8 @@ def load_and_check_graph_in_dir(dir_path: str):
         # Close the progress bar
         progress_bar.close()
 
-    # Check that the embedding length is consistent across all graphs in the dir in parallel
-    # nb_feature_first = len(memgraphs[0].custom_embedding_fields)
-    # with ThreadPoolExecutor() as executor:
-    #     list(tqdm(executor.map(check_embedding_length, memgraphs, [nb_feature_first]*len(memgraphs)), total=len(memgraphs), desc="Checking Embedding Length"))
-
-    print(" 🔘 Checking embedding length of graphs in {0}...".format(dir_path))
-
     # Check that the embedding length is consistent across all graphs in the dir
+    print(" 🔘 Checking embedding length of graphs in {0}...".format(dir_path))
     nb_feature_first = len(memgraphs[0].custom_embedding_fields)
 
     # Create a TQDM progress bar
@@ -150,10 +187,11 @@ def load_and_check_graph_in_dir(dir_path: str):
 
     return len(memgraphs), nb_skipped
         
-def main():
+def main(cli: CLIArguments):
     # remove all cached graphs
-    nb_removed_cached_graphs = remove_pickled_cached_graphs()
-    print(f"💥 Removed {nb_removed_cached_graphs} cached graphs from {os.environ.get('PICKLE_DATASET_DIR_PATH')}.")
+    if not cli.args.keep_old_output:
+        nb_removed_cached_graphs = remove_pickled_cached_graphs()
+        print(f"💥 Removed {nb_removed_cached_graphs} cached graphs from {os.environ.get('PICKLE_DATASET_DIR_PATH')}.")
     print("🔷 Now, performing data loading and sanity checks...")
 
     # get Mem2Graph dataset path list
@@ -181,8 +219,10 @@ if __name__ == "__main__":
 
     start = datetime.now()
 
+    cli = CLIArguments()
+
     load_env_file()
-    main()
+    main(cli)
 
     end = datetime.now()
     duration = end - start

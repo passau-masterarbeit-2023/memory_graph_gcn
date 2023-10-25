@@ -35,6 +35,7 @@ def random_forest_pipeline(
         hyperparams,
         results_writer,
     )
+    custom_comment_embedding_len = len(labelled_graphs[0].custom_embedding_fields)
     
     # perform embedding of graph nodes
     start_total_embedding = datetime.now()
@@ -49,6 +50,7 @@ def random_forest_pipeline(
             params,
             labelled_graph,
             hyperparams,
+            custom_comment_embedding_len
         )
         print(f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}] embeddings len: {len(embeddings)}, features: {embeddings[0].shape}")
         
@@ -58,6 +60,24 @@ def random_forest_pipeline(
         # labels from graph nodes 
         labels_in_list = [labelled_graph.graph.nodes[node]['label'] for node in labelled_graph.graph.nodes]
         labels = np.array(labels_in_list, dtype=np.int32) # (1D array of int32)
+        
+        # # check there is the same number of samples and labels
+        # assert samples.shape[0] == labels.shape[0], (
+        #     f"ERROR: Expected the same number of samples and labels, "
+        #     f"but got {samples.shape[0]} samples and {labels.shape[0]} labels. "
+        #     f"For GV file path: {labelled_graph.gv_file_path}."
+        # )
+
+        # # check that there is no NaN values
+        # assert np.isnan(samples).any() == False, (
+        #     f"ERROR: NaN values found in samples. "
+        #     f"For GV file path: {labelled_graph.gv_file_path}."
+        # )
+        # assert np.isnan(labels).any() == False, (
+        #     f"ERROR: NaN values found in labels. "
+        #     f"For GV file path: {labelled_graph.gv_file_path}."
+        # )
+
         all_samples_and_labels.append(
             SamplesAndLabels(samples, labels)
         )
@@ -90,7 +110,8 @@ def random_forest_pipeline(
     print("max_length for samples: {0}".format(max_length))
     print("max_label_length for labels: {0}".format(max_label_length))
     assert max_length == max_label_length, (
-        "Label and sample max lengths should be equal, but sample max length is {0} and label max length is {1}".format(max_length, max_label_length)
+        "ERROR: Label and sample max lengths should be equal, "
+        f"but sample max length is {max_length} and label max length is {max_label_length}. "
     )
 
     # we need padding, since Random Forest requires all samples to have the same length
@@ -202,25 +223,33 @@ def train_and_eval_classical_ml(
     )
 
     # Training
-    print(" 🔘 Training...")
-    clf.fit(X_train, y_train)
+    try:
+        print(" 🔘 Training...")
+        clf.fit(X_train, y_train)
 
-    # Prediction
-    y_pred = clf.predict(X_test)
+        # Prediction
+        y_pred = clf.predict(X_test)
 
-    # Evaluation metrics
-    print(" 🔘 Evaluating...")
-    _ = evaluate_metrics(
-        y_test, 
-        y_pred,
-        results_writer,
-        params,
-    )
-    
-    # conclude pipeline
-    common_pipeline_end(
-        params,
-        subpipeline,
-        start_time_train_test,
-        results_writer,
-    )
+        # Evaluation metrics
+        print(" 🔘 Evaluating...")
+        _ = evaluate_metrics(
+            y_test, 
+            y_pred,
+            results_writer,
+            params,
+        )
+        
+        # conclude pipeline
+        common_pipeline_end(
+            params,
+            subpipeline,
+            start_time_train_test,
+            results_writer,
+        )
+    except Exception as e:
+        print(
+            f"ERROR: Exception occurred during train and eval step: {e} "    
+            f"for subpipeline: {subpipeline} "
+            f"for dir path: {hyperparams.input_mem2graph_dataset_dir_path}"
+        )
+        raise e
