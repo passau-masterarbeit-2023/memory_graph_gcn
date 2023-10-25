@@ -201,14 +201,18 @@ def main(cli: CLIArguments):
     nb_memgraphs = 0
     nb_skipped = 0
     for mem2graph_dir_path in mem2graph_dataset_dir_paths:
-        nb_memgraphs_, nb_skipped_ = load_and_check_graph_in_dir(
-            mem2graph_dir_path,
-        )
-        print(f" -> ✅ {nb_memgraphs_} graphs in {mem2graph_dir_path} have been loaded and checked.")
-        print(f" -> 💥 {nb_skipped_} graphs in {mem2graph_dir_path} have been skipped (deleted).")
+        try:
+            nb_memgraphs_, nb_skipped_ = load_and_check_graph_in_dir(
+                mem2graph_dir_path,
+            )
+            print(f" -> ✅ {nb_memgraphs_} graphs in {mem2graph_dir_path} have been loaded and checked.")
+            print(f" -> 💥 {nb_skipped_} graphs in {mem2graph_dir_path} have been skipped (deleted).")
 
-        nb_memgraphs += nb_memgraphs_
-        nb_skipped += nb_skipped_
+            nb_memgraphs += nb_memgraphs_
+            nb_skipped += nb_skipped_
+        except Exception as err:
+            print(f'Generated an exception: {err} with graph at path: {mem2graph_dir_path}')
+            exit(1)
     
     print(f"✅ {nb_memgraphs} total graphs in the input mem2graph dataset dir paths have been loaded and checked.")
     print(f"💥 {nb_skipped} total graphs in the input mem2graph dataset dir paths have been skipped (deleted).")
