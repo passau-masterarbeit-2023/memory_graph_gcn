@@ -90,8 +90,14 @@ def main(params: ProgramParams):
                 for future in futures:
                     if future:
                         idx, exception, tb = future
+                        end_time: datetime = datetime.now()
+                        duration = end_time - start_time
+                        duration_hour_min_sec = datetime_to_human_readable_str(
+                            duration
+                        )
                         print(
                             f"❌ ERROR: in pipeline [index: {idx}], "
+                            f"after {duration_hour_min_sec},"
                             f"for pipeline {hyperparams_list[idx].pipeline_name}, "
                             f"with hyperparams {hyperparams_list[idx]}. \n"
                             f"Exception: {exception} "
