@@ -38,7 +38,7 @@ def add_hyperparams_to_result_writer(
         elif "node2vec" in field and not hyperparams.node_embedding.is_using_node2vec():
             # hyperparams from Node2Vec are not used, replace them with None
             value = "None"
-        elif "random_forest" in field and hyperparams.pipeline_name != PipelineNames.RandomForestPipeline:
+        elif "random_forest" in field and hyperparams.pipeline_name != PipelineNames.ClassicMLPipeline:
             # hyperparams from RandomForest are not used, replace them with None
             value = "None"
         elif "first_gcn" in field and hyperparams.pipeline_name != PipelineNames.GCNPipeline:
@@ -218,11 +218,11 @@ def generate_hyperparams(
             node2vec_workers
         ) = node2vec_params
 
-        if PipelineNames.RandomForestPipeline.value in params.cli.args.pipelines:
+        if PipelineNames.ClassicMLPipeline.value in params.cli.args.pipelines:
             for nb_trees in randomforest_trees_range:
                 randforest_hyperparams = RandomForestPipeline(
                     index=hyperparam_index,
-                    pipeline_name=PipelineNames.RandomForestPipeline,
+                    pipeline_name=PipelineNames.ClassicMLPipeline,
                     input_mem2graph_dataset_dir_path=input_mem2graph_dataset_dir_path,
                     node_embedding=node_embedding,
                     node2vec_dimensions=node2vec_dimensions,

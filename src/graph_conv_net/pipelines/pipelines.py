@@ -5,7 +5,7 @@ class PipelineNames(Enum):
     GCNPipeline = "gcn-pipeline"
 
     # Classic ML models
-    RandomForestPipeline = "random-forest-pipeline"
+    ClassicMLPipeline = "classic-ml-pipeline"
 
     # Feature evaluation
     FeatureEvaluationPipeline = "feature-evaluation-pipeline"

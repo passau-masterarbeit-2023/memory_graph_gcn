@@ -116,7 +116,7 @@ def load_and_check_graph_in_dir(dir_path: str):
                 else: 
                     nb_skipped += 1
             except Exception as err:
-                print(f'Generated an exception: {err} with graph {path}')
+                print(f'Generated an exception: {err} with graph at path: {path}')
                 nb_skipped += 1
 
             # Update the progress bar
@@ -145,7 +145,7 @@ def load_and_check_graph_in_dir(dir_path: str):
             raise ValueError(
                 "🚩 PANIC: embedding length is not consistent across all graphs in the dir. "
                 f"Expected: {nb_feature_first} (from first graph in dir, with path: {memgraphs[0].gv_file_path}), but got: {len(memgraph.custom_embedding_fields)}"
-                f", for graph: {memgraph.gv_file_path}"
+                f", for graph at path: {memgraph.gv_file_path}"
             )
 
     return len(memgraphs), nb_skipped

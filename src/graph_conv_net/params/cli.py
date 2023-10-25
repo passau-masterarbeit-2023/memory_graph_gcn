@@ -108,7 +108,7 @@ class CLIArguments:
             for pipeline in self.args.pipelines:
                 if pipeline == PipelineNames.GCNPipeline.value:
                     print("🔷 Launching First GCN Pipeline")
-                elif pipeline == PipelineNames.RandomForestPipeline.value:
+                elif pipeline == PipelineNames.ClassicMLPipeline.value:
                     print("🔷 Launching Random Forest Pipeline")
                 elif pipeline == PipelineNames.FeatureEvaluationPipeline.value:
                     print("🔷 Launching Feature Evaluation Pipeline")

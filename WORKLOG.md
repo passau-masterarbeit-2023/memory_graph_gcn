@@ -13,6 +13,7 @@ Trying to fix the code, for feature engineering to work on the mem2graph dir dat
 * [X] Correct tk-thinker "RuntimeError: main thread is not in main loop"
 * [X] Correct "filename too long" error when saving .pickle files.
 * [X] Correct layout error with correlation matrices.
+* [X] Combine feature correlation matrices with a Python script.
 
 `python run_pipelines.py -k -i /home/onyr/code/phdtrack/phdtrack_data_clean/ -t 5 -p graph-with-embedding-comments`: first, generate the mem2graph dir dataset of .gv graph files, from the cleaned dataset of annotated heap dumps.
 
@@ -59,8 +60,25 @@ Loading graphs: 100%|███████████████████�
 
 ```
 
+The last step is launching the ML and DL on the graph dataset.
 
 
+---
+
+On the server
+
+`python run_pipelines.py -k -i /root/phdtrack/phdtrack_data_clean/ -p graph-with-embedding-comments`: Run Mem2Graph to generate graph dataset.
+
+```shell
+[2023-10-24T20:42:44 UTC][INFO mem_to_graph::exe_pipeline::pipeline]  🟢 [t: worker-63] [N°202 / 26202 files] [fid: 8683-1650977906]    (Nb samples: 0)
+[2023-10-24T20:42:44 UTC][INFO mem_to_graph::graph_data::heap_dump_data]  📋 heap dump raw file path: "/root/phdtrack/phdtrack_data_clean/Performance_Test/V_8_1_P1/32/8794-1650977906-heap.raw"
+[2023-10-24T20:42:44 UTC][INFO mem_to_graph::exe_pipeline::pipeline]  🟢 [t: worker-63] [N°203 / 26202 files] [fid: 8794-1650977906]    (Nb samples: 0)
+[2023-10-24T20:42:44 UTC][INFO mem_to_graph::exe_pipeline::pipeline]  ⏱️  total pipeline time: 114.84s]
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 6/6 [1:07:15<00:00, 672.62s/it]
+🏁 Finished! Total time: hours: 1, minutes: 7, seconds: 15
+```
+
+`python src/sanity_check_gv_files.py`: Run sanity checks
 
 
 ### Mon 23 Oct 2023

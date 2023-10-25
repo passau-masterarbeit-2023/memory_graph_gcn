@@ -51,6 +51,11 @@ def build_memgraph(
 
     # check the embeddings in nodes
     nb_features = len(embeddings_fields)
+    assert nb_features > 0, (
+        f"ERROR: Expected at least 1 feature in comment embedding, but got {nb_features}. "
+        f"For GV file path: {gv_file_path}."
+    )
+
     for node, data in nx_graph.nodes(data=True):
         assert "comment" in data.keys(), (
             f"ERROR: No 'comment' field found in node {node} of graph {gv_file_path}. "

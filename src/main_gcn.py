@@ -27,7 +27,7 @@ def run_pipeline(
                 "ERROR: hyperparams is not of type FirstGCNPipelineHyperparams, but of type {0}".format(type(hyperparams))
             )
             gcn_pipeline(params,  hyperparams, result_writer)
-        elif hyperparams.pipeline_name == PipelineNames.RandomForestPipeline:
+        elif hyperparams.pipeline_name == PipelineNames.ClassicMLPipeline:
             assert isinstance(hyperparams, RandomForestPipeline), (
                 "ERROR: hyperparams is not of type RandomForestPipeline, but of type {0}".format(type(hyperparams))
             )
@@ -90,7 +90,12 @@ def main(params: ProgramParams):
                 for future in futures:
                     if future:
                         idx, exception, tb = future
-                        print(f"❌ ERROR: in pipeline [index: {idx}]: {exception}")
+                        print(
+                            f"❌ ERROR: in pipeline [index: {idx}], "
+                            f"for pipeline {hyperparams_list[idx].pipeline_name}, "
+                            f"with hyperparams {hyperparams_list[idx]}. \n"
+                            f"Exception: {exception} "
+                        )
                         print(tb)
                         exit(1)
                     else:
