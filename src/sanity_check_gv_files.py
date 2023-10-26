@@ -200,7 +200,7 @@ def load_and_check_graph_in_dir(dir_path: str):
                     nb_skipped += 1
             except Exception as err:
                 print(f'Generated an exception: {err}\n with graph at path: {path}')    
-                traceback.print_exc() # Print the traceback
+                #traceback.print_exc() # Print the traceback
                 nb_skipped += 1
 
             # Update the progress bar
@@ -265,7 +265,7 @@ def main(cli: CLIArguments):
             nb_skipped += nb_skipped_
         except Exception as err:
             print(f'Generated an exception: {err} in dir: {mem2graph_dir_path}')
-            traceback.print_exc() # Print the traceback
+            #traceback.print_exc() # Print the traceback
             exit(1)
     
     print(f"✅ {nb_memgraphs} total graphs in the input mem2graph dataset dir paths have been loaded and checked.")
