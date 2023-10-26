@@ -96,12 +96,6 @@ def main(params: ProgramParams):
         with ProcessPoolExecutor(max_workers=batch) as executor:
             for i in range(0, len(hyperparams_list), batch):
                 batch_hyperparams = hyperparams_list[i:i+batch]
-                executor.map(
-                    run_pipeline, 
-                    range(i, i + len(batch_hyperparams)), 
-                    [params] * len(batch_hyperparams), 
-                    batch_hyperparams
-                )
 
                 # Get the results, with error handling
                 futures = list(executor.map(

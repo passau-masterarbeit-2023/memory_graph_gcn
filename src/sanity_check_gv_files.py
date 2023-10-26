@@ -48,6 +48,19 @@ class CLIArguments:
             action='store_true',
             help="Keep old output files."
         )
+        # skip directory starting with number
+        parser.add_argument(
+            '-s',
+            '--skip-dir-starting-with-number',
+            type=int,
+            default=None,
+            help="Skip directory starting with provided number."
+        )
+        parser.add_argument(
+            '--dry-run',
+            action='store_true',
+            help="Dry run. Don't load data and perform tests."
+        )
 
         # save parsed arguments
         self.args = parser.parse_args()
@@ -67,7 +80,7 @@ def load_env_file():
     dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
     load_dotenv(dotenv_path)
 
-def simple_get_mem2graph_dataset_dir_paths():
+def simple_get_mem2graph_dataset_dir_paths(cli: CLIArguments):
     """
     Determine the Mem2Graph dataset directory paths.
     """
@@ -85,9 +98,19 @@ def simple_get_mem2graph_dataset_dir_paths():
 
     for dir_name in os.listdir(ALL_MEM2GRAPH_DATASET_DIR_PATH):
         if ".gitignore" not in dir_name:
-            mem2graph_dataset_dir_paths.append(
-                os.path.join(ALL_MEM2GRAPH_DATASET_DIR_PATH, dir_name)
-            )
+            if cli.args.skip_dir_starting_with_number is not None:
+                str_number_to_skip = str(cli.args.skip_dir_starting_with_number)
+                last_dir_component = os.path.basename(dir_name)
+                print("last_dir_component:", last_dir_component)
+
+                if not last_dir_component.startswith(str_number_to_skip):
+                    mem2graph_dataset_dir_paths.append(
+                        os.path.join(ALL_MEM2GRAPH_DATASET_DIR_PATH, dir_name)
+                    )
+            else:
+                mem2graph_dataset_dir_paths.append(
+                    os.path.join(ALL_MEM2GRAPH_DATASET_DIR_PATH, dir_name)
+                )
 
     print("📁 Found {0} Mem2Graph dataset directories.".format(
         str(len(mem2graph_dataset_dir_paths))
@@ -195,7 +218,15 @@ def main(cli: CLIArguments):
     print("🔷 Now, performing data loading and sanity checks...")
 
     # get Mem2Graph dataset path list
-    mem2graph_dataset_dir_paths = simple_get_mem2graph_dataset_dir_paths()
+    mem2graph_dataset_dir_paths = simple_get_mem2graph_dataset_dir_paths(cli)
+    print("📁 Mem2Graph dataset dir paths:")
+    for mem2graph_dataset_dir_path in mem2graph_dataset_dir_paths:
+        print(" -> 📁 {0}".format(mem2graph_dataset_dir_path))
+    
+    if cli.args.dry_run:
+        print("🔶 Dry run, exiting...")
+        return
+
 
     # get all .gv files in the dir paths
     nb_memgraphs = 0

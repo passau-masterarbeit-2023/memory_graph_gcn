@@ -65,9 +65,16 @@ The last step is launching the ML and DL on the graph dataset.
 
 ---
 
-On the server
+On the server:
+
+```shell
+root@compute-container-rascoussie-d584d4794-lbm9r:~/onyr_phdtrack# find phdtrack_data_clean/ -type f -name "*.raw" | wc -l
+26202
+```
 
 `python run_pipelines.py -k -i /root/phdtrack/phdtrack_data_clean/ -p graph-with-embedding-comments`: Run Mem2Graph to generate graph dataset.
+
+`python run_pipelines.py -k -i /root/onyr_phdtrack/phdtrack_data_clean/ -p graph-with-embedding-comments`
 
 ```shell
 [2023-10-24T20:42:44 UTC][INFO mem_to_graph::exe_pipeline::pipeline]  🟢 [t: worker-63] [N°202 / 26202 files] [fid: 8683-1650977906]    (Nb samples: 0)
@@ -78,7 +85,7 @@ On the server
 🏁 Finished! Total time: hours: 1, minutes: 7, seconds: 15
 ```
 
-`python src/sanity_check_gv_files.py`: Run sanity checks
+`python src/sanity_check_gv_files.py -k`: Run sanity checks. Keep old checked files.
 
 
 ### Mon 23 Oct 2023

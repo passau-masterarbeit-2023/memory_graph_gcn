@@ -260,15 +260,16 @@ def generate_hyperparams(
                 hyperparam_index += 1
     
     # feature evaluation pipelines
-    for input_mem2graph_dataset_dir_path in mem2graph_dataset_dir_paths:
-        for node_embedding in node_embedding_types:
-            feature_eval_hyperparams = BaseHyperparams(
-                index=hyperparam_index,
-                pipeline_name=PipelineNames.FeatureEvaluationPipeline,
-                input_mem2graph_dataset_dir_path=input_mem2graph_dataset_dir_path,
-                node_embedding=node_embedding,
-            )
-            hyperparams_list.append(feature_eval_hyperparams)
-            hyperparam_index += 1
+    if PipelineNames.FeatureEvaluationPipeline.value in params.cli.args.pipelines:
+        for input_mem2graph_dataset_dir_path in mem2graph_dataset_dir_paths:
+            for node_embedding in node_embedding_types:
+                feature_eval_hyperparams = BaseHyperparams(
+                    index=hyperparam_index,
+                    pipeline_name=PipelineNames.FeatureEvaluationPipeline,
+                    input_mem2graph_dataset_dir_path=input_mem2graph_dataset_dir_path,
+                    node_embedding=node_embedding,
+                )
+                hyperparams_list.append(feature_eval_hyperparams)
+                hyperparam_index += 1
     
     return hyperparams_list
