@@ -237,7 +237,11 @@ def main(cli: CLIArguments):
     mem2graph_dataset_dir_paths = simple_get_mem2graph_dataset_dir_paths(cli)
     print("📁 Mem2Graph dataset dir paths:")
     for mem2graph_dataset_dir_path in mem2graph_dataset_dir_paths:
-        print(" -> 📁 {0}".format(mem2graph_dataset_dir_path))
+        nb_gv_files_in_dir = len(find_gv_files(mem2graph_dataset_dir_path))
+        print(
+            f" -> 📁 {mem2graph_dataset_dir_path}, "
+            f"which contains {nb_gv_files_in_dir} files."
+        )
     
     if cli.args.dry_run:
         print("🔶 Dry run, exiting...")
