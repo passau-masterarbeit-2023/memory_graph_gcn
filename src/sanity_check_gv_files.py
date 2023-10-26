@@ -97,6 +97,7 @@ def simple_get_mem2graph_dataset_dir_paths(cli: CLIArguments):
     ))
 
     for dir_name in os.listdir(ALL_MEM2GRAPH_DATASET_DIR_PATH):
+        to_be_added = False
         if ".gitignore" not in dir_name:
             if cli.args.skip_dir_starting_with_number is not None:
                 str_number_to_skip = str(cli.args.skip_dir_starting_with_number)
@@ -104,17 +105,21 @@ def simple_get_mem2graph_dataset_dir_paths(cli: CLIArguments):
                 print("last_dir_component:", last_dir_component)
 
                 if not last_dir_component.startswith(str_number_to_skip):
-                    mem2graph_dataset_dir_paths.append(
-                        os.path.join(ALL_MEM2GRAPH_DATASET_DIR_PATH, dir_name)
-                    )
+                    to_be_added = True
             else:
-                mem2graph_dataset_dir_paths.append(
-                    os.path.join(ALL_MEM2GRAPH_DATASET_DIR_PATH, dir_name)
-                )
+                to_be_added = True
+        
+        if to_be_added:
+            mem2graph_dataset_dir_paths.append(
+                os.path.join(ALL_MEM2GRAPH_DATASET_DIR_PATH, dir_name)
+            )
+        else:
+            print("󱧴 Skipping {0}...".format(dir_name))
 
     print("📁 Found {0} Mem2Graph dataset directories.".format(
         str(len(mem2graph_dataset_dir_paths))
     ))
+    mem2graph_dataset_dir_paths.sort()
     
     return mem2graph_dataset_dir_paths
 
@@ -155,6 +160,10 @@ def load_graph(gv_file_path: str) -> MemGraph | None:
 
 def load_and_check_graph_in_dir(dir_path: str): 
     gv_file_paths = find_gv_files(dir_path)
+    if len(gv_file_paths) == 0:
+        print("󰡯 No .gv files found in {0}, skipping...".format(dir_path))
+        return 0, 0
+
     memgraphs: list[MemGraph] = []
     nb_skipped = 0
 
@@ -176,13 +185,20 @@ def load_and_check_graph_in_dir(dir_path: str):
         for future in as_completed(futures):
             path = futures[future]
             try:
+                assert path is not None, (
+                    f"ERROR: path should not be None."
+                )
+                assert path.endswith(".gv"), (
+                    f"ERROR: path should end with '.gv', but got {path}."
+                )
+
                 memgraph = future.result()
                 if memgraph:
                     memgraphs.append(memgraph)
                 else: 
                     nb_skipped += 1
             except Exception as err:
-                print(f'Generated an exception: {err} with graph at path: {path}')
+                print(f'Generated an exception: {err}\n with graph at path: {path}')
                 nb_skipped += 1
 
             # Update the progress bar
