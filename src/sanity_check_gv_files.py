@@ -7,6 +7,7 @@ provided in the graph top level comment.
 
 from datetime import datetime
 import os
+import resource
 import traceback
 from dotenv import load_dotenv
 
@@ -21,6 +22,10 @@ from graph_conv_net.utils.utils import datetime_to_human_readable_str
 # -------------------- CLI arguments -------------------- #
 import sys
 import argparse
+import psutil
+
+MAX_MEMORY_GB = 250  # 250 GB
+resource.setrlimit(resource.RLIMIT_AS, (MAX_MEMORY_GB, MAX_MEMORY_GB))
 
 # wrapped program flags
 class CLIArguments:
@@ -80,6 +85,12 @@ def load_env_file():
     """
     dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
     load_dotenv(dotenv_path)
+
+def check_memory():
+    # Get the memory usage in GB
+    memory_info = psutil.virtual_memory()
+    used_memory_gb = (memory_info.total - memory_info.available) / (1024 ** 3)
+    return used_memory_gb
 
 def simple_get_mem2graph_dataset_dir_paths(cli: CLIArguments):
     """
@@ -185,6 +196,10 @@ def load_and_check_graph_in_dir(dir_path: str):
         # Collect the results as they come in
         for future in as_completed(futures):
             path = futures[future]
+            if check_memory() > MAX_MEMORY_GB:
+                progress_bar.close()
+                raise MemoryError("🚩 Memory limit reached, exiting...")
+            
             try:
                 assert path is not None, (
                     f"ERROR: path should not be None."
