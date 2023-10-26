@@ -181,7 +181,7 @@ def load_and_check_graph_in_dir(dir_path: str):
         print("󰡯 No .gv files found in {0}, skipping...".format(dir_path))
         return 0, 0
 
-    list_of_nb_of_features_per_graph: list[int] = []
+    list_of_nb_of_features_per_graph: list[int | None] = []
     nb_skipped = 0
 
     print(" 🔘 Loading graphs in {0}...".format(dir_path))
@@ -214,10 +214,7 @@ def load_and_check_graph_in_dir(dir_path: str):
                 )
 
                 res = future.result()
-                if res:
-                    list_of_nb_of_features_per_graph.append(res)
-                else: 
-                    nb_skipped += 1
+                list_of_nb_of_features_per_graph.append(res)
             except Exception as err:
                 print(f'Generated an exception: {err}\n with graph at path: {path}')    
                 #traceback.print_exc() # Print the traceback
@@ -229,17 +226,27 @@ def load_and_check_graph_in_dir(dir_path: str):
         # Close the progress bar
         progress_bar.close()
 
+    # check that the list of results has the same length as the list of dir paths
+    assert len(list_of_nb_of_features_per_graph) == len(gv_file_paths), (
+        f"ERROR: Expected the list of results to have the same length as the list of dir paths, "
+        f"but got {len(list_of_nb_of_features_per_graph)} results and {len(gv_file_paths)} dir paths."
+        f"for Mem2Graph dataset dir: {dir_path}"
+    )
+
     # Check that the embedding length is consistent across all graphs in the dir
     print(" 🔘 Checking embedding length of graphs in {0}...".format(dir_path))
-    nb_feature_first = list_of_nb_of_features_per_graph[0]
+    max_feature_length = max([nb_features for nb_features in list_of_nb_of_features_per_graph if nb_features is not None])
 
     for i in range(1, len(list_of_nb_of_features_per_graph)):
         nb_features = list_of_nb_of_features_per_graph[i]
-        if nb_features != nb_feature_first:
+        if nb_features is None:
+            continue
+        elif nb_features != max_feature_length:
+            gv_current_file_path = gv_file_paths[i]
             raise ValueError(
                 "🚩 PANIC: embedding length is not consistent across all graphs in the dir. "
-                f"Expected: {nb_feature_first} (from first graph in dir, with path: {list_of_nb_of_features_per_graph[0].gv_file_path}), but got: {nb_features}"
-                f", for graph at path: {list_of_nb_of_features_per_graph[i].gv_file_path}"
+                f"Expected (max nb of features): {max_feature_length}, but got: {nb_features}"
+                f", for graph at path: {gv_current_file_path}"
             )
 
     return len(list_of_nb_of_features_per_graph), nb_skipped
