@@ -19,13 +19,17 @@ from tqdm import tqdm
 
 from graph_conv_net.utils.utils import datetime_to_human_readable_str
 
+# -------------------- Memory limit -------------------- #
+MAX_MEMORY_GB = 250  # 250 GB
+MAX_MEMORY_IN_BYTES = MAX_MEMORY_GB * 1024 ** 3
+resource.setrlimit(resource.RLIMIT_AS, 
+    (MAX_MEMORY_IN_BYTES, MAX_MEMORY_IN_BYTES)
+)
+
 # -------------------- CLI arguments -------------------- #
 import sys
 import argparse
 import psutil
-
-MAX_MEMORY_GB = 250  # 250 GB
-resource.setrlimit(resource.RLIMIT_AS, (MAX_MEMORY_GB, MAX_MEMORY_GB))
 
 # wrapped program flags
 class CLIArguments:
