@@ -155,7 +155,7 @@ def remove_pickled_cached_graphs():
     
     return nb_removed_cached_graphs
 
-def load_graph(gv_file_path: str) -> MemGraph | None:
+def load_graph(gv_file_path: str):
     PICKLE_DATASET_DIR_PATH = os.environ.get("PICKLE_DATASET_DIR_PATH")
     assert PICKLE_DATASET_DIR_PATH is not None, (
         "🚩 PANIC: PICKLE_DATASET_DIR_PATH is None. "
@@ -168,7 +168,12 @@ def load_graph(gv_file_path: str) -> MemGraph | None:
     if memgraph is None:
         print("🔄 MemGraph from {0} is None, skipping...".format(gv_file_path))
         return None
-    return memgraph
+    
+    # don't return the full graph, for memory optimization
+    nb_features = len(memgraph.custom_embedding_fields)
+    del memgraph
+
+    return nb_features
 
 def load_and_check_graph_in_dir(dir_path: str): 
     gv_file_paths = find_gv_files(dir_path)
@@ -176,7 +181,7 @@ def load_and_check_graph_in_dir(dir_path: str):
         print("󰡯 No .gv files found in {0}, skipping...".format(dir_path))
         return 0, 0
 
-    memgraphs: list[MemGraph] = []
+    list_of_nb_of_features_per_graph: list[int] = []
     nb_skipped = 0
 
     print(" 🔘 Loading graphs in {0}...".format(dir_path))
@@ -208,9 +213,9 @@ def load_and_check_graph_in_dir(dir_path: str):
                     f"ERROR: path should end with '.gv', but got {path}."
                 )
 
-                memgraph = future.result()
-                if memgraph:
-                    memgraphs.append(memgraph)
+                res = future.result()
+                if res:
+                    list_of_nb_of_features_per_graph.append(res)
                 else: 
                     nb_skipped += 1
             except Exception as err:
@@ -226,22 +231,18 @@ def load_and_check_graph_in_dir(dir_path: str):
 
     # Check that the embedding length is consistent across all graphs in the dir
     print(" 🔘 Checking embedding length of graphs in {0}...".format(dir_path))
-    nb_feature_first = len(memgraphs[0].custom_embedding_fields)
+    nb_feature_first = list_of_nb_of_features_per_graph[0]
 
-    # Create a TQDM progress bar
-    progress_bar = tqdm(memgraphs, desc="Checking Embedding Length", dynamic_ncols=True)
-
-    for memgraph in progress_bar:
-        if len(memgraph.custom_embedding_fields) != nb_feature_first:
-            # Close the progress bar before raising an exception
-            progress_bar.close()
+    for i in range(1, len(list_of_nb_of_features_per_graph)):
+        nb_features = list_of_nb_of_features_per_graph[i]
+        if nb_features != nb_feature_first:
             raise ValueError(
                 "🚩 PANIC: embedding length is not consistent across all graphs in the dir. "
-                f"Expected: {nb_feature_first} (from first graph in dir, with path: {memgraphs[0].gv_file_path}), but got: {len(memgraph.custom_embedding_fields)}"
-                f", for graph at path: {memgraph.gv_file_path}"
+                f"Expected: {nb_feature_first} (from first graph in dir, with path: {list_of_nb_of_features_per_graph[0].gv_file_path}), but got: {nb_features}"
+                f", for graph at path: {list_of_nb_of_features_per_graph[i].gv_file_path}"
             )
 
-    return len(memgraphs), nb_skipped
+    return len(list_of_nb_of_features_per_graph), nb_skipped
         
 def main(cli: CLIArguments):
     # remove all cached graphs

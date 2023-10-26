@@ -4,6 +4,13 @@ Goal: ML for Key detection > We want to learn a model using a Graph Convolution 
 
 ## Logs
 
+### Thu 26 Oct 2023
+
+On Drogon
+
+`nohup python src/sanity_check_gv_files.py -k > output_2023_10_26_15h_51.log 2>&1 &`: Run sanity checker on the server, in background and capture output to log file.
+
+
 ### Tue 24 Oct 2023
 
 * [X] Added sanity check script.
