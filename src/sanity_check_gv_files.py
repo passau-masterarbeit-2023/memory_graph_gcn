@@ -7,6 +7,7 @@ provided in the graph top level comment.
 
 from datetime import datetime
 import os
+import traceback
 from dotenv import load_dotenv
 
 from graph_conv_net.data_loading.data_loading import load_annotated_graph
@@ -198,7 +199,8 @@ def load_and_check_graph_in_dir(dir_path: str):
                 else: 
                     nb_skipped += 1
             except Exception as err:
-                print(f'Generated an exception: {err}\n with graph at path: {path}')
+                print(f'Generated an exception: {err}\n with graph at path: {path}')    
+                traceback.print_exc() # Print the traceback
                 nb_skipped += 1
 
             # Update the progress bar
@@ -248,7 +250,7 @@ def main(cli: CLIArguments):
         return
 
 
-    # get all .gv files in the dir paths
+    # iterate over all Mem2Graph dataset dir paths
     nb_memgraphs = 0
     nb_skipped = 0
     for mem2graph_dir_path in mem2graph_dataset_dir_paths:
@@ -262,7 +264,8 @@ def main(cli: CLIArguments):
             nb_memgraphs += nb_memgraphs_
             nb_skipped += nb_skipped_
         except Exception as err:
-            print(f'Generated an exception: {err} with graph at path: {mem2graph_dir_path}')
+            print(f'Generated an exception: {err} in dir: {mem2graph_dir_path}')
+            traceback.print_exc() # Print the traceback
             exit(1)
     
     print(f"✅ {nb_memgraphs} total graphs in the input mem2graph dataset dir paths have been loaded and checked.")
