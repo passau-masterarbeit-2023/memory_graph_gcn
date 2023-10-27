@@ -14,7 +14,7 @@ matplotlib.use('Agg') # for running on server without display
 from graph_conv_net.embedding.node_to_vec import generate_node_embedding
 from graph_conv_net.embedding.node_to_vec_enums import get_feature_names_from_comment
 from graph_conv_net.params.params import ProgramParams
-from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph, common_pipeline_end
+from graph_conv_net.pipelines.common.pipeline_common import common_embedding_loop_end, common_load_labelled_graph, common_pipeline_end
 from graph_conv_net.pipelines.hyperparams import BaseHyperparams, Node2VecHyperparams, add_hyperparams_to_result_writer
 from graph_conv_net.pipelines.pipelines import FeatureEvaluationSubpipelineNames
 from graph_conv_net.pipelines.random_forest.random_forest_pipeline import SamplesAndLabels
@@ -84,11 +84,7 @@ def feature_evaluation_pipeline(
             hyperparams,
             custom_comment_embedding_len,
         )
-        print(
-            f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
-            f"[graph: {i+1}/{length_of_labelled_graphs}]]",
-            f"embeddings len: {len(embeddings)}, features: {embeddings[0].shape}",
-        )
+
         # embeddings to numpy array
         samples = np.vstack(embeddings) # (2D array of float32)
 
@@ -99,13 +95,14 @@ def feature_evaluation_pipeline(
             SamplesAndLabels(samples, labels)
         )
 
-        end_embedding = datetime.now()
-        duration_embedding = end_embedding - start_embedding
-        duration_embedding_human_readable = datetime_to_human_readable_str(duration_embedding)
-        print(
-            f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
-            f"[graph: {i+1}/{length_of_labelled_graphs}]]. ",
-            f"Embeddings loop took: {duration_embedding_human_readable}",
+        common_embedding_loop_end(
+            i,
+            params,
+            hyperparams,
+            length_of_labelled_graphs,
+            start_embedding,
+            len(embeddings),
+            embeddings[0].shape[0],
         )
     
     end_total_embedding = datetime.now()

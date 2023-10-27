@@ -17,7 +17,7 @@ from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.ml.first_model import GNN
 from graph_conv_net.ml.evaluation import evaluate_metrics
 from graph_conv_net.embedding.node_to_vec import generate_node_embedding
-from graph_conv_net.pipelines.common.pipeline_common import common_load_labelled_graph, common_pipeline_end
+from graph_conv_net.pipelines.common.pipeline_common import common_embedding_loop_end, common_load_labelled_graph, common_pipeline_end
 from graph_conv_net.pipelines.hyperparams import FirstGCNPipelineHyperparams, add_hyperparams_to_result_writer
 from graph_conv_net.results.base_result_writer import BaseResultWriter, SaveFileFormat
 from graph_conv_net.utils.debugging import dp
@@ -49,10 +49,6 @@ def gcn_pipeline(
     length_of_labelled_graphs = len(labelled_graphs)
     for i in range(length_of_labelled_graphs):
         labelled_graph = labelled_graphs[i]
-        dp(
-            "Graph contains: nb nodes: {0}".format(len(labelled_graph.graph.nodes)), 
-            "nb edges: {0}".format(len(labelled_graph.graph.edges))
-        )
 
         start_embedding = datetime.now()
         
@@ -62,11 +58,6 @@ def gcn_pipeline(
             labelled_graph,
             hyperparams,
             custom_comment_embedding_len,
-        )
-        print(
-            f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
-            f"[graph: {i+1}/{length_of_labelled_graphs}]]",
-            f"embeddings len: {len(embeddings)}, features: {embeddings[0].shape}",
         )
         
         # Node features using custom Node2Vec based embeddings
@@ -81,10 +72,6 @@ def gcn_pipeline(
 
         # Prepare edge connectivity (from adjacency matrix or edge list)
         edges = list(labelled_graph.edges)
-        dp("type(edges): {0}".format(type(edges)))
-        dp("len(edges): {0}".format(len(edges)))
-        dp("type(edges[0]): {0}".format(type(edges[0])))
-
         edge_index = torch.tensor(edges, dtype=torch.long).t().contiguous()
         graph_connectivity = edge_index.view(2, -1)
         
@@ -99,13 +86,14 @@ def gcn_pipeline(
         data.validate(raise_on_error=True)
         data_from_graphs.append(data)
 
-        end_embedding = datetime.now()
-        duration_embedding = end_embedding - start_embedding
-        duration_embedding_human_readable = datetime_to_human_readable_str(duration_embedding)
-        print(
-            f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
-            f"[graph: {i+1}/{length_of_labelled_graphs}]]. ",
-            f"Embeddings loop took: {duration_embedding_human_readable}",
+        common_embedding_loop_end(
+            i,
+            params,
+            hyperparams,
+            length_of_labelled_graphs,
+            start_embedding,
+            len(embeddings),
+            embeddings[0].shape[0],
         )
     
     end_total_embedding = datetime.now()

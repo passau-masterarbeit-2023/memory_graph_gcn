@@ -74,3 +74,23 @@ def common_pipeline_end(
         results_writer.save_results_to_file(
             str2enum(params.RESULT_SAVE_FILE_FORMAT, SaveFileFormat)
         )
+
+def common_embedding_loop_end(
+    i: int,
+    params: ProgramParams,
+    hyperparams: BaseHyperparams,
+    length_of_labelled_graphs: int,
+    start_embedding: datetime,
+    nb_embedding_samples_len: int,
+    nb_embedding_features: int,
+):
+    end_embedding = datetime.now()
+    duration_embedding = end_embedding - start_embedding
+    duration_embedding_human_readable = datetime_to_human_readable_str(duration_embedding)
+    print(
+        f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
+        f"[pipeline name: {hyperparams.pipeline_name.value}]",
+        f"[graph: {i+1}/{length_of_labelled_graphs}]",
+        f"Embeddings loop took: {duration_embedding_human_readable}",
+        f"(embeddings len: {nb_embedding_samples_len}, features: {nb_embedding_features})",
+    )
