@@ -126,50 +126,46 @@ def gcn_pipeline(
     # train and evaluate models
     print(" 🔘 Training and evaluating models...")
 
-    # train_and_eval_gcn(
-    #     params = params,
-    #     hyperparams = hyperparams,
-    #     results_writer = deepcopy(results_writer),
-    #     model = VerySimplifiedGNN(num_features, num_classes),
-    #     train_data = deepcopy(train_data),
-    #     test_data = deepcopy(test_data),
-    # )
-    # train_and_eval_gcn(
-    #     params = params,
-    #     hyperparams = hyperparams,
-    #     results_writer = deepcopy(results_writer),
-    #     model = LessSimplifiedGNN(num_features, num_classes),
-    #     train_data = deepcopy(train_data),
-    #     test_data = deepcopy(test_data),
-    # )
-    try:
-        train_and_eval_gcn(
-            params = params,
-            hyperparams = hyperparams,
-            results_writer = deepcopy(results_writer),
-            model = GNN(num_features, num_classes),
-            train_data = deepcopy(train_data),
-            test_data = deepcopy(test_data),
-        )
-    except Exception as e:
-        print("->->-> ERROR: {0}".format(e))
-        raise e
-    # train_and_eval_gcn(
-    #     params = params,
-    #     hyperparams = hyperparams,
-    #     results_writer = deepcopy(results_writer),
-    #     model = ImprovedGNN(num_features, num_classes),
-    #     train_data = deepcopy(train_data),
-    #     test_data = deepcopy(test_data),
-    # )
-    # train_and_eval_gcn(
-    #     params = params,
-    #     hyperparams = hyperparams,
-    #     results_writer = deepcopy(results_writer),
-    #     model = AdvancedGCN(num_features, num_classes),
-    #     train_data = deepcopy(train_data),
-    #     test_data = deepcopy(test_data),
-    # )
+    train_and_eval_gcn(
+        params = params,
+        hyperparams = hyperparams,
+        results_writer = deepcopy(results_writer),
+        model = VerySimplifiedGNN(num_features, num_classes),
+        train_data = deepcopy(train_data),
+        test_data = deepcopy(test_data),
+    )
+    train_and_eval_gcn(
+        params = params,
+        hyperparams = hyperparams,
+        results_writer = deepcopy(results_writer),
+        model = LessSimplifiedGNN(num_features, num_classes),
+        train_data = deepcopy(train_data),
+        test_data = deepcopy(test_data),
+    )
+    train_and_eval_gcn(
+        params = params,
+        hyperparams = hyperparams,
+        results_writer = deepcopy(results_writer),
+        model = GNN(num_features, num_classes),
+        train_data = deepcopy(train_data),
+        test_data = deepcopy(test_data),
+    )
+    train_and_eval_gcn(
+        params = params,
+        hyperparams = hyperparams,
+        results_writer = deepcopy(results_writer),
+        model = ImprovedGNN(num_features, num_classes),
+        train_data = deepcopy(train_data),
+        test_data = deepcopy(test_data),
+    )
+    train_and_eval_gcn(
+        params = params,
+        hyperparams = hyperparams,
+        results_writer = deepcopy(results_writer),
+        model = AdvancedGCN(num_features, num_classes),
+        train_data = deepcopy(train_data),
+        test_data = deepcopy(test_data),
+    )
     
     
 
