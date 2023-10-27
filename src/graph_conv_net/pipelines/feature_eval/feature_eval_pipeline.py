@@ -65,12 +65,14 @@ def feature_evaluation_pipeline(
         hyperparams.input_mem2graph_dataset_dir_path
     )
 
-    assert len(labelled_graphs) > 0, "ERROR: No graph was actually loaded."
+    
 
     start_total_embedding = datetime.now()
 
     all_samples_and_labels: list[SamplesAndLabels] = []
-    for i in range(len(labelled_graphs)):
+    length_of_labelled_graphs = len(labelled_graphs)
+    assert length_of_labelled_graphs > 0, "ERROR: No graph was actually loaded."
+    for i in range(length_of_labelled_graphs):
         labelled_graph = labelled_graphs[i]
 
         start_embedding = datetime.now()
@@ -84,7 +86,7 @@ def feature_evaluation_pipeline(
         )
         print(
             f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
-            f"[graph: {i}/{len(labelled_graphs)}]]",
+            f"[graph: {i+1}/{length_of_labelled_graphs}]]",
             f"embeddings len: {len(embeddings)}, features: {embeddings[0].shape}",
         )
         # embeddings to numpy array
@@ -100,7 +102,11 @@ def feature_evaluation_pipeline(
         end_embedding = datetime.now()
         duration_embedding = end_embedding - start_embedding
         duration_embedding_human_readable = datetime_to_human_readable_str(duration_embedding)
-        print("Generating embeddings took: {0}".format(duration_embedding_human_readable))
+        print(
+            f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
+            f"[graph: {i+1}/{length_of_labelled_graphs}]]. ",
+            f"Embeddings loop took: {duration_embedding_human_readable}",
+        )
     
     end_total_embedding = datetime.now()
     duration_total_embedding = end_total_embedding - start_total_embedding

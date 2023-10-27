@@ -56,7 +56,7 @@ def random_forest_pipeline(
         )
         print(
             f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
-            f"[graph: {i}/{length_of_labelled_graphs}]]",
+            f"[graph: {i+1}/{length_of_labelled_graphs}]]",
             f"embeddings len: {len(embeddings)}, features: {embeddings[0].shape}",
         )
         # Node2Vec embeddings to numpy array
@@ -75,7 +75,7 @@ def random_forest_pipeline(
         duration_embedding_human_readable = datetime_to_human_readable_str(duration_embedding)
         print(
             f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
-            f"[graph: {i}/{length_of_labelled_graphs}]]. ",
+            f"[graph: {i+1}/{length_of_labelled_graphs}]]. ",
             f"Embeddings loop took: {0}".format(duration_embedding_human_readable),
         )
     
