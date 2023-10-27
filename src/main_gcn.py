@@ -13,9 +13,6 @@ from graph_conv_net.results.result_writer import ResultWriter
 from graph_conv_net.utils.cpu_gpu_torch import print_device_info
 from graph_conv_net.utils.utils import check_memory, datetime_to_human_readable_str
 
-# -------------------- GPU -------------------- # 
-print_device_info()
-
 # -------------------- Memory limit -------------------- #
 MAX_MEMORY_GB = 250  # 250 GB
 MAX_MEMORY_IN_BYTES = MAX_MEMORY_GB * 1024 ** 3
@@ -156,6 +153,12 @@ def main(params: ProgramParams):
     ))
 
 if __name__ == "__main__":
+
+    # -------------------- GPU -------------------- # 
+    print_device_info()
+    
+    import multiprocessing
+    multiprocessing.set_start_method('spawn')
 
     print("🚀 Running program...")
     params = ProgramParams()

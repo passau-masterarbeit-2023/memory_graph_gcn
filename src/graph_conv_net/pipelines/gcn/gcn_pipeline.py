@@ -1,5 +1,6 @@
 from copy import deepcopy
 from datetime import datetime
+import json
 import torch_geometric.data
 from graph_conv_net.ml.advanced_gcn import AdvancedGCN
 from graph_conv_net.ml.gcn_with_dropout import ImprovedGNN
@@ -104,7 +105,7 @@ def gcn_pipeline(
         print(
             f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
             f"[graph: {i}/{length_of_labelled_graphs}]]. ",
-            f"Embeddings loop took: {0}".format(duration_embedding_human_readable),
+            f"Embeddings loop took: {duration_embedding_human_readable}",
         )
     
     end_total_embedding = datetime.now()
@@ -153,14 +154,18 @@ def gcn_pipeline(
     #     train_data = deepcopy(train_data),
     #     test_data = deepcopy(test_data),
     # )
-    train_and_eval_gcn(
-        params = params,
-        hyperparams = hyperparams,
-        results_writer = deepcopy(results_writer),
-        model = GNN(num_features, num_classes),
-        train_data = deepcopy(train_data),
-        test_data = deepcopy(test_data),
-    )
+    try:
+        train_and_eval_gcn(
+            params = params,
+            hyperparams = hyperparams,
+            results_writer = deepcopy(results_writer),
+            model = GNN(num_features, num_classes),
+            train_data = deepcopy(train_data),
+            test_data = deepcopy(test_data),
+        )
+    except Exception as e:
+        print("->->-> ERROR: {0}".format(e))
+        raise e
     # train_and_eval_gcn(
     #     params = params,
     #     hyperparams = hyperparams,
@@ -264,12 +269,16 @@ def train_and_eval_gcn(
     all_pred_labels = np.array(all_pred_labels)
 
     # Compute the metrics
-    _ = evaluate_metrics(
+    metrics = evaluate_metrics(
         all_true_labels, 
         all_pred_labels,
         results_writer,
         params,
     )
+    assert isinstance(metrics, dict), (
+        f"ERROR: Expected metrics to be of type dict, but got {type(metrics)}"
+    )
+    print("✨ metrics: {0}".format(json.dumps(metrics, indent=4)))
 
     # conclude pipeline
     common_pipeline_end(

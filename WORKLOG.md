@@ -15,6 +15,8 @@ python src/main_gcn.py -i /home/onyr/code/phdtrack/phdtrack_data_clean/ -p gcn-p
 nohup python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 16 -a -n 32  > output_ml_2023_10_27_10h_15.log 2>&1 &
 
 
+pgrep -af "python src/main_gcn"
+
 pkill -f "python src/main_gcn"
 
 pkill -f "python -m"
