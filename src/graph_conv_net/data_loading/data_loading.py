@@ -143,8 +143,9 @@ def dev_load_training_graphs(
         str(len(annotated_graph_dot_gv_file_paths)),
         annotated_graph_dot_gv_dir_path
     ))
-    for i in range(0, (len(annotated_graph_dot_gv_file_paths) % 10)):
-        print("path:", annotated_graph_dot_gv_file_paths[i])
+    if params.cli.args.debug:
+        for i in range(0, (len(annotated_graph_dot_gv_file_paths) % 10)):
+            print("path:", annotated_graph_dot_gv_file_paths[i])
 
     # for now, as a test, filter only "Training" graphs
     annotated_graph_dot_gv_file_paths = [

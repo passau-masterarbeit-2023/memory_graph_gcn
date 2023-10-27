@@ -5,6 +5,7 @@ from graph_conv_net.embedding.node_to_vec_enums import NodeEmbeddingType
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.hyperparams import BaseHyperparams, add_hyperparams_to_result_writer
 from graph_conv_net.results.base_result_writer import BaseResultWriter, SaveFileFormat
+from graph_conv_net.utils.debugging import dp
 from graph_conv_net.utils.utils import datetime_to_human_readable_str, str2enum
 
 def common_load_labelled_graph(
@@ -28,9 +29,9 @@ def common_load_labelled_graph(
     duration = end - start
     duration_human_readable = datetime_to_human_readable_str(duration)
     print("Loading data took: {0}".format(duration_human_readable))
-    print("type(labelled_graphs): {0}".format(type(labelled_graphs)))
-    print("type of a labelled_graphs element: {0}".format(type(labelled_graphs[0])))
-    print("len(labelled_graphs): {0}".format(len(labelled_graphs)))
+    dp("type(labelled_graphs): {0}".format(type(labelled_graphs)))
+    dp("type of a labelled_graphs element: {0}".format(type(labelled_graphs[0])))
+    dp("len(labelled_graphs): {0}".format(len(labelled_graphs)))
 
     results_writer.set_result(
         "nb_input_graphs",

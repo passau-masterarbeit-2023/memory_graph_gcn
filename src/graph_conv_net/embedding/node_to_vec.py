@@ -36,6 +36,7 @@ def generate_node_embedding(
             seed=params.RANDOM_SEED,
             p=hyperparams.node2vec_p,
             q=hyperparams.node2vec_q,
+            quiet = not params.cli.args.debug,
         )
         model = node2vec.fit(
             window=hyperparams.node2vec_window,
