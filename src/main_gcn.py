@@ -97,35 +97,53 @@ def main(params: ProgramParams):
         print("🚀 Running pipelines...")
         params.nb_pipeline_runs = len(hyperparams_list)
 
-        # Set the batch size
-        batch = params.PARALLEL_PIPELINE_BATCH_SIZE
-        print("🔷 Parallel computing BATCH size: {0}".format(batch))
+        if params.cli.args.run_serial:
+            print("🚧 Running in SERIAL mode, so not in parallel...")
+            for i in range(len(hyperparams_list)):
+                current_hyperparams = hyperparams_list[i]
+                res = run_pipeline(i, params, current_hyperparams)
+                if res is not None:
+                    display_pipeline_result_if_error(
+                        start_time,
+                        hyperparams_list,
+                        res
+                    )
+                else:
+                    print(f"✅ [index: {i} / total: {params.nb_pipeline_runs}]",
+                        f"[pipeline name: {current_hyperparams.pipeline_name.value}]",
+                        f"Pipeline ran successfully"
+                    )
 
-        # Main code
-        with ProcessPoolExecutor(max_workers=batch) as executor:
-            for i in range(0, len(hyperparams_list), batch):
-                batch_hyperparams = hyperparams_list[i:i+batch]
+        else:
+            # Set the batch size
+            batch = params.PARALLEL_PIPELINE_BATCH_SIZE
+            print("🔷 Parallel computing BATCH size: {0}".format(batch))
 
-                # Get the results, with error handling
-                futures = list(executor.map(
-                    run_pipeline, 
-                    range(i, i + len(batch_hyperparams)), 
-                    [params] * len(batch_hyperparams), 
-                    batch_hyperparams)
-                )
+            # Main code
+            with ProcessPoolExecutor(max_workers=batch) as executor:
+                for i in range(0, len(hyperparams_list), batch):
+                    batch_hyperparams = hyperparams_list[i:i+batch]
 
-                # Check for exceptions and print/log them
-                for future in futures:
-                    memory_used_gb = check_memory()
-                    print(f" | [󱙌 Program Memory: {memory_used_gb} GB] | ", end="")
-                    if future:
-                        display_pipeline_result_if_error(
-                            start_time,
-                            hyperparams_list,
-                            future
-                        )
-                    else:
-                        print(f"✅ Pipeline ran successfully")
+                    # Get the results, with error handling
+                    futures = list(executor.map(
+                        run_pipeline, 
+                        range(i, i + len(batch_hyperparams)), 
+                        [params] * len(batch_hyperparams), 
+                        batch_hyperparams)
+                    )
+
+                    # Check for exceptions and print/log them
+                    for future in futures:
+                        memory_used_gb = check_memory()
+                        print(f" | [󱙌 Program Memory: {memory_used_gb} GB] | ", end="")
+                        if future:
+                            display_pipeline_result_if_error(
+                                start_time,
+                                hyperparams_list,
+                                future
+                            )
+                        else:
+                            print(f"✅ Pipeline ran successfully")
 
     else:
         print("🚧 Running in DEBUG mode, so not in parallel...")
@@ -156,7 +174,7 @@ if __name__ == "__main__":
 
     # -------------------- GPU -------------------- # 
     print_device_info()
-    
+
     import multiprocessing
     multiprocessing.set_start_method('spawn')
 

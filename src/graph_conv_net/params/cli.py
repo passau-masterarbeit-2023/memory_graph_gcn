@@ -105,6 +105,12 @@ class CLIArguments:
             action='store_true',
             help="Quiet mode for Node2Vec."
         )
+        parser.add_argument(
+            '-s',
+            '--run-serial',
+            action='store_true',
+            help="Run serially."
+        )
 
         # save parsed arguments
         self.args = parser.parse_args()
