@@ -10,13 +10,11 @@ from graph_conv_net.pipelines.hyperparams import BaseHyperparams, FirstGCNPipeli
 from graph_conv_net.pipelines.pipelines import PipelineNames
 from graph_conv_net.pipelines.random_forest.random_forest_pipeline import random_forest_pipeline
 from graph_conv_net.results.result_writer import ResultWriter
+from graph_conv_net.utils.cpu_gpu_torch import print_device_info
 from graph_conv_net.utils.utils import check_memory, datetime_to_human_readable_str
 
-# -------------------- GPU -------------------- #
-import torch
-print(
-    f"🔦 Is CUDA (for Torch) available? {torch.cuda.is_available()}"
-) 
+# -------------------- GPU -------------------- # 
+print_device_info()
 
 # -------------------- Memory limit -------------------- #
 MAX_MEMORY_GB = 250  # 250 GB

@@ -2,17 +2,19 @@ import torch
 import torch.nn.functional as F
 from torch_geometric.nn import GCNConv
 
+from graph_conv_net.utils.cpu_gpu_torch import DEVICE
+
 class GNN(torch.nn.Module):
     def __init__(self, num_features, num_classes):
         super(GNN, self).__init__()
-        self.conv1 = GCNConv(num_features, 16)
-        self.conv2 = GCNConv(16, 32)
-        self.fc1 = torch.nn.Linear(32, 64)
-        self.fc2 = torch.nn.Linear(64, 32)
-        self.fc3 = torch.nn.Linear(32, num_classes)
+        self.conv1 = GCNConv(num_features, 16).to(DEVICE)
+        self.conv2 = GCNConv(16, 32).to(DEVICE)
+        self.fc1 = torch.nn.Linear(32, 64).to(DEVICE)
+        self.fc2 = torch.nn.Linear(64, 32).to(DEVICE)
+        self.fc3 = torch.nn.Linear(32, num_classes).to(DEVICE)
 
     def forward(self, data):
-        x, edge_index = data.x, data.edge_index
+        x, edge_index = data.x.to(DEVICE), data.edge_index.to(DEVICE)
 
         # First Graph Convolution
         x = self.conv1(x, edge_index)

@@ -11,6 +11,7 @@ import numpy as np
 import torch.nn.functional as F
 import networkx as nx
 
+from graph_conv_net.utils.cpu_gpu_torch import DEVICE
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.ml.first_model import GNN
 from graph_conv_net.ml.evaluation import evaluate_metrics
@@ -136,22 +137,22 @@ def gcn_pipeline(
     # train and evaluate models
     print(" 🔘 Training and evaluating models...")
 
-    train_and_eval_gcn(
-        params = params,
-        hyperparams = hyperparams,
-        results_writer = deepcopy(results_writer),
-        model = VerySimplifiedGNN(num_features, num_classes),
-        train_data = deepcopy(train_data),
-        test_data = deepcopy(test_data),
-    )
-    train_and_eval_gcn(
-        params = params,
-        hyperparams = hyperparams,
-        results_writer = deepcopy(results_writer),
-        model = LessSimplifiedGNN(num_features, num_classes),
-        train_data = deepcopy(train_data),
-        test_data = deepcopy(test_data),
-    )
+    # train_and_eval_gcn(
+    #     params = params,
+    #     hyperparams = hyperparams,
+    #     results_writer = deepcopy(results_writer),
+    #     model = VerySimplifiedGNN(num_features, num_classes),
+    #     train_data = deepcopy(train_data),
+    #     test_data = deepcopy(test_data),
+    # )
+    # train_and_eval_gcn(
+    #     params = params,
+    #     hyperparams = hyperparams,
+    #     results_writer = deepcopy(results_writer),
+    #     model = LessSimplifiedGNN(num_features, num_classes),
+    #     train_data = deepcopy(train_data),
+    #     test_data = deepcopy(test_data),
+    # )
     train_and_eval_gcn(
         params = params,
         hyperparams = hyperparams,
@@ -160,22 +161,22 @@ def gcn_pipeline(
         train_data = deepcopy(train_data),
         test_data = deepcopy(test_data),
     )
-    train_and_eval_gcn(
-        params = params,
-        hyperparams = hyperparams,
-        results_writer = deepcopy(results_writer),
-        model = ImprovedGNN(num_features, num_classes),
-        train_data = deepcopy(train_data),
-        test_data = deepcopy(test_data),
-    )
-    train_and_eval_gcn(
-        params = params,
-        hyperparams = hyperparams,
-        results_writer = deepcopy(results_writer),
-        model = AdvancedGCN(num_features, num_classes),
-        train_data = deepcopy(train_data),
-        test_data = deepcopy(test_data),
-    )
+    # train_and_eval_gcn(
+    #     params = params,
+    #     hyperparams = hyperparams,
+    #     results_writer = deepcopy(results_writer),
+    #     model = ImprovedGNN(num_features, num_classes),
+    #     train_data = deepcopy(train_data),
+    #     test_data = deepcopy(test_data),
+    # )
+    # train_and_eval_gcn(
+    #     params = params,
+    #     hyperparams = hyperparams,
+    #     results_writer = deepcopy(results_writer),
+    #     model = AdvancedGCN(num_features, num_classes),
+    #     train_data = deepcopy(train_data),
+    #     test_data = deepcopy(test_data),
+    # )
     
     
 
@@ -222,10 +223,9 @@ def train_and_eval_gcn(
     )
 
     # Define loss function and optimizer
-    pos_weight = torch.tensor([1.0, 50.0])  # Adjust the weight for the positive class
+    pos_weight = torch.tensor([1.0, 50.0]).to(DEVICE)
     criterion = torch.nn.BCEWithLogitsLoss(pos_weight=pos_weight)
     optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
-
 
     # Training loop
     print(" 🔘 Training...")
@@ -234,6 +234,7 @@ def train_and_eval_gcn(
 
     for _ in range(epochs):
         for data in train_data:
+            data = data.to(DEVICE)
             optimizer.zero_grad()
             output = model(data)
             target = F.one_hot(data.y.view(-1).long(), num_classes=2).float()
