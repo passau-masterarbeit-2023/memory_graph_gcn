@@ -70,7 +70,8 @@ def feature_evaluation_pipeline(
     start_total_embedding = datetime.now()
 
     all_samples_and_labels: list[SamplesAndLabels] = []
-    for labelled_graph in labelled_graphs:
+    for i in range(len(labelled_graphs)):
+        labelled_graph = labelled_graphs[i]
 
         start_embedding = datetime.now()
 
@@ -81,8 +82,11 @@ def feature_evaluation_pipeline(
             hyperparams,
             custom_comment_embedding_len,
         )
-        print(f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}] embeddings len: {len(embeddings)}, features: {embeddings[0].shape}")
-        
+        print(
+            f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
+            f"[graph: {i}/{len(labelled_graphs)}]]",
+            f"embeddings len: {len(embeddings)}, features: {embeddings[0].shape}",
+        )
         # embeddings to numpy array
         samples = np.vstack(embeddings) # (2D array of float32)
 

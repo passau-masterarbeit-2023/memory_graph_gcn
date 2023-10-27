@@ -12,6 +12,12 @@ from graph_conv_net.pipelines.random_forest.random_forest_pipeline import random
 from graph_conv_net.results.result_writer import ResultWriter
 from graph_conv_net.utils.utils import check_memory, datetime_to_human_readable_str
 
+# -------------------- GPU -------------------- #
+import torch
+print(
+    f"🔦 Is CUDA (for Torch) available? {torch.cuda.is_available()}"
+) 
+
 # -------------------- Memory limit -------------------- #
 MAX_MEMORY_GB = 250  # 250 GB
 MAX_MEMORY_IN_BYTES = MAX_MEMORY_GB * 1024 ** 3

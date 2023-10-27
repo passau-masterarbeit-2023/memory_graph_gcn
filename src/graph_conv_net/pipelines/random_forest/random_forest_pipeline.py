@@ -41,7 +41,9 @@ def random_forest_pipeline(
     start_total_embedding = datetime.now()
 
     all_samples_and_labels: list[SamplesAndLabels] = []
-    for labelled_graph in labelled_graphs:
+    length_of_labelled_graphs = len(labelled_graphs)
+    for i in range(length_of_labelled_graphs):
+        labelled_graph = labelled_graphs[i]
 
         start_embedding = datetime.now()
 
@@ -52,31 +54,17 @@ def random_forest_pipeline(
             hyperparams,
             custom_comment_embedding_len
         )
-        print(f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}] embeddings len: {len(embeddings)}, features: {embeddings[0].shape}")
-        
+        print(
+            f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
+            f"[graph: {i}/{length_of_labelled_graphs}]]",
+            f"embeddings len: {len(embeddings)}, features: {embeddings[0].shape}",
+        )
         # Node2Vec embeddings to numpy array
         samples = np.vstack(embeddings) # (2D array of float32)
 
         # labels from graph nodes 
         labels_in_list = [labelled_graph.graph.nodes[node]['label'] for node in labelled_graph.graph.nodes]
         labels = np.array(labels_in_list, dtype=np.int32) # (1D array of int32)
-        
-        # # check there is the same number of samples and labels
-        # assert samples.shape[0] == labels.shape[0], (
-        #     f"ERROR: Expected the same number of samples and labels, "
-        #     f"but got {samples.shape[0]} samples and {labels.shape[0]} labels. "
-        #     f"For GV file path: {labelled_graph.gv_file_path}."
-        # )
-
-        # # check that there is no NaN values
-        # assert np.isnan(samples).any() == False, (
-        #     f"ERROR: NaN values found in samples. "
-        #     f"For GV file path: {labelled_graph.gv_file_path}."
-        # )
-        # assert np.isnan(labels).any() == False, (
-        #     f"ERROR: NaN values found in labels. "
-        #     f"For GV file path: {labelled_graph.gv_file_path}."
-        # )
 
         all_samples_and_labels.append(
             SamplesAndLabels(samples, labels)
@@ -85,7 +73,11 @@ def random_forest_pipeline(
         end_embedding = datetime.now()
         duration_embedding = end_embedding - start_embedding
         duration_embedding_human_readable = datetime_to_human_readable_str(duration_embedding)
-        print("Generating embeddings took: {0}".format(duration_embedding_human_readable))
+        print(
+            f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
+            f"[graph: {i}/{length_of_labelled_graphs}]]. ",
+            f"Embeddings loop took: {0}".format(duration_embedding_human_readable),
+        )
     
     end_total_embedding = datetime.now()
     duration_total_embedding = end_total_embedding - start_total_embedding

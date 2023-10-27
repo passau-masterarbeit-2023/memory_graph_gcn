@@ -44,12 +44,15 @@ def gcn_pipeline(
     
     print(" 🔘 Generating embeddings...")
     data_from_graphs = []
-    for i in range(len(labelled_graphs)):
+    length_of_labelled_graphs = len(labelled_graphs)
+    for i in range(length_of_labelled_graphs):
         labelled_graph = labelled_graphs[i]
         dp(
             "Graph contains: nb nodes: {0}".format(len(labelled_graph.graph.nodes)), 
             "nb edges: {0}".format(len(labelled_graph.graph.edges))
         )
+
+        start_embedding = datetime.now()
         
         # Generate Node2Vec embeddings
         embeddings = generate_node_embedding(
@@ -60,7 +63,7 @@ def gcn_pipeline(
         )
         print(
             f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
-            f"[graph: {i}/{len(labelled_graphs)}]]",
+            f"[graph: {i}/{length_of_labelled_graphs}]]",
             f"embeddings len: {len(embeddings)}, features: {embeddings[0].shape}",
         )
         
@@ -93,6 +96,15 @@ def gcn_pipeline(
         )
         data.validate(raise_on_error=True)
         data_from_graphs.append(data)
+
+        end_embedding = datetime.now()
+        duration_embedding = end_embedding - start_embedding
+        duration_embedding_human_readable = datetime_to_human_readable_str(duration_embedding)
+        print(
+            f" ▶ [pipeline index: {hyperparams.index}/{params.nb_pipeline_runs}]",
+            f"[graph: {i}/{length_of_labelled_graphs}]]. ",
+            f"Embeddings loop took: {0}".format(duration_embedding_human_readable),
+        )
     
     end_total_embedding = datetime.now()
     duration_total_embedding = end_total_embedding - start_total_embedding

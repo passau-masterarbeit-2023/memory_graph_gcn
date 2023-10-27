@@ -99,6 +99,12 @@ class CLIArguments:
             action='store_true',
             help="Remove file if error, when loading GV files."
         )
+        parser.add_argument(
+            '-q',
+            '--quiet',
+            action='store_true',
+            help="Quiet mode for Node2Vec."
+        )
 
         # save parsed arguments
         self.args = parser.parse_args()

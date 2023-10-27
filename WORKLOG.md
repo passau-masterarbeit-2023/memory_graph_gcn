@@ -8,10 +8,16 @@ Goal: ML for Key detection > We want to learn a model using a Graph Convolution 
 
 On Drogon
 
-`nohup python src/sanity_check_gv_files.py -k > output_2023_10_26_15h_51.log 2>&1 &`: Run sanity checker on the server, in background and capture output to log file.
+`nohup python src/sanity_check_gv_files.py -k > output_sanity_check_2023_10_26_15h_51.log 2>&1 &`: Run sanity checker on the server, in background and capture output to log file.
+
+python src/main_gcn.py -i /home/onyr/code/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -n 3
 
 nohup python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 16 -a -n 32  > output_ml_2023_10_27_10h_15.log 2>&1 &
 
+
+pkill -f "python src/main_gcn"
+
+pkill -f "python -m"
 
 ### Tue 24 Oct 2023
 
