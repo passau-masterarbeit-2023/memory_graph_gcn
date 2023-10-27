@@ -1,6 +1,7 @@
 from concurrent.futures import ProcessPoolExecutor
 from datetime import datetime
 import traceback
+import resource
 
 from graph_conv_net.params.params import ProgramParams
 from graph_conv_net.pipelines.feature_eval.feature_eval_pipeline import feature_evaluation_pipeline
@@ -9,7 +10,14 @@ from graph_conv_net.pipelines.hyperparams import BaseHyperparams, FirstGCNPipeli
 from graph_conv_net.pipelines.pipelines import PipelineNames
 from graph_conv_net.pipelines.random_forest.random_forest_pipeline import random_forest_pipeline
 from graph_conv_net.results.result_writer import ResultWriter
-from graph_conv_net.utils.utils import datetime_to_human_readable_str
+from graph_conv_net.utils.utils import check_memory, datetime_to_human_readable_str
+
+# -------------------- Memory limit -------------------- #
+MAX_MEMORY_GB = 250  # 250 GB
+MAX_MEMORY_IN_BYTES = MAX_MEMORY_GB * 1024 ** 3
+resource.setrlimit(resource.RLIMIT_AS, 
+    (MAX_MEMORY_IN_BYTES, MAX_MEMORY_IN_BYTES)
+)
 
 def run_pipeline(
         i: int, 
@@ -107,6 +115,8 @@ def main(params: ProgramParams):
 
                 # Check for exceptions and print/log them
                 for future in futures:
+                    memory_used_gb = check_memory()
+                    print(f" | [󱙌 Program Memory: {memory_used_gb} GB] | ", end="")
                     if future:
                         display_pipeline_result_if_error(
                             start_time,

@@ -45,7 +45,8 @@ def convert_graph_to_ml_data(nx_graph: nx.Graph):
 
 def load_annotated_graph(
     pickle_dataset_dir_path: str,
-    annotated_graph_dot_gv_file_path: str
+    annotated_graph_dot_gv_file_path: str,
+    remove_file_if_error: bool,
 ):
     """
     Load annotated graph from given path.
@@ -95,8 +96,9 @@ def load_annotated_graph(
             exit(1)
         except Exception as e:
             print(f" 󰮘 Error ('{type(e)}') reading {annotated_graph_dot_gv_file_path}: {e}")
-            #os.remove(annotated_graph_dot_gv_file_path)
-            print(f" 󰆴 -> Removed {annotated_graph_dot_gv_file_path}")
+            if remove_file_if_error:
+                os.remove(annotated_graph_dot_gv_file_path)
+                print(f" 󰆴 -> Removed {annotated_graph_dot_gv_file_path}")
             return None
         
         # add node labels
@@ -128,7 +130,6 @@ def load_annotated_graph(
 
 def dev_load_training_graphs(
     params: ProgramParams,
-    hyperparams: BaseHyperparams,
     annotated_graph_dot_gv_dir_path: str
 ):
     """
@@ -162,7 +163,10 @@ def dev_load_training_graphs(
         # Submit all tasks and keep their futures
         futures = {
             executor.submit(
-                load_annotated_graph, params.PICKLE_DATASET_DIR_PATH, path
+                load_annotated_graph, 
+                params.PICKLE_DATASET_DIR_PATH, 
+                path, 
+                params.cli.args.remove_file_if_error
             ): path for path in annotated_graph_dot_gv_file_paths
         }
         

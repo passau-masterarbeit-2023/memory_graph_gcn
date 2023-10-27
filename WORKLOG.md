@@ -10,6 +10,8 @@ On Drogon
 
 `nohup python src/sanity_check_gv_files.py -k > output_2023_10_26_15h_51.log 2>&1 &`: Run sanity checker on the server, in background and capture output to log file.
 
+nohup python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 16 -a -n 32  > output_ml_2023_10_27_10h_15.log 2>&1 &
+
 
 ### Tue 24 Oct 2023
 
@@ -69,7 +71,6 @@ Loading graphs: 100%|███████████████████�
 
 The last step is launching the ML and DL on the graph dataset.
 
-
 ---
 
 On the server:
@@ -93,7 +94,6 @@ root@compute-container-rascoussie-d584d4794-lbm9r:~/onyr_phdtrack# find phdtrack
 ```
 
 `python src/sanity_check_gv_files.py -k`: Run sanity checks. Keep old checked files.
-
 
 ### Mon 23 Oct 2023
 

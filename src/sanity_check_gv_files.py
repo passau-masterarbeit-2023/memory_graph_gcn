@@ -17,7 +17,7 @@ from graph_conv_net.graph.memgraph import MemGraph
 from concurrent.futures import ProcessPoolExecutor, as_completed
 from tqdm import tqdm
 
-from graph_conv_net.utils.utils import datetime_to_human_readable_str
+from graph_conv_net.utils.utils import check_memory, datetime_to_human_readable_str
 
 # -------------------- Memory limit -------------------- #
 MAX_MEMORY_GB = 250  # 250 GB
@@ -58,6 +58,12 @@ class CLIArguments:
             action='store_true',
             help="Keep old output files."
         )
+        parser.add_argument(
+            '-r',
+            '--remove-file-if-error',
+            action='store_true',
+            help="Remove file if error, when loading GV files."
+        )
         # skip directory starting with number
         parser.add_argument(
             '-s',
@@ -82,19 +88,12 @@ class CLIArguments:
                 arg, getattr(self.args, arg)
             ))
 
-
 def load_env_file():
     """
     Load the environment variables from the .env file.
     """
     dotenv_path = os.path.join(os.path.dirname(__file__), ".env")
     load_dotenv(dotenv_path)
-
-def check_memory():
-    # Get the memory usage in GB
-    memory_info = psutil.virtual_memory()
-    used_memory_gb = (memory_info.total - memory_info.available) / (1024 ** 3)
-    return used_memory_gb
 
 def simple_get_mem2graph_dataset_dir_paths(cli: CLIArguments):
     """
@@ -159,7 +158,10 @@ def remove_pickled_cached_graphs():
     
     return nb_removed_cached_graphs
 
-def load_graph(gv_file_path: str):
+def load_graph(
+    gv_file_path: str,
+    remove_file_if_error: bool,
+):
     PICKLE_DATASET_DIR_PATH = os.environ.get("PICKLE_DATASET_DIR_PATH")
     assert PICKLE_DATASET_DIR_PATH is not None, (
         "🚩 PANIC: PICKLE_DATASET_DIR_PATH is None. "
@@ -168,6 +170,7 @@ def load_graph(gv_file_path: str):
     memgraph = load_annotated_graph(
         PICKLE_DATASET_DIR_PATH,
         gv_file_path,
+        remove_file_if_error
     )
     if memgraph is None:
         print("🔄 MemGraph from {0} is None, skipping...".format(gv_file_path))
@@ -179,7 +182,10 @@ def load_graph(gv_file_path: str):
 
     return nb_features
 
-def load_and_check_graph_in_dir(dir_path: str): 
+def load_and_check_graph_in_dir(
+    dir_path: str,
+    remove_file_if_error: bool,
+): 
     gv_file_paths = find_gv_files(dir_path)
     if len(gv_file_paths) == 0:
         print("󰡯 No .gv files found in {0}, skipping...".format(dir_path))
@@ -195,7 +201,7 @@ def load_and_check_graph_in_dir(dir_path: str):
         # Submit all tasks and keep their futures
         futures = {
             executor.submit(
-                load_graph, path
+                load_graph, path, remove_file_if_error
             ): path for path in gv_file_paths
         }
 
@@ -284,6 +290,7 @@ def main(cli: CLIArguments):
         try:
             nb_memgraphs_, nb_skipped_ = load_and_check_graph_in_dir(
                 mem2graph_dir_path,
+                cli.args.remove_file_if_error
             )
             print(f" -> ✅ {nb_memgraphs_} graphs in {mem2graph_dir_path} have been loaded and checked.")
             print(f" -> 💥 {nb_skipped_} graphs in {mem2graph_dir_path} have been skipped (deleted).")

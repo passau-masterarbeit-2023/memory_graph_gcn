@@ -71,7 +71,7 @@ class CLIArguments:
             type=str,
             default=None,
             choices=[e.value for e in NodeEmbeddingType],
-            help=f"Node embedding type: {[e.value for e in NodeEmbeddingType]}. Custom comment embedding depends on the input Mem2Graph dataset."
+            help=f"Node embedding type: {[e.value for e in NodeEmbeddingType]}. Custom comment embedding depends on the input Mem2Graph dataset. Iterating over all available embeddings combinations if no embedding specified."
         )
         parser.add_argument(
             '-n',
@@ -92,6 +92,12 @@ class CLIArguments:
             type=int,
             default=None,
             help="Batch size for parallel processing of graphs."
+        )
+        parser.add_argument(
+            '-r',
+            '--remove-file-if-error',
+            action='store_true',
+            help="Remove file if error, when loading GV files."
         )
 
         # save parsed arguments
@@ -142,6 +148,12 @@ class CLIArguments:
         # all Mem2Graph datasets
         if self.args.all_mem2graph_datasets:
             print("🔷 Using all Mem2Graph datasets to generate compute instances")
+
+        # if remove file if error
+        if self.args.remove_file_if_error:
+            print("🔷 Removing file if error when loading GV files")
+        else:
+            print("🔷 Not removing file if error when loading GV files")
 
         # log parsed arguments
         print("Parsed program params:")

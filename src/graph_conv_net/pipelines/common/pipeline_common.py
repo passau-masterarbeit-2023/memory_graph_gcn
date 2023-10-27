@@ -20,7 +20,6 @@ def common_load_labelled_graph(
     
     labelled_graphs = dev_load_training_graphs(
         params,
-        hyperparams,
         hyperparams.input_mem2graph_dataset_dir_path,
     )
     assert len(labelled_graphs) > 0, "ERROR: No graph was actually loaded."
