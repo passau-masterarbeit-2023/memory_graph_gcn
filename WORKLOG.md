@@ -35,6 +35,26 @@ AssertionError: ERROR: Expected hyperparams to be of type Node2VecHyperparams, b
 
 Generating data on Laptop took (12h 31m 53s) (45113.269131 total sec) for 630 ML/GCN pipelines, on 16 graph inputs per pipeline.
 
+```shell
+ | [󱙌 Program Memory: 145.55339431762695 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 145.55339431762695 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 145.65070724487305 GB] | ❌ ERROR: in pipeline [index: 648], after 105477.213928 total sec (29h 17m 57s), for pipeline PipelineNames.FeatureEvaluationPipeline, with hyperparams BaseHyperparams(index=648, pipeline_name=<PipelineNames.FeatureEvaluationPipeline: 'feature-evaluation-pipeline'>, input_mem2graph_dataset_dir_path='/root/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>). 
+Mem2Graph GV dataset dir: /root/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate. 
+Exception: ERROR: Expected hyperparams to be of type Node2VecHyperparams, but got <class 'graph_conv_net.pipelines.hyperparams.BaseHyperparams'> 
+Traceback (most recent call last):
+  File "/root/phdtrack/memory_graph_gcn/src/main_gcn.py", line 48, in run_pipeline
+    feature_evaluation_pipeline(params, hyperparams, result_writer)
+  File "/root/phdtrack/memory_graph_gcn/src/graph_conv_net/pipelines/feature_eval/feature_eval_pipeline.py", line 81, in feature_evaluation_pipeline
+    embeddings: list[np.ndarray[tuple[int], np.dtype[np.float32]]] = generate_node_embedding(
+                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/phdtrack/memory_graph_gcn/src/graph_conv_net/embedding/node_to_vec.py", line 26, in generate_node_embedding
+    assert isinstance(hyperparams, Node2VecHyperparams), (
+AssertionError: ERROR: Expected hyperparams to be of type Node2VecHyperparams, but got <class 'graph_conv_net.pipelines.hyperparams.BaseHyperparams'>
+
+```
+
+The server, used on exact same memgraph dataset, is actually much much slower: 29h 17m 57s. This allows to have twice the number of samples.
+
 * [X] Integrate results inside the report. Generate visualizations and results tables.
 
 ### Thu 26 Oct 2023
