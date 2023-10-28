@@ -35,27 +35,25 @@ AssertionError: ERROR: Expected hyperparams to be of type Node2VecHyperparams, b
 
 Generating data on Laptop took (12h 31m 53s) (45113.269131 total sec) for 630 ML/GCN pipelines, on 16 graph inputs per pipeline.
 
+* [X] Integrate results inside the report. Generate visualizations and results tables.
+
 ### Thu 26 Oct 2023
 
 On Drogon
 
 `nohup python src/sanity_check_gv_files.py -k > output_sanity_check_2023_10_26_15h_51.log 2>&1 &`: Run sanity checker on the server, in background and capture output to log file.
 
-python src/main_gcn.py -i /home/onyr/code/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -n 3
+`python src/main_gcn.py -i /home/onyr/code/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -n 3`
 
 `nohup python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -q -n 16  > output_ml_2023_10_27_15h_00.log 2>&1 &`: command currently running on the Drogon server. Full multi-pipeline hyperparam tuning, in parallel computing mode, for 16 graphs as input.
 
+`pgrep -af "python src/main_gcn"`
 
-pgrep -af "python src/main_gcn"
+`pkill -f "python src/main_gcn"`
 
-pkill -f "python src/main_gcn"
+`pkill -f "python -m"`
 
-pkill -f "python -m"
-
-
-
-
-python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline -a -q -n 3 -b 6
+`python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline -a -q -n 3 -b 6`
 
 ### Tue 24 Oct 2023
 
