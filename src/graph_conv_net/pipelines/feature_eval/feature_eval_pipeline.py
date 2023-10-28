@@ -44,7 +44,7 @@ def __determine_feature_corr_matrix_save_file_path(
 
 def feature_evaluation_pipeline(
     params: ProgramParams,
-    hyperparams: BaseHyperparams,
+    hyperparams: BaseHyperparams | Node2VecHyperparams,
     results_writer: BaseResultWriter,
 ):
     """

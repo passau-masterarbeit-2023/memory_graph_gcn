@@ -2,7 +2,38 @@
 
 Goal: ML for Key detection > We want to learn a model using a Graph Convolution Network on our annotated memory graphs.
 
+## Improvements
+
+* [ ] Implement a system to avoid to run a pipeline whose results have already been saved.
+* [ ] Implement a cache system for Node2Vec embeddings.
+
 ## Logs
+
+### Sat 28 Oct 2023
+
+* [X] Correct error on the ML/DL/FE program. I removed Feature Evaluation instances that have Node2Vec in their embedding. This could be future work improvement. It's a complex task since Node2Vec produced (as of the hyperparameters selected), 128 features.
+
+```shell
+ | [󱙌 Program Memory: 16.561058044433594 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 16.561058044433594 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 16.561058044433594 GB] | ❌ ERROR: in pipeline [index: 632], after 45113.269131 total sec (12h 31m 53s), for pipeline PipelineNames.FeatureEvaluationPipeline, with hyperparams BaseHyperparams(index=648, pipeline_name=<PipelineNames.FeatureEvaluationPipeline: 'feature-evaluation-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>). 
+Mem2Graph GV dataset dir: /home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none. 
+Exception: ERROR: Expected hyperparams to be of type Node2VecHyperparams, but got <class 'graph_conv_net.pipelines.hyperparams.BaseHyperparams'> 
+Traceback (most recent call last):
+  File "/home/onyr/code/phdtrack/memory_graph_gcn/src/main_gcn.py", line 48, in run_pipeline
+    feature_evaluation_pipeline(params, hyperparams, result_writer)
+  File "/home/onyr/code/phdtrack/memory_graph_gcn/src/graph_conv_net/pipelines/feature_eval/feature_eval_pipeline.py", line 81, in feature_evaluation_pipeline
+    embeddings: list[np.ndarray[tuple[int], np.dtype[np.float32]]] = generate_node_embedding(
+                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/onyr/code/phdtrack/memory_graph_gcn/src/graph_conv_net/embedding/node_to_vec.py", line 26, in generate_node_embedding
+    assert isinstance(hyperparams, Node2VecHyperparams), (
+AssertionError: ERROR: Expected hyperparams to be of type Node2VecHyperparams, but got <class 'graph_conv_net.pipelines.hyperparams.BaseHyperparams'>
+
+[6]-  Killed                  python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 16 -a -q -n 16 -s
+[7]+  Killed                  python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 16 -a -q -n 16
+```
+
+Generating data on Laptop took (12h 31m 53s) (45113.269131 total sec) for 630 ML/GCN pipelines, on 16 graph inputs per pipeline.
 
 ### Thu 26 Oct 2023
 
@@ -12,7 +43,7 @@ On Drogon
 
 python src/main_gcn.py -i /home/onyr/code/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -n 3
 
-nohup python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 16 -a -q -n 16  > output_ml_2023_10_27_15h_00.log 2>&1 &
+`nohup python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -q -n 16  > output_ml_2023_10_27_15h_00.log 2>&1 &`: command currently running on the Drogon server. Full multi-pipeline hyperparam tuning, in parallel computing mode, for 16 graphs as input.
 
 
 pgrep -af "python src/main_gcn"
@@ -20,6 +51,11 @@ pgrep -af "python src/main_gcn"
 pkill -f "python src/main_gcn"
 
 pkill -f "python -m"
+
+
+
+
+python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline -a -q -n 3 -b 6
 
 ### Tue 24 Oct 2023
 

@@ -183,7 +183,7 @@ def generate_hyperparams(
     )
     print("🔷 node_embedding_types: {0}".format(node_embedding_types))
 
-    node2vec_params_product = product(
+    params_product = product(
         node_embedding_types,
         mem2graph_dataset_dir_paths,
         json_hyperparams["node2vec_dimensions_range"],
@@ -204,7 +204,7 @@ def generate_hyperparams(
     hyperparam_index = 0
 
     # Iterate through the Cartesian product
-    for node2vec_params in node2vec_params_product:
+    for some_params in params_product:
         (
             node_embedding,
             input_mem2graph_dataset_dir_path,
@@ -216,7 +216,7 @@ def generate_hyperparams(
             node2vec_window,
             node2vec_batch_words,
             node2vec_workers
-        ) = node2vec_params
+        ) = some_params
 
         if PipelineNames.ClassicMLPipeline.value in params.cli.args.pipelines:
             for nb_trees in randomforest_trees_range:
@@ -263,13 +263,39 @@ def generate_hyperparams(
     if PipelineNames.FeatureEvaluationPipeline.value in params.cli.args.pipelines:
         for input_mem2graph_dataset_dir_path in mem2graph_dataset_dir_paths:
             for node_embedding in node_embedding_types:
-                feature_eval_hyperparams = BaseHyperparams(
-                    index=hyperparam_index,
-                    pipeline_name=PipelineNames.FeatureEvaluationPipeline,
-                    input_mem2graph_dataset_dir_path=input_mem2graph_dataset_dir_path,
-                    node_embedding=node_embedding,
-                )
-                hyperparams_list.append(feature_eval_hyperparams)
-                hyperparam_index += 1
+
+                if node_embedding.is_using_node2vec():
+                    for node2vec_dimensions in json_hyperparams["node2vec_dimensions_range"]:
+                        # For now, don't add more pipelines
+                        #   Feature evalution on Node2Vec would be too slow
+                        #   And considering the number of features, 
+                        #   representing the results would be complex
+
+                        # feature_eval_hyperparams = Node2VecHyperparams(
+                        #     index=hyperparam_index,
+                        #     pipeline_name=PipelineNames.FeatureEvaluationPipeline,
+                        #     input_mem2graph_dataset_dir_path=input_mem2graph_dataset_dir_path,
+                        #     node_embedding=node_embedding,
+                        #     node2vec_dimensions=node2vec_dimensions,
+                        #     node2vec_walk_length=None,
+                        #     node2vec_num_walks=None,
+                        #     node2vec_p=None,
+                        #     node2vec_q=None,
+                        #     node2vec_window=None,
+                        #     node2vec_batch_words=None,
+                        #     node2vec_workers=None,
+                        # )
+                        # hyperparams_list.append(feature_eval_hyperparams)
+                        # hyperparam_index += 1
+                        pass
+                else:
+                    feature_eval_hyperparams = BaseHyperparams(
+                        index=hyperparam_index,
+                        pipeline_name=PipelineNames.FeatureEvaluationPipeline,
+                        input_mem2graph_dataset_dir_path=input_mem2graph_dataset_dir_path,
+                        node_embedding=node_embedding,
+                    )
+                    hyperparams_list.append(feature_eval_hyperparams)
+                    hyperparam_index += 1
     
     return hyperparams_list
