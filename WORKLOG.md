@@ -8,13 +8,29 @@ Goal: ML for Key detection > We want to learn a model using a Graph Convolution 
 
 ## Logs
 
-Mon 20 Nov 2023
+### Mon 20 Nov 2023
 
 * Added check for input dir path. This crucial init check was still missing.
+* Corrected the Node2Vec embedding cache system to account for hyperparams.
+
+I tested the new version on my laptop: ``python src/main_gcn.py -i /home/onyr/code/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -q -n 3  > output_ml_2023_11_20_11h_02.log``. The code works fine on 3 input graph and limiter number of hyperparams.
+
+Now running new code version on Drogon for testing: `nohup python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -q -n 3  > output_ml_2023_11_20_12h_15.log 2>&1 &`
+
+Remodified hyperparams.json to default, and launched large scale computing of 64 graphs input: `nohup python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -q -n 64  > output_ml_2023_11_20_16h_15.log 2>&1 &`
+
+```shell
+(py311) root@rascoussie:~/phdtrack/memory_graph_gcn# nohup python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -q -n 64  > output_ml_2023_11_20_17h_09.log 2>&1 &
+[1] 2635723
+```
+
+* [ ] Wait for 64 input graph outcome... and replot data.
+* [ ] Depending on how fast the 64 input full-run was, relaunch with 128 inputs.
+* [ ] Make a plot of the evolution of performance with growing number of inputs.
 
 ### Sun 19 Nov 2023
 
-* [ ] Implement a cache system for Node2Vec embeddings.
+* [X] Implement a cache system for Node2Vec embeddings.
 
 ### Sun 29 Oct 2023
 

@@ -45,16 +45,18 @@ def generate_node_embedding(
         if is_node2vec_embedding_cached:
             print(f"󰃨 CACHE: Node2Vec embedding already cached for graph {memgraph.gv_file_path}.")
 
-            # load node2vec embedding for each node from pickle file
-            with open(node2vec_embedding_pickle_path, 'rb') as file:
-                node_to_node2vec_embedding = pickle.load(file)
-                assert isinstance(node_to_node2vec_embedding, dict), (
-                    f"ERROR: Expected node_to_node2vec_embedding to be of type dict, but got {type(node_to_node2vec_embedding)}"
-                )
-                assert len(node_to_node2vec_embedding) == len(memgraph.graph.nodes), (
-                    f"ERROR: Expected node_to_node2vec_embedding to have {len(memgraph.graph.nodes)} nodes, but got {len(node_to_node2vec_embedding)} nodes."
-                )
-        else:
+            try:
+                if is_node2vec_embedding_cached:
+                    with open(node2vec_embedding_pickle_path, 'rb') as file:
+                        node_to_node2vec_embedding = pickle.load(file)
+                        assert isinstance(node_to_node2vec_embedding, dict)
+                        assert len(node_to_node2vec_embedding) == len(memgraph.graph.nodes)
+            except (EOFError, IOError) as e:
+                print(f"󱂥 Error loading file {node2vec_embedding_pickle_path}: {e}. File will be regenerated.")
+                os.remove(node2vec_embedding_pickle_path)
+                is_node2vec_embedding_cached = False # trigger node2vec embedding re-generation
+
+        if not is_node2vec_embedding_cached:
             # No cached node2vec embedding, generate its model from scratch
             node2vec = Node2Vec(
                 memgraph.graph, 
