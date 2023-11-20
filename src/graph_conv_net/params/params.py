@@ -32,6 +32,7 @@ class ProgramParams(BaseProgramParams):
     HYPERPARAMS_JSON_FILE_PATH: str
     NB_RANDOM_FOREST_JOBS: int
     PARALLEL_PIPELINE_BATCH_SIZE: int
+    PICKLE_CACHED_NODE2VEC_EMBEDDINGS: str
 
     def __init__(
             self, 

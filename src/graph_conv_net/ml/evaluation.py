@@ -54,7 +54,7 @@ def evaluate_metrics(
     # Get the classification report in a dictionary format
     # NOTE : cast is used to tell mypy that the return type of classification_report is a dict, not a string
     #       (no runtime effect)
-    clf_report  = cast(Dict[str, Any], classification_report(y_true, y_pred, output_dict=True))
+    clf_report  = cast(Dict[str, Any], classification_report(y_true, y_pred, output_dict=True, zero_division=0))
 
     for predicted_class in __get_predicted_classes_from_report(clf_report):
         precision_field = "precision_class_" + str(predicted_class)

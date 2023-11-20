@@ -166,6 +166,15 @@ class CLIArguments:
             print("🔷 Removing file if error when loading GV files")
         else:
             print("🔷 Not removing file if error when loading GV files")
+        
+        # check input dir path
+        if self.args.input_dir_path:
+            is_input_dir_path_valid = os.path.isdir(self.args.input_dir_path)
+            if is_input_dir_path_valid:
+                print(f"🔷 Using input dir path: {self.args.input_dir_path}")
+            else:
+                print(f"🔴 Invalid input dir path, this dir doesn't exist: {self.args.input_dir_path}")
+                exit(1)
 
         # log parsed arguments
         print("Parsed program params:")

@@ -85,7 +85,10 @@ def main(params: ProgramParams):
     start_time = datetime.now()
 
     hyperparams_list = generate_hyperparams(params)
-                                        
+
+    # filter out hyperparams with index less than the 15
+    #hyperparams_list = [hyperparams for hyperparams in hyperparams_list if hyperparams.index >= 630]
+
     # log the hyperparams
     params.COMMON_LOGGER.info("📝 Logging hyperparams...")
     for i in range(len(hyperparams_list)):
@@ -133,7 +136,9 @@ def main(params: ProgramParams):
                     )
 
                     # Check for exceptions and print/log them
-                    for future in futures:
+                    for j in range(len(futures)):
+                        future = futures[j]
+                        current_hyperparams = batch_hyperparams[j]
                         memory_used_gb = check_memory()
                         print(f" | [󱙌 Program Memory: {memory_used_gb} GB] | ", end="")
                         if future:
@@ -143,7 +148,10 @@ def main(params: ProgramParams):
                                 future
                             )
                         else:
-                            print(f"✅ Pipeline ran successfully")
+                            print(f"✅ [index: {i} / total: {params.nb_pipeline_runs}]",
+                                f"[pipeline name: {current_hyperparams.pipeline_name.value}]",
+                                f"Pipeline ran successfully"
+                            )
 
     else:
         print("🚧 Running in DEBUG mode, so not in parallel...")

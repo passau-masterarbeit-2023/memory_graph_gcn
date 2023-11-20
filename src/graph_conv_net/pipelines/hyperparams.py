@@ -65,6 +65,21 @@ class Node2VecHyperparams(BaseHyperparams):
     node2vec_batch_words: int
     node2vec_workers: int
 
+    def node2vec_hyperparams_to_str(self):
+        """
+        Converts the Node2Vec hyperparams to a string that can be used for cache file name.
+        """
+        node2vec_hyperparams_str = "node2vec__"
+        node2vec_hyperparams_str += "-dm_" + str(self.node2vec_dimensions) + "_"
+        node2vec_hyperparams_str += "-wl_" + str(self.node2vec_walk_length) + "_"
+        node2vec_hyperparams_str += "-nw_" + str(self.node2vec_num_walks) + "_"
+        node2vec_hyperparams_str += "-p_" + str(self.node2vec_p) + "_"
+        node2vec_hyperparams_str += "-q_" + str(self.node2vec_q) + "_"
+        node2vec_hyperparams_str += "-w_" + str(self.node2vec_window) + "_"
+        node2vec_hyperparams_str += "-bw_" + str(self.node2vec_batch_words) + "_"
+        node2vec_hyperparams_str += "-wk_" + str(self.node2vec_workers) + "_"
+        return node2vec_hyperparams_str
+
 @dataclass(init=True, repr=True, eq=True, unsafe_hash=True, frozen=True)
 class FirstGCNPipelineHyperparams(Node2VecHyperparams):
     first_gcn_training_epochs: int

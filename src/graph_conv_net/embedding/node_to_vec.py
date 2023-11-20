@@ -1,4 +1,6 @@
 import json
+import os
+import pickle
 import networkx as nx
 from node2vec import Node2Vec
 from graph_conv_net.graph.memgraph import MemGraph
@@ -21,37 +23,70 @@ def generate_node_embedding(
     use_node2vec_embedding = hyperparams.node_embedding.is_using_node2vec()
     use_comment_embedding = hyperparams.node_embedding.is_using_custom_comment_embedding()
 
+    # node2vec embedding
+    is_node2vec_embedding_cached = False
     model = None
-    if use_node2vec_embedding: 
+    node_to_node2vec_embedding: dict[str, np.ndarray] | None = None
+    node2vec_embedding_pickle_path: str | None = None
+
+    if use_node2vec_embedding:
         assert isinstance(hyperparams, Node2VecHyperparams), (
             f"ERROR: Expected hyperparams to be of type Node2VecHyperparams, but got {type(hyperparams)}"
         )
-        # Generate Node2Vec embeddings
-        node2vec = Node2Vec(
-            memgraph.graph, 
-            dimensions=hyperparams.node2vec_dimensions,
-            walk_length=hyperparams.node2vec_walk_length,
-            num_walks=hyperparams.node2vec_num_walks,
-            workers=hyperparams.node2vec_workers,
-            seed=params.RANDOM_SEED,
-            p=hyperparams.node2vec_p,
-            q=hyperparams.node2vec_q,
-            quiet = params.cli.args.quiet,
-        )
-        model = node2vec.fit(
-            window=hyperparams.node2vec_window,
-            min_count=1, 
-            batch_words=hyperparams.node2vec_batch_words,
-        )
+
+        # caching: file name
+        file_name = os.path.basename(memgraph.gv_file_path)
+        last_dir_folder_name = os.path.basename(os.path.dirname(memgraph.gv_file_path))
+        node2vec_hyperparams_str = hyperparams.node2vec_hyperparams_to_str()
+        node2vec_embedding_pickle_path = params.PICKLE_CACHED_NODE2VEC_EMBEDDINGS + "/" + last_dir_folder_name[:2] + "__" + file_name + "__" + node2vec_hyperparams_str + ".pickle"
+        is_node2vec_embedding_cached = os.path.exists(node2vec_embedding_pickle_path)
+
+        # caching: skip node2vec embedding if cached
+        if is_node2vec_embedding_cached:
+            print(f"󰃨 CACHE: Node2Vec embedding already cached for graph {memgraph.gv_file_path}.")
+
+            # load node2vec embedding for each node from pickle file
+            with open(node2vec_embedding_pickle_path, 'rb') as file:
+                node_to_node2vec_embedding = pickle.load(file)
+                assert isinstance(node_to_node2vec_embedding, dict), (
+                    f"ERROR: Expected node_to_node2vec_embedding to be of type dict, but got {type(node_to_node2vec_embedding)}"
+                )
+                assert len(node_to_node2vec_embedding) == len(memgraph.graph.nodes), (
+                    f"ERROR: Expected node_to_node2vec_embedding to have {len(memgraph.graph.nodes)} nodes, but got {len(node_to_node2vec_embedding)} nodes."
+                )
+        else:
+            # No cached node2vec embedding, generate its model from scratch
+            node2vec = Node2Vec(
+                memgraph.graph, 
+                dimensions=hyperparams.node2vec_dimensions,
+                walk_length=hyperparams.node2vec_walk_length,
+                num_walks=hyperparams.node2vec_num_walks,
+                workers=hyperparams.node2vec_workers,
+                seed=params.RANDOM_SEED,
+                p=hyperparams.node2vec_p,
+                q=hyperparams.node2vec_q,
+                quiet = params.cli.args.quiet,
+            )
+            model = node2vec.fit(
+                window=hyperparams.node2vec_window,
+                min_count=1, 
+                batch_words=hyperparams.node2vec_batch_words,
+            )
     
     embeddings = []
+    node_to_node2vec_embedding_for_cache: dict[str, np.ndarray] = {}
     for node, data in memgraph.graph.nodes(data=True):
         node_node2vec_embedding = None
         node_comment_embedding = None
         
         if use_node2vec_embedding:
-            assert model is not None
-            node_node2vec_embedding = model.wv[str(node)]
+            if is_node2vec_embedding_cached:
+                assert node_to_node2vec_embedding is not None
+                node_node2vec_embedding = node_to_node2vec_embedding[str(node)]
+            else:
+                assert model is not None
+                node_node2vec_embedding = model.wv[str(node)]
+                node_to_node2vec_embedding_for_cache[str(node)] = node_node2vec_embedding
 
         if use_comment_embedding:
             node_comment: str | None = data["comment"]
@@ -88,5 +123,11 @@ def generate_node_embedding(
             embeddings.append(node_comment_embedding)
         else:
             raise Exception("No node embedding generated!")
+    
+    # cache: save node2vec embedding for each node to pickle file
+    if not is_node2vec_embedding_cached and use_node2vec_embedding:
+        assert node2vec_embedding_pickle_path is not None
+        with open(node2vec_embedding_pickle_path, 'wb') as file:
+            pickle.dump(node_to_node2vec_embedding_for_cache, file)
     
     return embeddings

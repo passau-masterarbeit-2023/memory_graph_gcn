@@ -5,9 +5,22 @@ Goal: ML for Key detection > We want to learn a model using a Graph Convolution 
 ## Improvements
 
 * [ ] Implement a system to avoid to run a pipeline whose results have already been saved.
-* [ ] Implement a cache system for Node2Vec embeddings.
 
 ## Logs
+
+Mon 20 Nov 2023
+
+* Added check for input dir path. This crucial init check was still missing.
+
+### Sun 19 Nov 2023
+
+* [ ] Implement a cache system for Node2Vec embeddings.
+
+### Sun 29 Oct 2023
+
+Running a new pass of computations on the server.
+
+`nohup python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -q -n 32  > output_ml_2023_10_29_15h_32.log 2>&1 &`
 
 ### Sat 28 Oct 2023
 
@@ -65,7 +78,7 @@ On Drogon
 
 `python src/main_gcn.py -i /home/onyr/code/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -n 3`
 
-`nohup python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -q -n 16  > output_ml_2023_10_27_15h_00.log 2>&1 &`: command currently running on the Drogon server. Full multi-pipeline hyperparam tuning, in parallel computing mode, for 16 graphs as input.
+`nohup python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline classic-ml-pipeline feature-evaluation-pipeline -b 6 -a -q -n 16  > output_ml_2023_10_27_16h_35.log 2>&1 &`: command currently running on the Drogon server. Full multi-pipeline hyperparam tuning, in parallel computing mode, for 16 graphs as input.
 
 `pgrep -af "python src/main_gcn"`
 
@@ -74,6 +87,8 @@ On Drogon
 `pkill -f "python -m"`
 
 `python src/main_gcn.py -i /root/phdtrack/phdtrack_data_clean/ -p gcn-pipeline -a -q -n 3 -b 6`
+
+`find . -type f -name "*1010-1644391327-heap.raw"`
 
 ### Tue 24 Oct 2023
 
