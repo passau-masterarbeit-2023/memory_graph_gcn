@@ -7,8 +7,6 @@ __pycache__/
 .venv/
 
 # logs and results
-*.log
-*.log.*
 PipelineNames.FirstGCNPipeline*.csv
 PipelineNames.RandomForestPipeline*.json
 random-forest-pipeline*.json

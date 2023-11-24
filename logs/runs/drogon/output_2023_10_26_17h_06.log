@@ -1,0 +1,41 @@
+nohup: ignoring input
+🚀 Running program...
+Passed program params:
+param[0]: src/sanity_check_gv_files.py
+param[1]: -k
+Parsed program params:
+keep_old_output: True
+skip_dir_starting_with_number: None
+dry_run: False
+🔷 Now, performing data loading and sanity checks...
+🔷 Looking for Mem2Graph dataset directories in /root/phdtrack/mem2graph/data...
+󱧴 Skipping .gitignore...
+📁 Found 6 Mem2Graph dataset directories.
+📁 Mem2Graph dataset dir paths:
+Traceback (most recent call last):
+  File "/root/phdtrack/memory_graph_gcn/src/sanity_check_gv_files.py", line 306, in <module>
+    main(cli)
+  File "/root/phdtrack/memory_graph_gcn/src/sanity_check_gv_files.py", line 265, in main
+    nb_gv_files_in_dir = len(find_gv_files(mem2graph_dataset_dir_path))
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/phdtrack/memory_graph_gcn/src/graph_conv_net/data_loading/file_loading.py", line 6, in find_gv_files
+    return find_files_with_extension(directory_path, 'gv')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/root/phdtrack/memory_graph_gcn/src/graph_conv_net/data_loading/file_loading.py", line 16, in find_files_with_extension
+    files = glob.glob(pattern, recursive=True)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/py311/lib/python3.11/glob.py", line 28, in glob
+    return list(iglob(pathname, root_dir=root_dir, dir_fd=dir_fd, recursive=recursive,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/py311/lib/python3.11/glob.py", line 97, in _iglob
+    for name in glob_in_dir(_join(root_dir, dirname), basename, dir_fd, dironly,
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/py311/lib/python3.11/glob.py", line 106, in _glob1
+    names = _listdir(dirname, dir_fd, dironly)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/conda/envs/py311/lib/python3.11/glob.py", line 177, in _listdir
+    return list(it)
+           ^^^^^^^^
+  File "/opt/conda/envs/py311/lib/python3.11/glob.py", line 160, in _iterdir
+    for entry in it:
+MemoryError
