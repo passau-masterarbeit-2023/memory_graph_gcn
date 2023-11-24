@@ -1,3 +1,4 @@
 # exclude files
 common/*.log
-resultsGCN_ML/*.log
+resultsGCN_ML/*.log*
+commonGCN_ML/*.log*

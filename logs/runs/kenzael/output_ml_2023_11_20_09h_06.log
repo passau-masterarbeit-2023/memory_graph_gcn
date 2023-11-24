@@ -1,0 +1,2088 @@
+🔦 Is CUDA (for Torch) available? False
+🔦 Device: cpu (WARN: Due to CUDA out of memory errors, running on CPU only!)
+🚀 Running program...
+---> env var: MAX_ML_WORKERS, val: 10
+---> env var: DEBUG, val: False
+---> env var: RANDOM_SEED, val: 42
+---> env var: COMMON_LOGGER_DIR_PATH, val: /home/onyr/code/phdtrack/memory_graph_gcn/logs/common
+---> env var: RESULTS_LOGGER_DIR_PATH, val: /home/onyr/code/phdtrack/memory_graph_gcn/logs/results
+---> env var: SAVE_RESULT_LOGS, val: True
+---> env var: ALL_MEM2GRAPH_DATASET_DIR_PATH, val: /home/onyr/code/phdtrack/mem2graph/data
+---> env var: PICKLE_DATASET_DIR_PATH, val: /home/onyr/code/phdtrack/memory_graph_gcn/data/pickled_graphs
+---> env var: RESULT_SAVE_FILE_FORMAT, val: csv
+---> env var: HYPERPARAMS_JSON_FILE_PATH, val: /home/onyr/code/phdtrack/memory_graph_gcn/src/hyperparams.json
+---> env var: NB_RANDOM_FOREST_JOBS, val: 5
+---> env var: PARALLEL_PIPELINE_BATCH_SIZE, val: 6
+---> env var: PICKLE_CACHED_NODE2VEC_EMBEDDINGS, val: /home/onyr/code/phdtrack/memory_graph_gcn/data/pickled_node2vec
+✅ Environment variables loaded.
+Passed program params:
+param[0]: src/main_gcn.py
+param[1]: -i
+param[2]: /home/onyr/code/phdtrack/phdtrack_data_clean/
+param[3]: -p
+param[4]: gcn-pipeline
+param[5]: classic-ml-pipeline
+param[6]: feature-evaluation-pipeline
+param[7]: -b
+param[8]: 6
+param[9]: -a
+param[10]: -q
+param[11]: -n
+param[12]: 3
+🔷 Launching First GCN Pipeline
+🔷 Launching Random Forest Pipeline
+🔷 Launching Feature Evaluation Pipeline
+🔷 No node embedding types specified. Iterating over all available embeddings combinations.
+🔷 Using 3 input graphs
+🔷 Using all Mem2Graph datasets to generate compute instances
+🔷 Not removing file if error when loading GV files
+🔷 Using input dir path: /home/onyr/code/phdtrack/phdtrack_data_clean/
+Parsed program params:
+debug: False
+dry_run: False
+max_ml_workers: None
+input_dir_path: /home/onyr/code/phdtrack/phdtrack_data_clean/
+pipelines: ['gcn-pipeline', 'classic-ml-pipeline', 'feature-evaluation-pipeline']
+node_embedding: None
+nb_input_graphs: 3
+all_mem2graph_datasets: True
+parallel_batch_size: 6
+remove_file_if_error: False
+quiet: True
+run_serial: False
+🚧 DEBUG: False
+✅ Program paths are OK.
+Directory /home/onyr/code/phdtrack/memory_graph_gcn/logs/commonGCN_ML already exists.
+Directory /home/onyr/code/phdtrack/memory_graph_gcn/logs/resultsGCN_ML already exists.
+2023_11_20_09_05_37 - common_logger - INFO - ⚓ Results logger path: /home/onyr/code/phdtrack/memory_graph_gcn/logs/resultsGCN_ML/2023_11_20_09_05_37_769501_results.log
+2023_11_20_09_05_37 - results_logger - INFO - ########## Program params:   [see below] ##########
+2023_11_20_09_05_37 - results_logger - INFO - app_name: GCN_ML
+2023_11_20_09_05_37 - results_logger - INFO - MAX_ML_WORKERS: 10
+2023_11_20_09_05_37 - results_logger - INFO - DEBUG: False
+2023_11_20_09_05_37 - results_logger - INFO - RANDOM_SEED: 42
+2023_11_20_09_05_37 - results_logger - INFO - COMMON_LOGGER_DIR_PATH: /home/onyr/code/phdtrack/memory_graph_gcn/logs/common
+2023_11_20_09_05_37 - results_logger - INFO - RESULTS_LOGGER_DIR_PATH: /home/onyr/code/phdtrack/memory_graph_gcn/logs/results
+2023_11_20_09_05_37 - results_logger - INFO - COMMON_LOGGER: <Logger common_logger (DEBUG)>
+2023_11_20_09_05_37 - results_logger - INFO - RESULTS_LOGGER: <Logger results_logger (DEBUG)>
+2023_11_20_09_05_37 - results_logger - INFO - SAVE_RESULT_LOGS: True
+2023_11_20_09_05_37 - results_logger - INFO - cli: <graph_conv_net.params.cli.CLIArguments object at 0x7ffe95c24e10>
+2023_11_20_09_05_37 - results_logger - INFO - nb_pipeline_runs: 1
+2023_11_20_09_05_37 - results_logger - INFO - DRY_RUN: False
+2023_11_20_09_05_37 - results_logger - INFO - ALL_MEM2GRAPH_DATASET_DIR_PATH: /home/onyr/code/phdtrack/mem2graph/data
+2023_11_20_09_05_37 - results_logger - INFO - PICKLE_DATASET_DIR_PATH: /home/onyr/code/phdtrack/memory_graph_gcn/data/pickled_graphs
+2023_11_20_09_05_37 - results_logger - INFO - RESULT_SAVE_FILE_FORMAT: csv
+2023_11_20_09_05_37 - results_logger - INFO - HYPERPARAMS_JSON_FILE_PATH: /home/onyr/code/phdtrack/memory_graph_gcn/src/hyperparams.json
+2023_11_20_09_05_37 - results_logger - INFO - NB_RANDOM_FOREST_JOBS: 5
+2023_11_20_09_05_37 - results_logger - INFO - PARALLEL_PIPELINE_BATCH_SIZE: 6
+2023_11_20_09_05_37 - results_logger - INFO - PICKLE_CACHED_NODE2VEC_EMBEDDINGS: /home/onyr/code/phdtrack/memory_graph_gcn/data/pickled_node2vec
+2023_11_20_09_05_37 - results_logger - INFO - ########## Program params:   [see above] ##########
+2023_11_20_09_05_37 - common_logger - INFO - 🔷 Looking for Mem2Graph dataset directories in /home/onyr/code/phdtrack/mem2graph/data...
+2023_11_20_09_05_37 - common_logger - INFO - 🗃 Found 6 Mem2Graph dataset directories.
+len(_all_embeddings): 3
+🔷 node_embedding_types: [<NodeEmbeddingType.Node2Vec: 'node2vec'>, <NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, <NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>]
+2023_11_20_09_05_37 - common_logger - INFO - 📝 Logging hyperparams...
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [0]: RandomForestPipeline(index=0, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [1]: FirstGCNPipelineHyperparams(index=1, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [2]: RandomForestPipeline(index=2, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [3]: FirstGCNPipelineHyperparams(index=3, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [4]: RandomForestPipeline(index=4, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [5]: FirstGCNPipelineHyperparams(index=5, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [6]: RandomForestPipeline(index=6, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/4_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [7]: FirstGCNPipelineHyperparams(index=7, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/4_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [8]: RandomForestPipeline(index=8, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/1_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [9]: FirstGCNPipelineHyperparams(index=9, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/1_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [10]: RandomForestPipeline(index=10, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/2_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [11]: FirstGCNPipelineHyperparams(index=11, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/2_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2Vec: 'node2vec'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [12]: RandomForestPipeline(index=12, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [13]: FirstGCNPipelineHyperparams(index=13, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [14]: RandomForestPipeline(index=14, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [15]: FirstGCNPipelineHyperparams(index=15, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [16]: RandomForestPipeline(index=16, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [17]: FirstGCNPipelineHyperparams(index=17, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [18]: RandomForestPipeline(index=18, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/4_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [19]: FirstGCNPipelineHyperparams(index=19, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/4_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [20]: RandomForestPipeline(index=20, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/1_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [21]: FirstGCNPipelineHyperparams(index=21, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/1_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [22]: RandomForestPipeline(index=22, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/2_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [23]: FirstGCNPipelineHyperparams(index=23, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/2_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [24]: RandomForestPipeline(index=24, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [25]: FirstGCNPipelineHyperparams(index=25, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [26]: RandomForestPipeline(index=26, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [27]: FirstGCNPipelineHyperparams(index=27, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [28]: RandomForestPipeline(index=28, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [29]: FirstGCNPipelineHyperparams(index=29, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [30]: RandomForestPipeline(index=30, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/4_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [31]: FirstGCNPipelineHyperparams(index=31, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/4_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [32]: RandomForestPipeline(index=32, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/1_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [33]: FirstGCNPipelineHyperparams(index=33, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/1_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [34]: RandomForestPipeline(index=34, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/2_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [35]: FirstGCNPipelineHyperparams(index=35, pipeline_name=<PipelineNames.GCNPipeline: 'gcn-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/2_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, first_gcn_training_epochs=20)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [36]: BaseHyperparams(index=36, pipeline_name=<PipelineNames.FeatureEvaluationPipeline: 'feature-evaluation-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [37]: BaseHyperparams(index=37, pipeline_name=<PipelineNames.FeatureEvaluationPipeline: 'feature-evaluation-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [38]: BaseHyperparams(index=38, pipeline_name=<PipelineNames.FeatureEvaluationPipeline: 'feature-evaluation-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [39]: BaseHyperparams(index=39, pipeline_name=<PipelineNames.FeatureEvaluationPipeline: 'feature-evaluation-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/4_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_only-max-entropy_-s_activate', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [40]: BaseHyperparams(index=40, pipeline_name=<PipelineNames.FeatureEvaluationPipeline: 'feature-evaluation-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/1_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>)
+2023_11_20_09_05_37 - common_logger - INFO - Hyperparams [41]: BaseHyperparams(index=41, pipeline_name=<PipelineNames.FeatureEvaluationPipeline: 'feature-evaluation-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/2_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.CustomCommentEmbedding: 'comment'>)
+🚀 Running pipelines...
+🔷 Parallel computing BATCH size: 6
+ 🔘 Loading data...
+Found 164 graphs inside /home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+ 🔘 Loading data...
+Found 137 graphs inside /home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none
+Loading 3 graphs...
+ 🔘 Loading data...
+Found 137 graphs inside /home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none
+Loading 3 graphs...
+ 🔘 Loading data...
+Found 164 graphs inside /home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+ 🔘 Loading data...
+Found 686 graphs inside /home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+ 🔘 Loading data...
+Found 686 graphs inside /home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+Loading data took: 4.526153 total sec (00h 00m 04s)
+Loading data took: 4.529891 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+Loading data took: 4.553712 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+Loading data took: 4.526805 total sec (00h 00m 04s)
+Loading data took: 4.519024 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+Loading data took: 4.563342 total sec (00h 00m 04s)
+ ▶ [pipeline index: 0/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 33.348063 total sec (00h 00m 33s) (embeddings len: 917, features: 32)
+ ▶ [pipeline index: 0/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 26.572797 total sec (00h 00m 26s) (embeddings len: 858, features: 32)
+ ▶ [pipeline index: 0/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 30.211021 total sec (00h 00m 30s) (embeddings len: 974, features: 32)
+Generating ALL embeddings took: 90.131993 total sec (00h 01m 30s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 974
+max_label_length for labels: 974
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (974, 32)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (974,)
+X_train.shape: (1948, 32)
+y_train.shape: (1948,)
+X_test.shape: (974, 32)
+y_test.shape: (974,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.219415 total sec (00h 00m 00s), for subpipeline random-forest-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.01187 total sec (00h 00m 00s), for subpipeline sgd-classifier-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ ▶ [pipeline index: 2/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 33.728382 total sec (00h 00m 33s) (embeddings len: 917, features: 32)
+ ▶ [pipeline index: 2/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 29.124044 total sec (00h 00m 29s) (embeddings len: 921, features: 32)
+ ▶ [pipeline index: 2/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 29.451553 total sec (00h 00m 29s) (embeddings len: 921, features: 32)
+Generating ALL embeddings took: 92.304158 total sec (00h 01m 32s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 921
+max_label_length for labels: 921
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (921, 32)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (921,)
+X_train.shape: (1842, 32)
+y_train.shape: (1842,)
+X_test.shape: (921, 32)
+y_test.shape: (921,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.456171 total sec (00h 00m 00s), for subpipeline random-forest-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.045137 total sec (00h 00m 00s), for subpipeline sgd-classifier-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ ▶ [pipeline index: 4/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 37.846822 total sec (00h 00m 37s) (embeddings len: 1031, features: 32)
+ ▶ [pipeline index: 4/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 28.658423 total sec (00h 00m 28s) (embeddings len: 917, features: 32)
+ ▶ [pipeline index: 4/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 31.271068 total sec (00h 00m 31s) (embeddings len: 975, features: 32)
+Generating ALL embeddings took: 97.776445 total sec (00h 01m 37s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 1031
+max_label_length for labels: 1031
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (1031, 32)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (1031,)
+X_train.shape: (2062, 32)
+y_train.shape: (2062,)
+X_test.shape: (1031, 32)
+y_test.shape: (1031,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.187739 total sec (00h 00m 00s), for subpipeline random-forest-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.019046 total sec (00h 00m 00s), for subpipeline sgd-classifier-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 1.025769 total sec (00h 00m 01s), for subpipeline logistic-regression-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 35 graphs inside /home/onyr/code/phdtrack/mem2graph/data/4_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+ ▶ [pipeline index: 1/42] [pipeline name: gcn-pipeline] [graph: 1/3] Embeddings loop took: 34.026747 total sec (00h 00m 34s) (embeddings len: 917, features: 32)
+ ▶ [pipeline index: 1/42] [pipeline name: gcn-pipeline] [graph: 2/3] Embeddings loop took: 26.440321 total sec (00h 00m 26s) (embeddings len: 858, features: 32)
+ ▶ [pipeline index: 1/42] [pipeline name: gcn-pipeline] [graph: 3/3] Embeddings loop took: 30.59213 total sec (00h 00m 30s) (embeddings len: 974, features: 32)
+Generating ALL embeddings took: 91.059355 total sec (00h 01m 31s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+num_features: 32
+num_classes: 2
+ 🔘 Training and evaluating models...
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.33333333333334,
+    "precision_class_0": "0.9938398357289527",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969104016477858",
+    "support_class_0": "968.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "968",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.105464 total sec (00h 00m 00s), for subpipeline very-simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.33333333333334,
+    "precision_class_0": "0.9938398357289527",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969104016477858",
+    "support_class_0": "968.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "968",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.240626 total sec (00h 00m 00s), for subpipeline simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.33333333333334,
+    "precision_class_0": "0.9937888198757764",
+    "recall_class_0": "0.9917355371900827",
+    "f1_score_class_0": "0.9927611168562566",
+    "support_class_0": "968.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "960",
+    "false_positives": "8",
+    "false_negatives": "6",
+    "AUC": 0.49586776859504134
+}
+Training and testing took: 1.261984 total sec (00h 00m 01s), for subpipeline first-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.33333333333334,
+    "precision_class_0": "0.9938398357289527",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969104016477858",
+    "support_class_0": "968.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "968",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 2.393747 total sec (00h 00m 02s), for subpipeline gcn-with-dropout-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.33333333333334,
+    "precision_class_0": "0.9938398357289527",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969104016477858",
+    "support_class_0": "968.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "968",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 2.448118 total sec (00h 00m 02s), for subpipeline advanced-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 40 graphs inside /home/onyr/code/phdtrack/mem2graph/data/1_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_none_-s_none
+Loading 3 graphs...
+ 🔘 Evaluating...
+Training and testing took: 1.343572 total sec (00h 00m 01s), for subpipeline logistic-regression-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 35 graphs inside /home/onyr/code/phdtrack/mem2graph/data/4_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+ ▶ [pipeline index: 3/42] [pipeline name: gcn-pipeline] [graph: 1/3] Embeddings loop took: 33.328075 total sec (00h 00m 33s) (embeddings len: 917, features: 32)
+ ▶ [pipeline index: 3/42] [pipeline name: gcn-pipeline] [graph: 2/3] Embeddings loop took: 29.02884 total sec (00h 00m 29s) (embeddings len: 921, features: 32)
+ ▶ [pipeline index: 3/42] [pipeline name: gcn-pipeline] [graph: 3/3] Embeddings loop took: 28.975569 total sec (00h 00m 28s) (embeddings len: 921, features: 32)
+Generating ALL embeddings took: 91.33261 total sec (00h 01m 31s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+num_features: 32
+num_classes: 2
+ 🔘 Training and evaluating models...
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.5,
+    "precision_class_0": "0.993485342019544",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967320261437909",
+    "support_class_0": "915.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "915",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.861784 total sec (00h 00m 00s), for subpipeline very-simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.5,
+    "precision_class_0": "0.993485342019544",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967320261437909",
+    "support_class_0": "915.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "915",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 2.412849 total sec (00h 00m 02s), for subpipeline simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.5,
+    "precision_class_0": "0.993485342019544",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967320261437909",
+    "support_class_0": "915.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "915",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.608434 total sec (00h 00m 00s), for subpipeline first-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.5,
+    "precision_class_0": "0.993485342019544",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967320261437909",
+    "support_class_0": "915.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "915",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.34648 total sec (00h 00m 00s), for subpipeline gcn-with-dropout-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.5,
+    "precision_class_0": "0.993485342019544",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967320261437909",
+    "support_class_0": "915.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "915",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 1.11463 total sec (00h 00m 01s), for subpipeline advanced-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 40 graphs inside /home/onyr/code/phdtrack/mem2graph/data/1_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_none_-s_none
+Loading 3 graphs...
+ ▶ [pipeline index: 5/42] [pipeline name: gcn-pipeline] [graph: 1/3] Embeddings loop took: 37.322048 total sec (00h 00m 37s) (embeddings len: 1031, features: 32)
+ ▶ [pipeline index: 5/42] [pipeline name: gcn-pipeline] [graph: 2/3] Embeddings loop took: 28.586469 total sec (00h 00m 28s) (embeddings len: 917, features: 32)
+ ▶ [pipeline index: 5/42] [pipeline name: gcn-pipeline] [graph: 3/3] Embeddings loop took: 31.522179 total sec (00h 00m 31s) (embeddings len: 975, features: 32)
+Generating ALL embeddings took: 97.430826 total sec (00h 01m 37s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+num_features: 32
+num_classes: 2
+ 🔘 Training and evaluating models...
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.5,
+    "precision_class_0": "0.9938461538461538",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969135802469136",
+    "support_class_0": "969.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "969",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.096934 total sec (00h 00m 00s), for subpipeline very-simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.5,
+    "precision_class_0": "0.9938461538461538",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969135802469136",
+    "support_class_0": "969.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "969",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.078914 total sec (00h 00m 00s), for subpipeline simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.5,
+    "precision_class_0": "0.9938461538461538",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969135802469136",
+    "support_class_0": "969.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "969",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.120966 total sec (00h 00m 00s), for subpipeline first-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.5,
+    "precision_class_0": "0.9938461538461538",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969135802469136",
+    "support_class_0": "969.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "969",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.16904 total sec (00h 00m 00s), for subpipeline gcn-with-dropout-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.5,
+    "precision_class_0": "0.9938461538461538",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969135802469136",
+    "support_class_0": "969.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "969",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 1.101899 total sec (00h 00m 01s), for subpipeline advanced-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 895 graphs inside /home/onyr/code/phdtrack/mem2graph/data/2_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_none_-s_none
+Loading 3 graphs...
+ 🔘 Evaluating...
+Training and testing took: 0.933603 total sec (00h 00m 00s), for subpipeline logistic-regression-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 895 graphs inside /home/onyr/code/phdtrack/mem2graph/data/2_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_none_-s_none
+Loading 3 graphs...
+Loading data took: 4.506631 total sec (00h 00m 04s)
+Loading data took: 4.596413 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+Loading data took: 4.587451 total sec (00h 00m 04s)
+ ▶ [pipeline index: 6/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 31.013361 total sec (00h 00m 31s) (embeddings len: 877, features: 32)
+ ▶ [pipeline index: 6/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 29.294528 total sec (00h 00m 29s) (embeddings len: 921, features: 32)
+ ▶ [pipeline index: 6/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 31.463524 total sec (00h 00m 31s) (embeddings len: 1026, features: 32)
+Generating ALL embeddings took: 91.771542 total sec (00h 01m 31s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 1026
+max_label_length for labels: 1026
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (1026, 32)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (1026,)
+X_train.shape: (2052, 32)
+y_train.shape: (2052,)
+X_test.shape: (1026, 32)
+y_test.shape: (1026,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.167726 total sec (00h 00m 00s), for subpipeline random-forest-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.011315 total sec (00h 00m 00s), for subpipeline sgd-classifier-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+Loading data took: 4.531242 total sec (00h 00m 04s)
+ ▶ [pipeline index: 8/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 31.080407 total sec (00h 00m 31s) (embeddings len: 921, features: 32)
+ ▶ [pipeline index: 8/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 32.560526 total sec (00h 00m 32s) (embeddings len: 1026, features: 32)
+ ▶ [pipeline index: 8/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 28.474471 total sec (00h 00m 28s) (embeddings len: 917, features: 32)
+Generating ALL embeddings took: 92.115552 total sec (00h 01m 32s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 1026
+max_label_length for labels: 1026
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (1026, 32)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (1026,)
+X_train.shape: (2052, 32)
+y_train.shape: (2052,)
+X_test.shape: (1026, 32)
+y_test.shape: (1026,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.43572 total sec (00h 00m 00s), for subpipeline random-forest-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.029902 total sec (00h 00m 00s), for subpipeline sgd-classifier-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ ▶ [pipeline index: 10/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 36.132319 total sec (00h 00m 36s) (embeddings len: 1031, features: 32)
+ ▶ [pipeline index: 10/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 28.514649 total sec (00h 00m 28s) (embeddings len: 917, features: 32)
+ ▶ [pipeline index: 10/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 29.08872 total sec (00h 00m 29s) (embeddings len: 918, features: 32)
+Generating ALL embeddings took: 93.735819 total sec (00h 01m 33s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 1031
+max_label_length for labels: 1031
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (1031, 32)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (1031,)
+X_train.shape: (2062, 32)
+y_train.shape: (2062,)
+X_test.shape: (1031, 32)
+y_test.shape: (1031,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.390968 total sec (00h 00m 00s), for subpipeline random-forest-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.062253 total sec (00h 00m 00s), for subpipeline sgd-classifier-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 1.117699 total sec (00h 00m 01s), for subpipeline logistic-regression-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 137 graphs inside /home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none
+Loading 3 graphs...
+ 🔘 Evaluating...
+Training and testing took: 1.044387 total sec (00h 00m 01s), for subpipeline logistic-regression-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 137 graphs inside /home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none
+Loading 3 graphs...
+Loading data took: 4.857675 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+ ▶ [pipeline index: 11/42] [pipeline name: gcn-pipeline] [graph: 1/3] Embeddings loop took: 35.606788 total sec (00h 00m 35s) (embeddings len: 1031, features: 32)
+ ▶ [pipeline index: 11/42] [pipeline name: gcn-pipeline] [graph: 2/3] Embeddings loop took: 28.29431 total sec (00h 00m 28s) (embeddings len: 917, features: 32)
+ ▶ [pipeline index: 11/42] [pipeline name: gcn-pipeline] [graph: 3/3] Embeddings loop took: 29.440811 total sec (00h 00m 29s) (embeddings len: 918, features: 32)
+Generating ALL embeddings took: 93.342039 total sec (00h 01m 33s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+num_features: 32
+num_classes: 2
+ 🔘 Training and evaluating models...
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.0,
+    "precision_class_0": "0.9934640522875817",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967213114754099",
+    "support_class_0": "912.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "912",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 6.516129 total sec (00h 00m 06s), for subpipeline very-simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.0,
+    "precision_class_0": "0.9934640522875817",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967213114754099",
+    "support_class_0": "912.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "912",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 3.178226 total sec (00h 00m 03s), for subpipeline simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.0,
+    "precision_class_0": "0.9934640522875817",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967213114754099",
+    "support_class_0": "912.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "912",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 11.477584 total sec (00h 00m 11s), for subpipeline first-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.0,
+    "precision_class_0": "0.9934640522875817",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967213114754099",
+    "support_class_0": "912.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "912",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 14.195055 total sec (00h 00m 14s), for subpipeline gcn-with-dropout-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.0,
+    "precision_class_0": "0.9934640522875817",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967213114754099",
+    "support_class_0": "912.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "912",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 19.423883 total sec (00h 00m 19s), for subpipeline advanced-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 164 graphs inside /home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+ 🔘 Evaluating...
+Training and testing took: 1.303421 total sec (00h 00m 01s), for subpipeline logistic-regression-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 164 graphs inside /home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+ ▶ [pipeline index: 7/42] [pipeline name: gcn-pipeline] [graph: 1/3] Embeddings loop took: 30.951764 total sec (00h 00m 30s) (embeddings len: 877, features: 32)
+ ▶ [pipeline index: 7/42] [pipeline name: gcn-pipeline] [graph: 2/3] Embeddings loop took: 29.366884 total sec (00h 00m 29s) (embeddings len: 921, features: 32)
+ ▶ [pipeline index: 7/42] [pipeline name: gcn-pipeline] [graph: 3/3] Embeddings loop took: 31.827909 total sec (00h 00m 31s) (embeddings len: 1026, features: 32)
+Generating ALL embeddings took: 92.146694 total sec (00h 01m 32s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+num_features: 32
+num_classes: 2
+ 🔘 Training and evaluating models...
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 170.0,
+    "precision_class_0": "0.9941520467836257",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9970674486803519",
+    "support_class_0": "1020.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "1020",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.72443 total sec (00h 00m 00s), for subpipeline very-simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 170.0,
+    "precision_class_0": "0.9941520467836257",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9970674486803519",
+    "support_class_0": "1020.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "1020",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.476194 total sec (00h 00m 00s), for subpipeline simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 170.0,
+    "precision_class_0": "0.9941520467836257",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9970674486803519",
+    "support_class_0": "1020.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "1020",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.202993 total sec (00h 00m 00s), for subpipeline first-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 170.0,
+    "precision_class_0": "0.9941520467836257",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9970674486803519",
+    "support_class_0": "1020.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "1020",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 15.774905 total sec (00h 00m 15s), for subpipeline gcn-with-dropout-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 170.0,
+    "precision_class_0": "0.9941520467836257",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9970674486803519",
+    "support_class_0": "1020.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "1020",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 40.097036 total sec (00h 00m 40s), for subpipeline advanced-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 686 graphs inside /home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+Loading data took: 4.531172 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+ ▶ [pipeline index: 9/42] [pipeline name: gcn-pipeline] [graph: 1/3] Embeddings loop took: 31.803919 total sec (00h 00m 31s) (embeddings len: 921, features: 32)
+ ▶ [pipeline index: 9/42] [pipeline name: gcn-pipeline] [graph: 2/3] Embeddings loop took: 32.363241 total sec (00h 00m 32s) (embeddings len: 1026, features: 32)
+ ▶ [pipeline index: 9/42] [pipeline name: gcn-pipeline] [graph: 3/3] Embeddings loop took: 29.433238 total sec (00h 00m 29s) (embeddings len: 917, features: 32)
+Generating ALL embeddings took: 93.600516 total sec (00h 01m 33s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+num_features: 32
+num_classes: 2
+ 🔘 Training and evaluating models...
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 151.83333333333334,
+    "precision_class_0": "0.9934569247546347",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967177242888402",
+    "support_class_0": "911.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "911",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.047592 total sec (00h 00m 00s), for subpipeline very-simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 151.83333333333334,
+    "precision_class_0": "0.9934569247546347",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967177242888402",
+    "support_class_0": "911.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "911",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 15.677125 total sec (00h 00m 15s), for subpipeline simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 151.83333333333334,
+    "precision_class_0": "0.9934569247546347",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967177242888402",
+    "support_class_0": "911.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "911",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 6.503685 total sec (00h 00m 06s), for subpipeline first-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 151.83333333333334,
+    "precision_class_0": "0.9934569247546347",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967177242888402",
+    "support_class_0": "911.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "911",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 9.057317 total sec (00h 00m 09s), for subpipeline gcn-with-dropout-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 151.83333333333334,
+    "precision_class_0": "0.9934569247546347",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967177242888402",
+    "support_class_0": "911.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "911",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 24.831158 total sec (00h 00m 24s), for subpipeline advanced-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 686 graphs inside /home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+Loading data took: 4.652541 total sec (00h 00m 04s)
+ ▶ [pipeline index: 16/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 0.005427 total sec (00h 00m 00s) (embeddings len: 1031, features: 18)
+ ▶ [pipeline index: 16/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 0.017648 total sec (00h 00m 00s) (embeddings len: 917, features: 18)
+ ▶ [pipeline index: 16/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 0.006092 total sec (00h 00m 00s) (embeddings len: 975, features: 18)
+Generating ALL embeddings took: 0.029264 total sec (00h 00m 00s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 1031
+max_label_length for labels: 1031
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (1031, 18)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (1031,)
+X_train.shape: (2062, 18)
+y_train.shape: (2062,)
+X_test.shape: (1031, 18)
+y_test.shape: (1031,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.268991 total sec (00h 00m 00s), for subpipeline random-forest-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.047544 total sec (00h 00m 00s), for subpipeline sgd-classifier-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+Loading data took: 4.649934 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+ ▶ [pipeline index: 13/42] [pipeline name: gcn-pipeline] [graph: 1/3] Embeddings loop took: 0.072302 total sec (00h 00m 00s) (embeddings len: 917, features: 39)
+ ▶ [pipeline index: 13/42] [pipeline name: gcn-pipeline] [graph: 2/3] Embeddings loop took: 0.038402 total sec (00h 00m 00s) (embeddings len: 858, features: 39)
+ ▶ [pipeline index: 13/42] [pipeline name: gcn-pipeline] [graph: 3/3] Embeddings loop took: 0.037806 total sec (00h 00m 00s) (embeddings len: 974, features: 39)
+Generating ALL embeddings took: 0.148631 total sec (00h 00m 00s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+num_features: 39
+num_classes: 2
+ 🔘 Training and evaluating models...
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.33333333333334,
+    "precision_class_0": "0.9938398357289527",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969104016477858",
+    "support_class_0": "968.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "968",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 5.9861 total sec (00h 00m 05s), for subpipeline very-simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.33333333333334,
+    "precision_class_0": "0.9938398357289527",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969104016477858",
+    "support_class_0": "968.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "968",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 5.614788 total sec (00h 00m 05s), for subpipeline simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.33333333333334,
+    "precision_class_0": "0.9938398357289527",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969104016477858",
+    "support_class_0": "968.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "968",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 10.458065 total sec (00h 00m 10s), for subpipeline first-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.33333333333334,
+    "precision_class_0": "0.9938398357289527",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969104016477858",
+    "support_class_0": "968.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "968",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 6.874518 total sec (00h 00m 06s), for subpipeline gcn-with-dropout-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.33333333333334,
+    "precision_class_0": "0.9938398357289527",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969104016477858",
+    "support_class_0": "968.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "968",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 7.444145 total sec (00h 00m 07s), for subpipeline advanced-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 40 graphs inside /home/onyr/code/phdtrack/mem2graph/data/1_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_none_-s_none
+Loading 3 graphs...
+Loading data took: 4.818033 total sec (00h 00m 04s)
+ ▶ [pipeline index: 14/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 0.011352 total sec (00h 00m 00s) (embeddings len: 917, features: 40)
+ ▶ [pipeline index: 14/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 0.02408 total sec (00h 00m 00s) (embeddings len: 921, features: 40)
+ ▶ [pipeline index: 14/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 0.023578 total sec (00h 00m 00s) (embeddings len: 921, features: 40)
+Generating ALL embeddings took: 0.059098 total sec (00h 00m 00s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 921
+max_label_length for labels: 921
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (921, 40)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (921,)
+X_train.shape: (1842, 40)
+y_train.shape: (1842,)
+X_test.shape: (921, 40)
+y_test.shape: (921,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.405498 total sec (00h 00m 00s), for subpipeline random-forest-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.065042 total sec (00h 00m 00s), for subpipeline sgd-classifier-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.707961 total sec (00h 00m 00s), for subpipeline logistic-regression-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 35 graphs inside /home/onyr/code/phdtrack/mem2graph/data/4_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+Loading data took: 4.670816 total sec (00h 00m 04s)
+ ▶ [pipeline index: 12/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 0.008434 total sec (00h 00m 00s) (embeddings len: 917, features: 39)
+ ▶ [pipeline index: 12/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 0.011958 total sec (00h 00m 00s) (embeddings len: 858, features: 39)
+ ▶ [pipeline index: 12/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 0.021737 total sec (00h 00m 00s) (embeddings len: 974, features: 39)
+Generating ALL embeddings took: 0.042231 total sec (00h 00m 00s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 974
+max_label_length for labels: 974
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (974, 39)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (974,)
+X_train.shape: (1948, 39)
+y_train.shape: (1948,)
+X_test.shape: (974, 39)
+y_test.shape: (974,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.321138 total sec (00h 00m 00s), for subpipeline random-forest-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.09456 total sec (00h 00m 00s), for subpipeline sgd-classifier-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 1.126948 total sec (00h 00m 01s), for subpipeline logistic-regression-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 35 graphs inside /home/onyr/code/phdtrack/mem2graph/data/4_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+ 🔘 Evaluating...
+Training and testing took: 1.45225 total sec (00h 00m 01s), for subpipeline logistic-regression-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 40 graphs inside /home/onyr/code/phdtrack/mem2graph/data/1_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-statistic-embedding_-e_none_-s_none
+Loading 3 graphs...
+Loading data took: 4.607163 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+ ▶ [pipeline index: 15/42] [pipeline name: gcn-pipeline] [graph: 1/3] Embeddings loop took: 0.019511 total sec (00h 00m 00s) (embeddings len: 917, features: 40)
+ ▶ [pipeline index: 15/42] [pipeline name: gcn-pipeline] [graph: 2/3] Embeddings loop took: 0.019144 total sec (00h 00m 00s) (embeddings len: 921, features: 40)
+ ▶ [pipeline index: 15/42] [pipeline name: gcn-pipeline] [graph: 3/3] Embeddings loop took: 0.017243 total sec (00h 00m 00s) (embeddings len: 921, features: 40)
+Generating ALL embeddings took: 0.056028 total sec (00h 00m 00s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+num_features: 40
+num_classes: 2
+ 🔘 Training and evaluating models...
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.5,
+    "precision_class_0": "0.993485342019544",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967320261437909",
+    "support_class_0": "915.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "915",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 2.117584 total sec (00h 00m 02s), for subpipeline very-simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.5,
+    "precision_class_0": "0.9933259176863182",
+    "recall_class_0": "0.9759562841530055",
+    "f1_score_class_0": "0.9845644983461963",
+    "support_class_0": "915.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "893",
+    "false_positives": "22",
+    "false_negatives": "6",
+    "AUC": 0.48797814207650275
+}
+Training and testing took: 0.799227 total sec (00h 00m 00s), for subpipeline simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.5,
+    "precision_class_0": "0.993485342019544",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967320261437909",
+    "support_class_0": "915.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "915",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 1.15769 total sec (00h 00m 01s), for subpipeline first-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.5,
+    "precision_class_0": "0.993485342019544",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967320261437909",
+    "support_class_0": "915.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "915",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 12.629118 total sec (00h 00m 12s), for subpipeline gcn-with-dropout-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.5,
+    "precision_class_0": "0.993485342019544",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967320261437909",
+    "support_class_0": "915.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "915",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 21.035929 total sec (00h 00m 21s), for subpipeline advanced-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 895 graphs inside /home/onyr/code/phdtrack/mem2graph/data/2_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_none_-s_none
+Loading 3 graphs...
+Loading data took: 4.644079 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+ ▶ [pipeline index: 17/42] [pipeline name: gcn-pipeline] [graph: 1/3] Embeddings loop took: 0.015593 total sec (00h 00m 00s) (embeddings len: 1031, features: 18)
+ ▶ [pipeline index: 17/42] [pipeline name: gcn-pipeline] [graph: 2/3] Embeddings loop took: 0.013741 total sec (00h 00m 00s) (embeddings len: 917, features: 18)
+ ▶ [pipeline index: 17/42] [pipeline name: gcn-pipeline] [graph: 3/3] Embeddings loop took: 0.015171 total sec (00h 00m 00s) (embeddings len: 975, features: 18)
+Generating ALL embeddings took: 0.044629 total sec (00h 00m 00s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+num_features: 18
+num_classes: 2
+ 🔘 Training and evaluating models...
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.5,
+    "precision_class_0": "0.9938461538461538",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969135802469136",
+    "support_class_0": "969.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "969",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 6.02402 total sec (00h 00m 06s), for subpipeline very-simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.5,
+    "precision_class_0": "0.9938208032955715",
+    "recall_class_0": "0.9958720330237358",
+    "f1_score_class_0": "0.9948453608247422",
+    "support_class_0": "969.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "965",
+    "false_positives": "4",
+    "false_negatives": "6",
+    "AUC": 0.4979360165118679
+}
+Training and testing took: 2.27414 total sec (00h 00m 02s), for subpipeline simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.5,
+    "precision_class_0": "0.9938461538461538",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969135802469136",
+    "support_class_0": "969.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "969",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 25.15972 total sec (00h 00m 25s), for subpipeline first-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.5,
+    "precision_class_0": "0.9938461538461538",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969135802469136",
+    "support_class_0": "969.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "969",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 3.739946 total sec (00h 00m 03s), for subpipeline gcn-with-dropout-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 161.5,
+    "precision_class_0": "0.9938461538461538",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9969135802469136",
+    "support_class_0": "969.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "969",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.893806 total sec (00h 00m 00s), for subpipeline advanced-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 895 graphs inside /home/onyr/code/phdtrack/mem2graph/data/2_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_none_-s_none
+Loading 3 graphs...
+Loading data took: 4.798719 total sec (00h 00m 04s)
+ ▶ [pipeline index: 22/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 0.010579 total sec (00h 00m 00s) (embeddings len: 1031, features: 17)
+ ▶ [pipeline index: 22/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 0.008853 total sec (00h 00m 00s) (embeddings len: 917, features: 17)
+ ▶ [pipeline index: 22/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 0.00901 total sec (00h 00m 00s) (embeddings len: 918, features: 17)
+Generating ALL embeddings took: 0.02855 total sec (00h 00m 00s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 1031
+max_label_length for labels: 1031
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (1031, 17)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (1031,)
+X_train.shape: (2062, 17)
+y_train.shape: (2062,)
+X_test.shape: (1031, 17)
+y_test.shape: (1031,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.289339 total sec (00h 00m 00s), for subpipeline random-forest-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.098295 total sec (00h 00m 00s), for subpipeline sgd-classifier-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+Loading data took: 4.82772 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+ ▶ [pipeline index: 19/42] [pipeline name: gcn-pipeline] [graph: 1/3] Embeddings loop took: 0.013765 total sec (00h 00m 00s) (embeddings len: 877, features: 28)
+ ▶ [pipeline index: 19/42] [pipeline name: gcn-pipeline] [graph: 2/3] Embeddings loop took: 0.015546 total sec (00h 00m 00s) (embeddings len: 921, features: 28)
+ ▶ [pipeline index: 19/42] [pipeline name: gcn-pipeline] [graph: 3/3] Embeddings loop took: 0.016363 total sec (00h 00m 00s) (embeddings len: 1026, features: 28)
+Generating ALL embeddings took: 0.045794 total sec (00h 00m 00s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+num_features: 28
+num_classes: 2
+ 🔘 Training and evaluating models...
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 170.0,
+    "precision_class_0": "0.9941520467836257",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9970674486803519",
+    "support_class_0": "1020.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "1020",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 9.085468 total sec (00h 00m 09s), for subpipeline very-simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 170.0,
+    "precision_class_0": "0.9941520467836257",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9970674486803519",
+    "support_class_0": "1020.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "1020",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 6.32933 total sec (00h 00m 06s), for subpipeline simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 170.0,
+    "precision_class_0": "0.9951028403525954",
+    "recall_class_0": "0.996078431372549",
+    "f1_score_class_0": "0.9955903968642822",
+    "support_class_0": "1020.0",
+    "precision_class_1": "0.2",
+    "recall_class_1": "0.16666666666666666",
+    "f1_score_class_1": "0.1818181818181818",
+    "support_class_1": "6.0",
+    "true_positives": "1",
+    "true_negatives": "1016",
+    "false_positives": "4",
+    "false_negatives": "5",
+    "AUC": 0.5813725490196079
+}
+Training and testing took: 10.046357 total sec (00h 00m 10s), for subpipeline first-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 170.0,
+    "precision_class_0": "0.9941520467836257",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9970674486803519",
+    "support_class_0": "1020.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "1020",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 10.152527 total sec (00h 00m 10s), for subpipeline gcn-with-dropout-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 170.0,
+    "precision_class_0": "0.9941520467836257",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9970674486803519",
+    "support_class_0": "1020.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "1020",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 11.015744 total sec (00h 00m 11s), for subpipeline advanced-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 164 graphs inside /home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+Loading data took: 4.770747 total sec (00h 00m 04s)
+ ▶ [pipeline index: 20/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 0.006692 total sec (00h 00m 00s) (embeddings len: 921, features: 27)
+ ▶ [pipeline index: 20/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 0.006989 total sec (00h 00m 00s) (embeddings len: 1026, features: 27)
+ ▶ [pipeline index: 20/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 0.006474 total sec (00h 00m 00s) (embeddings len: 917, features: 27)
+Generating ALL embeddings took: 0.020244 total sec (00h 00m 00s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 1026
+max_label_length for labels: 1026
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (1026, 27)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (1026,)
+X_train.shape: (2052, 27)
+y_train.shape: (2052,)
+X_test.shape: (1026, 27)
+y_test.shape: (1026,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.302186 total sec (00h 00m 00s), for subpipeline random-forest-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.0563 total sec (00h 00m 00s), for subpipeline sgd-classifier-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.831769 total sec (00h 00m 00s), for subpipeline logistic-regression-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 137 graphs inside /home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none
+Loading 3 graphs...
+Loading data took: 4.773185 total sec (00h 00m 04s)
+ ▶ [pipeline index: 18/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 0.007074 total sec (00h 00m 00s) (embeddings len: 877, features: 28)
+ ▶ [pipeline index: 18/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 0.006462 total sec (00h 00m 00s) (embeddings len: 921, features: 28)
+ ▶ [pipeline index: 18/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 0.007306 total sec (00h 00m 00s) (embeddings len: 1026, features: 28)
+Generating ALL embeddings took: 0.020923 total sec (00h 00m 00s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 1026
+max_label_length for labels: 1026
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (1026, 28)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (1026,)
+X_train.shape: (2052, 28)
+y_train.shape: (2052,)
+X_test.shape: (1026, 28)
+y_test.shape: (1026,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.332024 total sec (00h 00m 00s), for subpipeline random-forest-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.064776 total sec (00h 00m 00s), for subpipeline sgd-classifier-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+Training and testing took: 0.509668 total sec (00h 00m 00s), for subpipeline logistic-regression-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 137 graphs inside /home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none
+Loading 3 graphs...
+ 🔘 Evaluating...
+Training and testing took: 1.442133 total sec (00h 00m 01s), for subpipeline logistic-regression-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 164 graphs inside /home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+Loading data took: 4.774666 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+ ▶ [pipeline index: 23/42] [pipeline name: gcn-pipeline] [graph: 1/3] Embeddings loop took: 0.012746 total sec (00h 00m 00s) (embeddings len: 1031, features: 17)
+ ▶ [pipeline index: 23/42] [pipeline name: gcn-pipeline] [graph: 2/3] Embeddings loop took: 0.00767 total sec (00h 00m 00s) (embeddings len: 917, features: 17)
+ ▶ [pipeline index: 23/42] [pipeline name: gcn-pipeline] [graph: 3/3] Embeddings loop took: 0.007418 total sec (00h 00m 00s) (embeddings len: 918, features: 17)
+Generating ALL embeddings took: 0.027916 total sec (00h 00m 00s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+num_features: 17
+num_classes: 2
+ 🔘 Training and evaluating models...
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.0,
+    "precision_class_0": "0.9934640522875817",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967213114754099",
+    "support_class_0": "912.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "912",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.065793 total sec (00h 00m 00s), for subpipeline very-simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.0,
+    "precision_class_0": "0.9934640522875817",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967213114754099",
+    "support_class_0": "912.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "912",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 6.597251 total sec (00h 00m 06s), for subpipeline simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.0,
+    "precision_class_0": "0.9934569247546347",
+    "recall_class_0": "0.9989035087719298",
+    "f1_score_class_0": "0.996172772006561",
+    "support_class_0": "912.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "911",
+    "false_positives": "1",
+    "false_negatives": "6",
+    "AUC": 0.4994517543859649
+}
+Training and testing took: 19.478895 total sec (00h 00m 19s), for subpipeline first-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.0,
+    "precision_class_0": "0.9934640522875817",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967213114754099",
+    "support_class_0": "912.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "912",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 21.618249 total sec (00h 00m 21s), for subpipeline gcn-with-dropout-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 152.0,
+    "precision_class_0": "0.9934640522875817",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967213114754099",
+    "support_class_0": "912.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "912",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 0.85619 total sec (00h 00m 00s), for subpipeline advanced-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 686 graphs inside /home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+Loading data took: 4.828756 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+ ▶ [pipeline index: 21/42] [pipeline name: gcn-pipeline] [graph: 1/3] Embeddings loop took: 0.017526 total sec (00h 00m 00s) (embeddings len: 921, features: 27)
+ ▶ [pipeline index: 21/42] [pipeline name: gcn-pipeline] [graph: 2/3] Embeddings loop took: 0.018773 total sec (00h 00m 00s) (embeddings len: 1026, features: 27)
+ ▶ [pipeline index: 21/42] [pipeline name: gcn-pipeline] [graph: 3/3] Embeddings loop took: 0.018236 total sec (00h 00m 00s) (embeddings len: 917, features: 27)
+Generating ALL embeddings took: 0.054647 total sec (00h 00m 00s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+num_features: 27
+num_classes: 2
+ 🔘 Training and evaluating models...
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 151.83333333333334,
+    "precision_class_0": "0.9934569247546347",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967177242888402",
+    "support_class_0": "911.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "911",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 4.097566 total sec (00h 00m 04s), for subpipeline very-simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 151.83333333333334,
+    "precision_class_0": "0.9934569247546347",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967177242888402",
+    "support_class_0": "911.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "911",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 8.811678 total sec (00h 00m 08s), for subpipeline simple-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 151.83333333333334,
+    "precision_class_0": "0.9934569247546347",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967177242888402",
+    "support_class_0": "911.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "911",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 7.111413 total sec (00h 00m 07s), for subpipeline first-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 151.83333333333334,
+    "precision_class_0": "0.9934569247546347",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967177242888402",
+    "support_class_0": "911.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "911",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 11.179169 total sec (00h 00m 11s), for subpipeline gcn-with-dropout-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Training...
+ 🔘 Evaluating...
+✨ metrics: {
+    "imbalance_ratio": 151.83333333333334,
+    "precision_class_0": "0.9934569247546347",
+    "recall_class_0": "1.0",
+    "f1_score_class_0": "0.9967177242888402",
+    "support_class_0": "911.0",
+    "precision_class_1": "0.0",
+    "recall_class_1": "0.0",
+    "f1_score_class_1": "0.0",
+    "support_class_1": "6.0",
+    "true_positives": "0",
+    "true_negatives": "911",
+    "false_positives": "0",
+    "false_negatives": "6",
+    "AUC": 0.5
+}
+Training and testing took: 16.274419 total sec (00h 00m 16s), for subpipeline advanced-gcn-pipeline
+enum_upper_to_key: {'CSV': <SaveFileFormat.CSV: 'csv'>, 'JSON': <SaveFileFormat.JSON: 'json'>, 'BOTH': <SaveFileFormat.BOTH: 'both'>, 'FEATURE_CSV': <SaveFileFormat.FEATURE_CSV: 'feature_csv'>}
+ 🔘 Loading data...
+Found 686 graphs inside /home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate
+Loading 3 graphs...
+Loading data took: 4.663026 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+Loading data took: 4.641236 total sec (00h 00m 04s)
+ ▶ [pipeline index: 28/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 2.393372 total sec (00h 00m 02s) (embeddings len: 917, features: 19)
+ ▶ [pipeline index: 28/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 1.946785 total sec (00h 00m 01s) (embeddings len: 1031, features: 19)
+ ▶ [pipeline index: 28/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 2.339253 total sec (00h 00m 02s) (embeddings len: 975, features: 19)
+Generating ALL embeddings took: 6.679532 total sec (00h 00m 06s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 1031
+max_label_length for labels: 1031
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (1031, 19)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (1031,)
+X_train.shape: (2062, 19)
+y_train.shape: (2062,)
+X_test.shape: (1031, 19)
+y_test.shape: (1031,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ERROR: Exception occurred during train and eval step: float() argument must be a string or a real number, not 'MemGraph' for subpipeline: ClassicMLSubpipelineNames.RandomForestPipeline for dir path: /home/onyr/code/phdtrack/mem2graph/data/5_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-start-bytes-embedding_-e_only-max-entropy_-s_activate
+Loading data took: 4.642461 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+Loading data took: 4.655974 total sec (00h 00m 04s)
+ ▶ [pipeline index: 24/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 2.073957 total sec (00h 00m 02s) (embeddings len: 917, features: 40)
+ ▶ [pipeline index: 24/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 1.91043 total sec (00h 00m 01s) (embeddings len: 858, features: 40)
+ ▶ [pipeline index: 24/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 2.381217 total sec (00h 00m 02s) (embeddings len: 974, features: 40)
+Generating ALL embeddings took: 6.36571 total sec (00h 00m 06s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 974
+max_label_length for labels: 974
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (974, 40)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (974,)
+X_train.shape: (1948, 40)
+y_train.shape: (1948,)
+X_test.shape: (974, 40)
+y_test.shape: (974,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ERROR: Exception occurred during train and eval step: float() argument must be a string or a real number, not 'MemGraph' for subpipeline: ClassicMLSubpipelineNames.RandomForestPipeline for dir path: /home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none
+Loading data took: 4.683059 total sec (00h 00m 04s)
+ 🔘 Generating embeddings...
+Loading data took: 4.688867 total sec (00h 00m 04s)
+ ▶ [pipeline index: 26/42] [pipeline name: classic-ml-pipeline] [graph: 1/3] Embeddings loop took: 2.083952 total sec (00h 00m 02s) (embeddings len: 917, features: 41)
+ ▶ [pipeline index: 26/42] [pipeline name: classic-ml-pipeline] [graph: 2/3] Embeddings loop took: 2.088543 total sec (00h 00m 02s) (embeddings len: 921, features: 41)
+ ▶ [pipeline index: 26/42] [pipeline name: classic-ml-pipeline] [graph: 3/3] Embeddings loop took: 2.37839 total sec (00h 00m 02s) (embeddings len: 921, features: 41)
+Generating ALL embeddings took: 6.551019 total sec (00h 00m 06s)
+ 🔘 Splitting data into train and test sets...
+len(train_data): 2
+len(test_data): 1
+max_length for samples: 921
+max_label_length for labels: 921
+len(padded_arrays): 2
+padded_arrays[0] type: <class 'numpy.ndarray'>
+padded_arrays[0].shape: (921, 41)
+len(y_trained_in_list): 2
+y_trained_in_list[0] type: <class 'numpy.ndarray'>
+y_trained_in_list[0].shape: (921,)
+X_train.shape: (1842, 41)
+y_train.shape: (1842,)
+X_test.shape: (921, 41)
+y_test.shape: (921,)
+ 🔘 Training and testing classical ML models...
+ 🔘 Training...
+ERROR: Exception occurred during train and eval step: float() argument must be a string or a real number, not 'MemGraph' for subpipeline: ClassicMLSubpipelineNames.RandomForestPipeline for dir path: /home/onyr/code/phdtrack/mem2graph/data/3_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_only-max-entropy_-s_activate
+ | [󱙌 Program Memory: 11.870891571044922 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 11.870891571044922 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 11.870891571044922 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 11.870891571044922 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 11.870891571044922 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 11.870891571044922 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 12.004730224609375 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 12.004730224609375 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 12.004730224609375 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 12.004730224609375 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 12.004730224609375 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 12.004730224609375 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 11.205215454101562 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 11.205215454101562 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 11.205215454101562 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 11.205215454101562 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 11.205215454101562 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 11.205215454101562 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 10.350311279296875 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 10.350311279296875 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 10.350311279296875 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 10.350311279296875 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 10.350311279296875 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 10.350311279296875 GB] | ✅ Pipeline ran successfully
+ | [󱙌 Program Memory: 24.182945251464844 GB] | ❌ ERROR: in pipeline [index: 24], after 367.63333 total sec (00h 06m 07s), for pipeline PipelineNames.ClassicMLPipeline, with hyperparams RandomForestPipeline(index=24, pipeline_name=<PipelineNames.ClassicMLPipeline: 'classic-ml-pipeline'>, input_mem2graph_dataset_dir_path='/home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none', node_embedding=<NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>, node2vec_dimensions=32, node2vec_walk_length=16, node2vec_num_walks=50, node2vec_p=1.0, node2vec_q=1.0, node2vec_window=10, node2vec_batch_words=8, node2vec_workers=16, random_forest_n_estimators=100, random_forest_n_jobs=5). 
+Mem2Graph GV dataset dir: /home/onyr/code/phdtrack/mem2graph/data/0_graph_with_embedding_comments_-e_none_-v_-a_chunk-header-node_-c_chunk-semantic-embedding_-e_none_-s_none. 
+Exception: float() argument must be a string or a real number, not 'MemGraph' 
+Traceback (most recent call last):
+  File "/home/onyr/code/phdtrack/memory_graph_gcn/src/main_gcn.py", line 43, in run_pipeline
+    random_forest_pipeline(params, hyperparams, result_writer)
+  File "/home/onyr/code/phdtrack/memory_graph_gcn/src/graph_conv_net/pipelines/random_forest/random_forest_pipeline.py", line 139, in random_forest_pipeline
+    train_and_eval_classical_ml(
+  File "/home/onyr/code/phdtrack/memory_graph_gcn/src/graph_conv_net/pipelines/random_forest/random_forest_pipeline.py", line 244, in train_and_eval_classical_ml
+    raise e
+  File "/home/onyr/code/phdtrack/memory_graph_gcn/src/graph_conv_net/pipelines/random_forest/random_forest_pipeline.py", line 217, in train_and_eval_classical_ml
+    clf.fit(X_train, y_train)
+  File "/nix/store/capivw4fkzyiq03hwjmszrnpk8fpwvhx-python3.11-scikit-learn-1.3.0/lib/python3.11/site-packages/sklearn/base.py", line 1151, in wrapper
+    return fit_method(estimator, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/capivw4fkzyiq03hwjmszrnpk8fpwvhx-python3.11-scikit-learn-1.3.0/lib/python3.11/site-packages/sklearn/ensemble/_forest.py", line 348, in fit
+    X, y = self._validate_data(
+           ^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/capivw4fkzyiq03hwjmszrnpk8fpwvhx-python3.11-scikit-learn-1.3.0/lib/python3.11/site-packages/sklearn/base.py", line 621, in _validate_data
+    X, y = check_X_y(X, y, **check_params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/capivw4fkzyiq03hwjmszrnpk8fpwvhx-python3.11-scikit-learn-1.3.0/lib/python3.11/site-packages/sklearn/utils/validation.py", line 1147, in check_X_y
+    X = check_array(
+        ^^^^^^^^^^^^
+  File "/nix/store/capivw4fkzyiq03hwjmszrnpk8fpwvhx-python3.11-scikit-learn-1.3.0/lib/python3.11/site-packages/sklearn/utils/validation.py", line 917, in check_array
+    array = _asarray_with_order(array, order=order, dtype=dtype, xp=xp)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/nix/store/capivw4fkzyiq03hwjmszrnpk8fpwvhx-python3.11-scikit-learn-1.3.0/lib/python3.11/site-packages/sklearn/utils/_array_api.py", line 380, in _asarray_with_order
+    array = numpy.asarray(array, order=order, dtype=dtype)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: float() argument must be a string or a real number, not 'MemGraph'
+

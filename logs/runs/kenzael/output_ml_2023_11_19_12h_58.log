@@ -1,0 +1,85 @@
+🔦 Is CUDA (for Torch) available? False
+🔦 Device: cpu (WARN: Due to CUDA out of memory errors, running on CPU only!)
+🚀 Running program...
+---> env var: MAX_ML_WORKERS, val: 10
+---> env var: DEBUG, val: False
+---> env var: RANDOM_SEED, val: 42
+---> env var: COMMON_LOGGER_DIR_PATH, val: /home/onyr/code/phdtrack/memory_graph_gcn/logs/common
+---> env var: RESULTS_LOGGER_DIR_PATH, val: /home/onyr/code/phdtrack/memory_graph_gcn/logs/results
+---> env var: SAVE_RESULT_LOGS, val: True
+---> env var: ALL_MEM2GRAPH_DATASET_DIR_PATH, val: /home/onyr/code/phdtrack/mem2graph/data
+---> env var: PICKLE_DATASET_DIR_PATH, val: /home/onyr/code/phdtrack/memory_graph_gcn/data/pickled_graphs
+---> env var: RESULT_SAVE_FILE_FORMAT, val: csv
+---> env var: HYPERPARAMS_JSON_FILE_PATH, val: /home/onyr/code/phdtrack/memory_graph_gcn/src/hyperparams.json
+---> env var: NB_RANDOM_FOREST_JOBS, val: 5
+---> env var: PARALLEL_PIPELINE_BATCH_SIZE, val: 6
+---> env var: PICKLE_CACHED_NODE2VEC_EMBEDDINGS, val: /home/onyr/code/phdtrack/memory_graph_gcn/data/pickled_node2vec
+✅ Environment variables loaded.
+Passed program params:
+param[0]: src/main_gcn.py
+param[1]: -i
+param[2]: /root/phdtrack/phdtrack_data_clean/
+param[3]: -p
+param[4]: gcn-pipeline
+param[5]: classic-ml-pipeline
+param[6]: feature-evaluation-pipeline
+param[7]: -b
+param[8]: 6
+param[9]: -a
+param[10]: -q
+param[11]: -n
+param[12]: 3
+🔷 Launching First GCN Pipeline
+🔷 Launching Random Forest Pipeline
+🔷 Launching Feature Evaluation Pipeline
+🔷 No node embedding types specified. Iterating over all available embeddings combinations.
+🔷 Using 3 input graphs
+🔷 Using all Mem2Graph datasets to generate compute instances
+🔷 Not removing file if error when loading GV files
+Parsed program params:
+debug: False
+dry_run: False
+max_ml_workers: None
+input_dir_path: /root/phdtrack/phdtrack_data_clean/
+pipelines: ['gcn-pipeline', 'classic-ml-pipeline', 'feature-evaluation-pipeline']
+node_embedding: None
+nb_input_graphs: 3
+all_mem2graph_datasets: True
+parallel_batch_size: 6
+remove_file_if_error: False
+quiet: True
+run_serial: False
+🚧 DEBUG: False
+✅ Program paths are OK.
+Directory /home/onyr/code/phdtrack/memory_graph_gcn/logs/commonGCN_ML already exists.
+Directory /home/onyr/code/phdtrack/memory_graph_gcn/logs/resultsGCN_ML already exists.
+2023_11_19_12_58_41 - common_logger - INFO - ⚓ Results logger path: /home/onyr/code/phdtrack/memory_graph_gcn/logs/resultsGCN_ML/2023_11_19_12_58_41_818751_results.log
+2023_11_19_12_58_41 - results_logger - INFO - ########## Program params:   [see below] ##########
+2023_11_19_12_58_41 - results_logger - INFO - app_name: GCN_ML
+2023_11_19_12_58_41 - results_logger - INFO - MAX_ML_WORKERS: 10
+2023_11_19_12_58_41 - results_logger - INFO - DEBUG: False
+2023_11_19_12_58_41 - results_logger - INFO - RANDOM_SEED: 42
+2023_11_19_12_58_41 - results_logger - INFO - COMMON_LOGGER_DIR_PATH: /home/onyr/code/phdtrack/memory_graph_gcn/logs/common
+2023_11_19_12_58_41 - results_logger - INFO - RESULTS_LOGGER_DIR_PATH: /home/onyr/code/phdtrack/memory_graph_gcn/logs/results
+2023_11_19_12_58_41 - results_logger - INFO - COMMON_LOGGER: <Logger common_logger (DEBUG)>
+2023_11_19_12_58_41 - results_logger - INFO - RESULTS_LOGGER: <Logger results_logger (DEBUG)>
+2023_11_19_12_58_41 - results_logger - INFO - SAVE_RESULT_LOGS: True
+2023_11_19_12_58_41 - results_logger - INFO - cli: <graph_conv_net.params.cli.CLIArguments object at 0x7ffe95c193d0>
+2023_11_19_12_58_41 - results_logger - INFO - nb_pipeline_runs: 1
+2023_11_19_12_58_41 - results_logger - INFO - DRY_RUN: False
+2023_11_19_12_58_41 - results_logger - INFO - ALL_MEM2GRAPH_DATASET_DIR_PATH: /home/onyr/code/phdtrack/mem2graph/data
+2023_11_19_12_58_41 - results_logger - INFO - PICKLE_DATASET_DIR_PATH: /home/onyr/code/phdtrack/memory_graph_gcn/data/pickled_graphs
+2023_11_19_12_58_41 - results_logger - INFO - RESULT_SAVE_FILE_FORMAT: csv
+2023_11_19_12_58_41 - results_logger - INFO - HYPERPARAMS_JSON_FILE_PATH: /home/onyr/code/phdtrack/memory_graph_gcn/src/hyperparams.json
+2023_11_19_12_58_41 - results_logger - INFO - NB_RANDOM_FOREST_JOBS: 5
+2023_11_19_12_58_41 - results_logger - INFO - PARALLEL_PIPELINE_BATCH_SIZE: 6
+2023_11_19_12_58_41 - results_logger - INFO - PICKLE_CACHED_NODE2VEC_EMBEDDINGS: /home/onyr/code/phdtrack/memory_graph_gcn/data/pickled_node2vec
+2023_11_19_12_58_41 - results_logger - INFO - ########## Program params:   [see above] ##########
+2023_11_19_12_58_41 - common_logger - INFO - 🔷 Looking for Mem2Graph dataset directories in /home/onyr/code/phdtrack/mem2graph/data...
+2023_11_19_12_58_41 - common_logger - INFO - 🗃 Found 6 Mem2Graph dataset directories.
+len(_all_embeddings): 3
+🔷 node_embedding_types: [<NodeEmbeddingType.Node2Vec: 'node2vec'>, <NodeEmbeddingType.CustomCommentEmbedding: 'comment'>, <NodeEmbeddingType.Node2VecAndComment: 'node2vec-comment'>]
+2023_11_19_12_58_41 - common_logger - INFO - 📝 Logging hyperparams...
+🚀 Running pipelines...
+🔷 Parallel computing BATCH size: 6
+🏁 Program finished in 0.002377 total sec (00h 00m 00s)

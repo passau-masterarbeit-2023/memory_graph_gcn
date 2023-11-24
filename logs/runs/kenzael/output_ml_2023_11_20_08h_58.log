@@ -1,0 +1,39 @@
+🔦 Is CUDA (for Torch) available? False
+🔦 Device: cpu (WARN: Due to CUDA out of memory errors, running on CPU only!)
+🚀 Running program...
+---> env var: MAX_ML_WORKERS, val: 10
+---> env var: DEBUG, val: False
+---> env var: RANDOM_SEED, val: 42
+---> env var: COMMON_LOGGER_DIR_PATH, val: /home/onyr/code/phdtrack/memory_graph_gcn/logs/common
+---> env var: RESULTS_LOGGER_DIR_PATH, val: /home/onyr/code/phdtrack/memory_graph_gcn/logs/results
+---> env var: SAVE_RESULT_LOGS, val: True
+---> env var: ALL_MEM2GRAPH_DATASET_DIR_PATH, val: /home/onyr/code/phdtrack/mem2graph/data
+---> env var: PICKLE_DATASET_DIR_PATH, val: /home/onyr/code/phdtrack/memory_graph_gcn/data/pickled_graphs
+---> env var: RESULT_SAVE_FILE_FORMAT, val: csv
+---> env var: HYPERPARAMS_JSON_FILE_PATH, val: /home/onyr/code/phdtrack/memory_graph_gcn/src/hyperparams.json
+---> env var: NB_RANDOM_FOREST_JOBS, val: 5
+---> env var: PARALLEL_PIPELINE_BATCH_SIZE, val: 6
+---> env var: PICKLE_CACHED_NODE2VEC_EMBEDDINGS, val: /home/onyr/code/phdtrack/memory_graph_gcn/data/pickled_node2vec
+✅ Environment variables loaded.
+Passed program params:
+param[0]: src/main_gcn.py
+param[1]: -i
+param[2]: /root/phdtrack/phdtrack_data_clean/
+param[3]: -p
+param[4]: gcn-pipeline
+param[5]: classic-ml-pipeline
+param[6]: feature-evaluation-pipeline
+param[7]: -b
+param[8]: 6
+param[9]: -a
+param[10]: -q
+param[11]: -n
+param[12]: 3
+🔷 Launching First GCN Pipeline
+🔷 Launching Random Forest Pipeline
+🔷 Launching Feature Evaluation Pipeline
+🔷 No node embedding types specified. Iterating over all available embeddings combinations.
+🔷 Using 3 input graphs
+🔷 Using all Mem2Graph datasets to generate compute instances
+🔷 Not removing file if error when loading GV files
+🔴 Invalid input dir path, this dir doesn't exist: /root/phdtrack/phdtrack_data_clean/
